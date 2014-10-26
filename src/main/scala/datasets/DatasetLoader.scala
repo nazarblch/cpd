@@ -22,7 +22,7 @@ import scala.collection.parallel.mutable.ParArray
 
 object DatasetLoader {
 
-  def loadFromFile(path: String): CellTDataset = {
+  def loadFromFile(path: String): Dataset[CellType] = {
 
     assert(path.split("\\.").last equals "csv")
 
@@ -45,16 +45,16 @@ object DatasetLoader {
       }
     }
 
-    val dataBuilder = ParVector.newBuilder[CellTColumn]
+    val dataBuilder = ParVector.newBuilder[Column[CellType]]
     Range(0, header.size).foreach(i => {
       val vb = ParArray.newBuilder[CellType]
       val t: String = types(i)
       data(i).foreach(elem => vb += CellT(t, elem))
-      dataBuilder += new CellTColumn(vb.result())
+      dataBuilder += new Column[CellType](vb.result())
     })
 
-    new CellTDataset(
-      header.toIndexedSeq,
+    new Dataset[CellType](
+      new DataHeader(header.toIndexedSeq),
       dataBuilder.result()
     )
 

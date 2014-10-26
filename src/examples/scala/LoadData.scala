@@ -4,28 +4,26 @@ import utils.Tabulator
 
 object LoadData extends App {
 
-  def print(dataset: Dataset[CellType]): Unit = {
+
+  def getHeaderSeq[T >: CellType with Double](dataset: Dataset[T]): IndexedSeq[String] = dataset.isNumeric match {
+    case true => dataset.header.data
+    case false => dataset.header.data.zip(dataset.getRow(0).map(_.asInstanceOf[CellType].getType)).map{case (name,t) => name + ":" + t}
+  }
+
+  def print[T >: CellType with Double](dataset: Dataset[T]): Unit = {
     println( Tabulator.format(Seq(
-      dataset.header.zip(dataset.getRow(0).map(_.getType)).map{case (name,t) => name + ":" + t}
+      getHeaderSeq(dataset)
     ) ++
     dataset.getRowsIterator
     ))
   }
 
-  def print(dataset: NumericDataset): Unit = {
-    println( Tabulator.format(Seq(
-      dataset.header
-    ) ++
-      dataset.getRowsIterator
-    ))
-  }
-
-  val data: CellTDataset = DatasetLoader.loadFromFile("data/data.csv")
+  val data: Dataset[CellType] = DatasetLoader.loadFromFile("data/data.csv")
 
   print(data)
 
 
-  val data1: NumericDataset = DatasetLoader.loadFromFile("data/numeric.csv").toNumeric
+  val data1: Dataset[Double] = DatasetConverter.toNumeric(DatasetLoader.loadFromFile("data/numeric.csv"))
 
   print(data1)
 
