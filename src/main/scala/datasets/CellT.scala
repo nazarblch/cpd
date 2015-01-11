@@ -1,5 +1,6 @@
 package datasets
 
+import datasets.CellT._
 
 
 trait CellT[T >: Int with Double with String] {
@@ -8,6 +9,16 @@ trait CellT[T >: Int with Double with String] {
   override def toString = data.toString
   def getType: String
   def toDouble: Double
+  def < (o: CellT[T]): Boolean
+  def >= (o: CellT[T]): Boolean = ! < (o)
+  def > (o: CellT[T]): Boolean = ! >= (o)
+  def <= (o: CellT[T]): Boolean = ! > (o)
+
+  def safeCast(o: CellType): CellT[T] = {
+    assert(o.isInstanceOf[CellT[T]])
+    cast(o)
+  }
+  def cast(o: CellType): CellT[T]
 }
 
 object CellT {
@@ -23,6 +34,7 @@ object CellT {
     case DOUBLE_TYPE_NAME => new DoubleCellT(value.toDouble)
     case CAT_TYPE_NAME => new CatCellT(value)
   }
+
 }
 
 
@@ -32,6 +44,10 @@ class DoubleCellT(val data: Double) extends CellT[Double] {
   override def getType: String = CellT.DOUBLE_TYPE_NAME
 
   override def toDouble: Double = data
+
+  override def <(o: CellT[Double]): Boolean = data < o.data
+
+  override def cast(o: CellType): DoubleCellT = o.asInstanceOf[DoubleCellT]
 }
 
 
@@ -41,6 +57,10 @@ class IntCellT(val data: Int) extends CellT[Int] {
   override def getType: String = CellT.INT_TYPE_NAME
 
   override def toDouble: Double = data
+
+  override def <(o: CellT[Int]): Boolean = data < o.data
+
+  override def cast(o: CellType): CellT[Int] = o.asInstanceOf[IntCellT]
 }
 
 class CatCellT(val data: String) extends CellT[String] {
@@ -49,6 +69,10 @@ class CatCellT(val data: String) extends CellT[String] {
   override def getType: String = CellT.CAT_TYPE_NAME
 
   override def toDouble: Double = data.toDouble
+
+  override def <(o: CellT[String]): Boolean = data < o.data
+
+  override def cast(o: CellType): CellT[String] = o.asInstanceOf[CatCellT]
 }
 
 
