@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.0">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>56</x>
+      <y>424</y>
+      <w>184</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_class: DatasetNumeric_
+--
++ isNumeric() = True
+- getRow(index): Vector[Double]
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>392</x>
+      <y>280</y>
+      <w>184</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_class: Column[T]_
+--
+- data: Vector[T]
+%T: Double or CellT</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>400</x>
+      <y>312</y>
+      <w>40</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;80;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>328</y>
+      <w>248</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_object: DatasetReader_
+--
++ loadFromFile(path:String): Dataset[CellT] </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>224</x>
+      <y>344</y>
+      <w>120</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>104;56;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>664</x>
+      <y>216</y>
+      <w>280</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>_interface: Model[T]_
+--
+- header: Array[(name, flag)]
+--
++ likelihood(Dataset[T], ModelParameter, weights): Double
++ likelihood(Dataset[T], weights): Double
++ gradLikelihood(Dataset[T], ModelParameter, weights): Vector[Double]
++ fisherMatrix(Dataset[T], weights): Matrix
++ MLE(Dataset[T], weights): ModelParameter
+
+
+
+
+
+
+
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>824</x>
+      <y>16</y>
+      <w>328</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>_interface: ParametricModel[T]_
+--
++ likelihood(Dataset[T], ModelParameter, weights):Double
++ likelihood(Row[T], ModelParameter):Double</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>416</x>
+      <y>0</y>
+      <w>360</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>_class: GeneralRegressionModel[T]_
+--
++ regressionFunction: (Dataset[T], ModelParameter) =&gt; Double 
++ model: ParametricModel[T]
+--
++ likelihood(Dataset[T], weights):Double</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>856</x>
+      <y>88</y>
+      <w>216</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>_class: NonParametricModel[T]_
++ likelihood(Dataset[T], weights):Double
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>496</x>
+      <y>280</y>
+      <w>184</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>24;112;168;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>72</x>
+      <y>528</y>
+      <w>184</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>_class: Row[T]_
+--
+- data: Vector[T]</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>328</x>
+      <y>392</y>
+      <w>192</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_class: Dataset[T]_
+--
+- header: Array[(name, flag)]
+- data: Array[Column[T]]
+--
++ getRow(index):Row[T]
++ isNumeric() = False
++ toNumeric(): NumericDataset
++ getSubset(from, to): Dataset[T] 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>216</x>
+      <y>392</y>
+      <w>128</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>112;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>232</x>
+      <y>424</y>
+      <w>112</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>24;112;96;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>728</x>
+      <y>40</y>
+      <w>152</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;176;136;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>616</x>
+      <y>40</y>
+      <w>128</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>112;176;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>752</x>
+      <y>96</y>
+      <w>168</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>24;120;152;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>856</x>
+      <y>360</y>
+      <w>328</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_class: LikelihoodRatioStatistic[T]_
+--
+- model: Model[T]
+--
++ getValue(WindowDataset[T], windowIndex): Double
++ getValue(WindowDataset[T]): Vector[Double]
+- getWindowD1D2(WindowDataset[T], windowIndex): (Matrix, Matrix)
+- getWindowXi(WindowDataset[T], windowIndex): (Vector[Double], Vector[Double])
+- getWindowSigma(WindowDataset[T], windowIndex): Matrix
+- getWindowDeltaXi(WindowDataset[T], windowIndex): Vector[Double]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>832</x>
+      <y>304</y>
+      <w>176</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>160;56;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>800</x>
+      <y>368</y>
+      <w>72</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;</panel_attributes>
+    <additional_attributes>56;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>512</x>
+      <y>400</y>
+      <w>56</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;20.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>552</x>
+      <y>392</y>
+      <w>272</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>_class: WindowDataset[T]_
+--
++ windowSize: Int
++ windowCount: Int
++ getWindowData(windowIndex): (Dataset[T], Dataset[T])
++ getWindowCoordinate(windowIndex): (Int, Int, Int)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>136</x>
+      <y>600</y>
+      <w>256</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>_interface: AdditiveWeightedStatistic[T]_
+&lt;: WeightedStatistic[T, Double]
+--
+- getValue(Row[T]): Double
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>304</x>
+      <y>688</y>
+      <w>376</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_interface:WeightedStatistic[T,V &lt;: Additive]_
+--
++ getValue(Dataset[T], weights: Vector[Double], offset=0): V
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>424</x>
+      <y>600</y>
+      <w>256</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>_interface: AdditiveWeightedVectorStatistic[T]_
+&lt;: WeightedStatistic[T, Vector[Double]]
+--
++ dimension: Int
+--
+- getValue(Row[T]): Vector[Double]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>304</x>
+      <y>640</y>
+      <w>72</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>70.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>656</y>
+      <w>32</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>20.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>856</x>
+      <y>512</y>
+      <w>376</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_class: WeightedLikelihoodRatioStatistic[T]_
+--
++ getValue(WindowDataset[T], weights: Vector[Double]): Vector[Double] 
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>672</x>
+      <y>520</y>
+      <w>200</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;100.0;230.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>968</x>
+      <y>472</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>712</y>
+      <w>352</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>_class: WeightedBootstrap[T,V &lt;: Additive]_
+--
+- weightsGenerator: SmoothOnesGenerator
+--
++ sample(Dataset[T], WeightedStatistic[T,V]): V
++ mean(Dataset[T], WeightedStatistic[T,V], sampleSize): V
++ variance(Dataset[T], WeightedStatistic[T,V], sampleSize): V</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>512</x>
+      <y>488</y>
+      <w>304</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;280.0;90.0;360.0;280.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>672</x>
+      <y>704</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>864</x>
+      <y>832</y>
+      <w>224</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>_class: SmoothOnesGenerator_
+--
+- rand: Random
+- variance: Double
+--
++ generateVector(size): Vector[Double]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>920</x>
+      <y>800</y>
+      <w>24</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>768</x>
+      <y>32</y>
+      <w>72</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>64</x>
+      <y>104</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_class: IntCellT_
+--
++ data: Int
+--
++ isNumeric() = True</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>192</x>
+      <y>192</y>
+      <w>184</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>_interface: CellT_
+--
++ isNumeric(): Boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>408</x>
+      <y>104</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_class: CatCellT_
+--
++ data: String
+--
++ isNumeric() = False</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>240</x>
+      <y>104</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>_class: DoubleCellT_
+--
++ data: Double
+--
++ isNumeric() = True </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>296</x>
+      <y>224</y>
+      <w>88</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>168</x>
+      <y>152</y>
+      <w>104</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>110.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>152</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>344</x>
+      <y>152</y>
+      <w>104</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;50.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>888</x>
+      <y>584</y>
+      <w>320</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>_class: MaxValuesCalibrator[T]_
+--
+- statistic: WeightedLikelihoodRatioStatistic[T]
+- boot: WeightedBootstrap[T, Vector[Double]]
+- activeVectorIndexes: Array[Int]
+-- 
++ estimateMax(WindowDataset[T], sampleSize: Int): Double
+ </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1000</x>
+      <y>672</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1016</x>
+      <y>544</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1248</x>
+      <y>560</y>
+      <w>304</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_class: NonCPWindowsSelector_
+--
+- statistic: AdditiveWeightedVectorStatistic[T]
+- boot: WeightedBootstrap[T, Vector[Double]]
+- intervalsSelector = ConstIntervalsSelector
+- dataset: Dataset[T]
+- windowSazes: Array[Int]
+--
+- estimateMean(WindowDataset[T]): Vector[Double]
++ getWindowIndexes(WindowDataset[T]): Array[Int]</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1280</x>
+      <y>736</y>
+      <w>248</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>_object: ConstIntervalsSelector_
+# selects low varience regions on sockets 
+--
++ minIntervalLength: Int
+--
++ select(Vector[Double]): Array[Int]</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1384</x>
+      <y>672</y>
+      <w>24</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>
