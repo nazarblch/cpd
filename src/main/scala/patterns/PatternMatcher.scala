@@ -7,16 +7,28 @@ trait CurvePattern {
   def getXRange: DenseVector[Int]
   def getXSize: Int
   def getY(x: Int): Double
-  def getY: DenseVector[Double]
+  def getYRange: DenseVector[Double]
   def fitParameters(yValues: DenseVector[Double]): Double
+  def getPlot(offset: Int, length: Int): DenseVector[Double] = {
+
+    assert(offset + getXSize <= length)
+
+    val res = DenseVector.fill[Double](length)(getY(0))
+
+    for (i <- 0 until getXSize) {
+      res(i + offset) = getY(i)
+    }
+
+    res
+  }
 }
 
-class MatcherResult[T <: CurvePattern](val offset: Int, val pattern: T) {
+class MatcherResult(val offset: Int, val pattern: CurvePattern) {
 }
 
 
 object PatternMatcher {
-  def exec[T <: CurvePattern](pattern: T, data: DenseVector[Double]): MatcherResult[T] = {
+  def exec(pattern: CurvePattern, data: DenseVector[Double]): MatcherResult = {
     // fixme: prevent slicing
 
     val offset: Int =
@@ -25,7 +37,13 @@ object PatternMatcher {
         (i, pattern.fitParameters(ys))
       }).maxBy(_._2)._1
 
-    new MatcherResult[T](offset, pattern)
+    pattern.fitParameters(data.slice(offset, offset + pattern.getXSize))
 
+    new MatcherResult(offset, pattern)
+
+  }
+
+  def exec(pattern: CurvePattern, data: Array[Double]): MatcherResult = {
+    exec(pattern, DenseVector(data))
   }
 }

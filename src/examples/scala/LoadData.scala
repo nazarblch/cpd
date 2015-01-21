@@ -2,6 +2,9 @@ import datasets.CellT.CellType
 import datasets._
 import utils.Tabulator
 
+
+import scala.collection.IndexedSeq
+
 object LoadData extends App {
 
 
