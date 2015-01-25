@@ -49,6 +49,12 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
     ParArray.range(0, wc).map(windowIndex => getValue(windowIndex, dataset)).toArray
   }
 
+  def getValueSync(dataset: D): Array[Double] = {
+    val wc: Int = windowCount(dataset)
+
+    Array.range(0, wc).map(windowIndex => getValue(windowIndex, dataset))
+  }
+
 }
 
 
@@ -67,15 +73,15 @@ class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val m
     val LH0 = new DiffFunction[DenseVector[Double]] {
       def calculate(x: DenseVector[Double]): (Double, DenseVector[Double]) = {
         (
-          model.likelihood(data._1, x) + model.likelihood(data._2, x + deltaMLE),
-          model.gradLikelihood(data._1, x) + model.gradLikelihood(data._2, x + deltaMLE)
+          -model.likelihood(data._1, x) - model.likelihood(data._2, x + deltaMLE),
+          model.gradLikelihood(data._1, x) * (-1.0) - model.gradLikelihood(data._2, x + deltaMLE)
         )
       }
     }
 
     val lbfgs = new LBFGS[DenseVector[Double]](maxIter=100, m=3)
     val MLEH0: DenseVector[Double] = lbfgs.minimize(LH0, MLELeft)
-    val L = LH0.calculate(MLEH0)._1
+    val L = - LH0.calculate(MLEH0)._1
 
     val L1 = model.likelihood(data._1)
     val L2 = model.likelihood(data._2)

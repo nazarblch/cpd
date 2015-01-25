@@ -1,4 +1,4 @@
-package bootstrep
+package bootstrap
 
 import java.util.Random
 

@@ -1,4 +1,4 @@
-package bootstrep
+package bootstrap
 
 import breeze.linalg.DenseVector
 import datasets.{Dataset, CatCellT, IntCellT, DoubleCellT}

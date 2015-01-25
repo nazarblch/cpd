@@ -7,8 +7,8 @@ import models.ParametricIIDModel
 /**
  * Created by nazar on 1/18/15.
  */
-class NormalModel extends ParametricIIDModel[Double, DenseVector[Double]] {
-  override def dim(parameter: DenseVector[Double]): Int = 1
+class NormalModel extends ParametricIIDModel[Double] {
+  override def dim: Int = 1
 
   override def likelihood(dataRow: IndexedSeq[Double], parameter: DenseVector[Double]): Double = - 0.5 * math.log(2 * math.Pi) - 0.5 * math.pow(dataRow(0) - parameter(0), 2)
 

@@ -1,6 +1,6 @@
 package examples.scala
 
-import bootstrep.{SmoothOnesGenerator, WeightedVectorBootstrap, Bootstrap}
+import bootstrap.{SmoothOnesGenerator, WeightedVectorBootstrap, Bootstrap}
 import datasets.{DatasetLoader, DatasetConverter, Dataset}
 import statistics.GaussianStatistic
 

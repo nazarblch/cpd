@@ -34,6 +34,8 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
 
   def size = data(0).size
 
+  def dim = data.size
+
   def getRow(index: Int): IndexedSeq[T] = {
     for (col <- 0 until header.size) yield data(col)(index)
   }
