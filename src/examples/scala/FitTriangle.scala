@@ -1,6 +1,7 @@
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Gaussian
 import patterns.{MatcherResult, PatternMatcher, TrianglePattern}
+import viz.utils.PlotXY
 
 object FitTriangle extends App {
 
@@ -28,8 +29,16 @@ object FitTriangle extends App {
 
   val pattern = new TrianglePattern(40)
 
-  val res: MatcherResult[TrianglePattern] = PatternMatcher.exec[TrianglePattern](pattern, ys)
+  val res: MatcherResult = PatternMatcher.exec(pattern, ys)
 
   println(res.offset)
+  //println(res.pattern.getPlot(res.offset, 80))
+
+  val pl = new PlotXY("x", "y")
+
+  pl.addline(ys,"")
+  pl.addline(res.pattern.getPlot(res.offset, 80), "")
+
+  pl.print("test.png")
 
 }

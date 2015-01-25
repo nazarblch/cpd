@@ -10,6 +10,7 @@ class Column[T] (val data: ParArray[T]) {
   def size = data.length
   def slice(from: Int, to: Int): Column[T] = new Column[T](data.slice(from, to))
   def apply(index: Int): T = data(index)
+  def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
   def isNumeric: Boolean = data(0).isInstanceOf[Double] || data(0).asInstanceOf[CellType].isNumeric
 }
 
@@ -33,6 +34,8 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
 
   def size = data(0).size
 
+  def dim = data.size
+
   def getRow(index: Int): IndexedSeq[T] = {
     for (col <- 0 until header.size) yield data(col)(index)
   }
@@ -43,6 +46,12 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
 
   def subset(from: Int, to: Int): Dataset[T] = {
     new Dataset[T](header, data.map(_.slice(from, to)))
+  }
+
+  def ++ (other: Dataset[T]): Dataset[T] = {
+    assert(header equals other.header)
+    val newData: ParVector[Column[T]] = data.zip(other.data).map({case (col1, col2) => col1 ++ col2})
+    new Dataset[T](header, newData, isNumeric)
   }
 
 }
@@ -75,6 +84,24 @@ class WeightedDataset[T >:  DoubleCellT with IntCellT with CatCellT with Double]
     for (i <- 0 until size) yield getRowWithWeight(i)
   }
 
+  def convolution(f: (IndexedSeq[T] => Double)): Double = {
+    getRowsWithWeightIterator.foldLeft(0.0)({case(res, (row,w)) => res + w * f(row)})
+  }
+
+  override def subset(from: Int, to: Int): WeightedDataset[T] = {
+    new WeightedDataset[T](header, data.map(_.slice(from, to)), weights.slice(from, to))
+  }
+
+  def toDataset: Dataset[T] = new Dataset[T](header, data, isNumeric)
+
+  def ++ (other: WeightedDataset[T]): WeightedDataset[T] = {
+    WeightedDataset(this.toDataset ++ other.toDataset, weights ++ other.weights)
+  }
+
+}
 
 
+object WeightedDataset {
+  def apply[T >: DoubleCellT with IntCellT with CatCellT with Double](dataset: Dataset[T], weights: ParVector[Double]): WeightedDataset[T] = new WeightedDataset[T](dataset.header, dataset.data, weights, dataset.isNumeric)
+  def apply[T >: DoubleCellT with IntCellT with CatCellT with Double](dataset: Dataset[T], weights: Vector[Double]): WeightedDataset[T] = apply(dataset, weights.par)
 }

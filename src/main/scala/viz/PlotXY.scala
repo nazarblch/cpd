@@ -27,6 +27,10 @@ class PlotXY(xlabel: String, ylabel: String) {
     p += plot(x, y, name = name, shapes = true)
   }
 
+  def addline(y: Array[Double], name: String) {
+    addline(DenseVector[Double](y), name)
+  }
+
   def print(path: String) {
     f.saveas(path)
   }
