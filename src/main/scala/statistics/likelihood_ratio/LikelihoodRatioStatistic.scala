@@ -6,6 +6,7 @@ import datasets.CellT._
 import datasets._
 import models.{ParametricModel, ParametricIIDModel, Model}
 import statistics.WeightedStatistic
+import utils.sqrt
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
@@ -40,7 +41,7 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
     val L2 = model.likelihood(data2)
     val L = model.likelihood(data1 ++ data2)
 
-    math.sqrt(L1 + L2 - L)
+    math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
   }
 
   def getValue(dataset: D): Array[Double] = {
@@ -56,6 +57,49 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
   }
 
 }
+
+
+class ExtendedLikelihoodRatioStatistic[T >: CellType with Double](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
+    extends LikelihoodRatioStatistic[T, WeightedDataset[T]](model, windowSize) {
+
+  def getXi1Xi2(windowIndex: Int, dataset: WeightedDataset[T]): (DenseVector[Double], DenseVector[Double]) = {
+
+    val (data1, data2) = getWindowData(windowIndex, dataset)
+    val D1: DenseMatrix[Double] = sqrt(model.fisherMatrix(data1))
+    val D2: DenseMatrix[Double] = sqrt(model.fisherMatrix(data2))
+
+    val gL1: DenseVector[Double] = model.gradLikelihood(data1, model.MLE(data1))
+    val gL2: DenseVector[Double] = model.gradLikelihood(data2, model.MLE(data2))
+
+    (inv(D1) * gL1, inv(D2) * gL2)
+  }
+
+
+  private def getSigma(windowIndex: Int, dataset: WeightedDataset[T]): DenseMatrix[Double] = {
+    val (data1, data2) = getWindowData(windowIndex, dataset)
+    val D12: DenseMatrix[Double] = model.fisherMatrix(data1)
+    val D22: DenseMatrix[Double] = model.fisherMatrix(data2)
+
+    val D2 = D12 + D22
+
+    val S2: DenseMatrix[Double] = D12 * inv(D2) * D22
+
+    sqrt(S2)
+  }
+
+  def get_window_delta_xi(windowIndex: Int, dataset: WeightedDataset[T]): DenseVector[Double] = {
+
+    val (data1, data2) = getWindowData(windowIndex, dataset)
+    val D1: DenseMatrix[Double] = sqrt(model.fisherMatrix(data1))
+    val D2: DenseMatrix[Double] = sqrt(model.fisherMatrix(data2))
+
+    val xi = getXi1Xi2(windowIndex, dataset)
+    val Sigma = getSigma(windowIndex, dataset)
+
+    Sigma * (inv(D2) * xi._2 - inv(D1) * xi._1)
+  }
+}
+
 
 
 class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
@@ -86,7 +130,7 @@ class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val m
     val L1 = model.likelihood(data._1)
     val L2 = model.likelihood(data._2)
 
-    math.sqrt(L1 + L2 - L)
+    math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
   }
 
   override def getValue(dataset: Dataset[T], weights: scala.Vector[Double], offset: Int): Array[Double] = {

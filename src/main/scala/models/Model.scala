@@ -1,6 +1,7 @@
 package models
 
 import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.optimize.FisherMatrix
 import datasets.CellT.CellType
 import datasets.{Dataset, WeightedDataset, DataHeader}
 
