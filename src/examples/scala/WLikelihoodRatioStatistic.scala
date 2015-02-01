@@ -16,7 +16,7 @@ object WLikelihoodRatioStatistic extends App {
   val col1: Column[Double] = new Column[Double](Gaussian(4,1).sample(300).toArray.par)
   val data1 = new Dataset[Double](header, ParVector(col1), true)
 
-  val model = new NormalModel()
+  val model = new NormalModel(1)
   val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
 
   val BootLRTs = new WeightedLikelihoodRatioStatistic[Double](model, 50)

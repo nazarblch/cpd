@@ -1,5 +1,7 @@
+import breeze.linalg.DenseVector
 import breeze.stats.distributions.Gaussian
 import datasets.{Dataset, Column, DataHeader}
+import likelihood_optimize.AdaptiveGradientDescentOptimizer
 import models.standart.NormalModel
 import patterns.{PatternMatcher, MatcherResult, TrianglePattern}
 import statistics.likelihood_ratio.LikelihoodRatioStatistic
@@ -17,7 +19,7 @@ object LikelihoodRatioStatistic extends App {
   val col1: Column[Double] = new Column[Double](Gaussian(3,1).sample(300).toArray.par)
   val data1 = new Dataset[Double](header, ParVector(col1), true)
 
-  val model = new NormalModel()
+  val model = new AdaptiveGradientDescentOptimizer[Double](DenseVector.zeros[Double](1), new NormalModel(3))
   val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
 
   val pattern = new TrianglePattern(100)

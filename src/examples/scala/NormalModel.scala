@@ -18,7 +18,7 @@ object NormalModel extends App {
 
   LoadData.print(data)
 
-  val model = new NormalModel()
+  val model = new NormalModel(3)
 
   println( model.likelihood(wdata, DenseVector(2.0) ))
 

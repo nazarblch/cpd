@@ -11,6 +11,7 @@ class Column[T] (val data: ParArray[T]) {
   def slice(from: Int, to: Int): Column[T] = new Column[T](data.slice(from, to))
   def apply(index: Int): T = data(index)
   def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
+  def :+ (elem: T): Column[T] = new Column[T](data :+ elem)
   def isNumeric: Boolean = data(0).isInstanceOf[Double] || data(0).asInstanceOf[CellType].isNumeric
 }
 
@@ -51,6 +52,12 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
   def ++ (other: Dataset[T]): Dataset[T] = {
     assert(header equals other.header)
     val newData: ParVector[Column[T]] = data.zip(other.data).map({case (col1, col2) => col1 ++ col2})
+    new Dataset[T](header, newData, isNumeric)
+  }
+
+  def ++ (row: IndexedSeq[T]): Dataset[T] = {
+    assert(row.length equals size)
+    val newData: ParVector[Column[T]] = data.zip(row).map({case (col1, elem) => col1 :+ elem})
     new Dataset[T](header, newData, isNumeric)
   }
 

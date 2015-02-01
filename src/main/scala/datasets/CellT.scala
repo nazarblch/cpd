@@ -24,6 +24,7 @@ trait CellT[T >: Int with Double with String] {
 object CellT {
 
   type CellType = CellT[_ >: Int with Double with String]
+  type TCellDouble = DoubleCellT with IntCellT with CatCellT with Double
 
   val INT_TYPE_NAME = "int"
   val DOUBLE_TYPE_NAME = "double"

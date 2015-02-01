@@ -129,6 +129,7 @@ class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val m
 
     val L1 = model.likelihood(data._1)
     val L2 = model.likelihood(data._2)
+    //val L12 = model.likelihood(data._1 ++ data._2)
 
     math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
   }
