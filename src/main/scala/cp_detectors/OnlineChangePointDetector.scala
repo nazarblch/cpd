@@ -4,15 +4,12 @@ import datasets.CellT.TCellDouble
 import datasets.Dataset
 
 
-trait OnlineChangePointDetector[T >: TCellDouble] {
+trait OnlineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T] {
 
-  def init(dataset: Dataset[T]): Unit
-
-  def addData(dataset: Dataset[T]): Unit
+  def addData(dataset: Dataset[T]): Unit = dataset.getRowsIterator.foreach(addData)
 
   def addData(row: IndexedSeq[T]): Unit
 
   def hasNewChangePoint: Boolean
 
-  def findLast: Int
 }

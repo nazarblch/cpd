@@ -1,0 +1,25 @@
+<dirs>
+    <drectory>
+        <path>testdata/delta_1_p_1</path>
+        <parameter>
+            <name>delta</name>
+            <value>1.0</value>
+        </parameter>
+        <parameter>
+            <name>p</name>
+            <value>1</value>
+        </parameter>
+    </drectory>
+
+    <drectory>
+        <path>testdata/delta_05_p_1</path>
+        <parameter>
+            <name>delta</name>
+            <value>0.5</value>
+        </parameter>
+        <parameter>
+            <name>p</name>
+            <value>1</value>
+        </parameter>
+    </drectory>
+</dirs>
