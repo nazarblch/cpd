@@ -1,7 +1,7 @@
 import cp_detectors.{OfflineChangePointDetector, OnlineChangePointDetector}
 import datasets.CellT._
 import datasets.Dataset
-import quality.QualityMeasure
+import quality.{QualityMeasures, QualityMeasure}
 
 
 class TestElement[T >: TCellDouble] (val data: Dataset[T], val reference: IndexedSeq[Int]){}
@@ -9,7 +9,9 @@ class TestElement[T >: TCellDouble] (val data: Dataset[T], val reference: Indexe
 
 abstract class DetectorTester[T >: TCellDouble, D](
                                                     testData: Seq[TestElement[T]],
-                                                    val measures: Set[QualityMeasure[T]]) {
+                                                    val measureNames: Set[String]) {
+
+  var measures: Set[QualityMeasure[T]] = QualityMeasures.apply[T](measureNames)
 
   def testElement(element: TestElement[T], detector: D): Unit
 
@@ -17,13 +19,17 @@ abstract class DetectorTester[T >: TCellDouble, D](
     testData.foreach(elem => testElement(elem, detector))
   }
 
-  def getScore: Set[(String, Double)] = measures.map(measure => (measure.name, measure.getScore))
+  def getScore: Set[(String, Option[Double])] = {
+    val res =  measures.map(measure => (measure.name, measure.getScore))
+    measures = QualityMeasures.apply[T](measureNames)
+    res
+  }
 
 }
 
 
-class OnlineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], measures: Set[QualityMeasure[T]])
-    extends DetectorTester[T, OnlineChangePointDetector[T]](testData, measures) {
+class OnlineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], measureNames: Set[String])
+    extends DetectorTester[T, OnlineChangePointDetector[T]](testData, measureNames) {
 
   override def testElement(element: TestElement[T], detector: OnlineChangePointDetector[T]) {
     
@@ -43,8 +49,8 @@ class OnlineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], meas
 }
 
 
-class OfflineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], measures: Set[QualityMeasure[T]])
-    extends DetectorTester[T, OfflineChangePointDetector[T]](testData, measures) {
+class OfflineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]],  measureNames: Set[String])
+    extends DetectorTester[T, OfflineChangePointDetector[T]](testData, measureNames) {
 
   override def testElement(element: TestElement[T], detector: OfflineChangePointDetector[T]) {
 

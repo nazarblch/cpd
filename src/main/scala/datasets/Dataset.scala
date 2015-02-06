@@ -1,18 +1,26 @@
 package datasets
 
-import breeze.linalg.DenseVector
 import datasets.CellT.CellType
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
 
-class Column[T] (val data: ParArray[T]) {
-  def size = data.length
-  def slice(from: Int, to: Int): Column[T] = new Column[T](data.slice(from, to))
-  def apply(index: Int): T = data(index)
-  def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
-  def :+ (elem: T): Column[T] = new Column[T](data :+ elem)
-  def isNumeric: Boolean = data(0).isInstanceOf[Double] || data(0).asInstanceOf[CellType].isNumeric
+trait ColumnT[T, C] {
+  def size: Int
+  def slice(from: Int, to: Int): C
+  def apply(index: Int): T
+  def ++ (other: C): C
+  def :+ (elem: T): C
+  def isNumeric: Boolean
+}
+
+class Column[T] (val data: ParArray[T]) extends ColumnT[T, Column[T]] {
+  override def size = data.length
+  override def slice(from: Int, to: Int): Column[T] = new Column[T](data.slice(from, to))
+  override def apply(index: Int): T = data(index)
+  override def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
+  override def :+ (elem: T): Column[T] = new Column[T](data :+ elem)
+  override def isNumeric: Boolean = data(0).isInstanceOf[Double] || data(0).asInstanceOf[CellType].isNumeric
 }
 
 object Column {
