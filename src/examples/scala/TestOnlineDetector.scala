@@ -1,8 +1,9 @@
 import cp_detectors.{SimpleOnlineChangePointDetector, OnlineChangePointDetector}
+import quality.QualityMeasures
 
 object TestOnlineDetector extends App {
 
-  val tests = TestDataLoader.loadOnlineTestConfigurations("/Users/nazar/cpd/testdata/config.xml", Set("Precision", "Recall", "Delay"))
+  val tests = TestDataLoader.loadOnlineTestConfigurations("testdata/config.xml", Set("Precision", "Recall", "Delay", QualityMeasures.NMI))
 
   println(tests.length)
 

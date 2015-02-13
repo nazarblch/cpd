@@ -22,9 +22,7 @@ class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq
   private val history: mutable.HashMap[String, Seq[TestResult]] = mutable.HashMap()
 
   private def runTest(conf: TestConfiguration[T, D], detector: D): Unit = {
-    conf.tester.run(detector)
-    val res = conf.tester.getScore.toSeq.map({case (measure, value) => new TestResult(detector.params ++ conf.params, value, measure)})
-
+    val res = conf.tester.run(detector).toSeq.map({case (measure, value) => new TestResult(detector.params ++ conf.params, value, measure)})
     history.update(detector.name, history.getOrElse(detector.name, Seq()) ++ res)
   }
 
