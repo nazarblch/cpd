@@ -5,7 +5,7 @@ class DataHeader(val data: IndexedSeq[String]) {
     if (other.data.length != data.length) {
       false
     } else {
-      other.data.zip(data).forall({case (h1, h2) => h1 equals h2})
+      other.data.zip(data).forall({ case (h1, h2) => h1 equals h2})
     }
   }
 

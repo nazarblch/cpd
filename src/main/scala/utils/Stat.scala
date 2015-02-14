@@ -9,4 +9,5 @@ object Stat {
       x * math.log(x) + (1-x) * math.log(1-x)
     }
   }
+
 }

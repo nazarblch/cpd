@@ -1,5 +1,6 @@
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Gaussian
+import cp_detectors.LRTOfflineDetector
 import datasets.{Dataset, Column, DataHeader}
 import likelihood_optimize.AdaptiveGradientDescentOptimizer
 import models.standart.NormalModel
@@ -16,7 +17,7 @@ object LikelihoodRatioStatistic extends App {
   val col: Column[Double] = new Column[Double](Gaussian(2,1).sample(300).toArray.par)
   val data = new Dataset[Double](header, ParVector(col), true)
 
-  val col1: Column[Double] = new Column[Double](Gaussian(3,1).sample(300).toArray.par)
+  val col1: Column[Double] = new Column[Double](Gaussian(2.2,1).sample(300).toArray.par)
   val data1 = new Dataset[Double](header, ParVector(col1), true)
 
   val model = new AdaptiveGradientDescentOptimizer[Double](DenseVector.zeros[Double](1), new NormalModel(3))
@@ -24,14 +25,20 @@ object LikelihoodRatioStatistic extends App {
 
   val pattern = new TrianglePattern(100)
 
-  val res: MatcherResult = PatternMatcher.exec(pattern, LRTs.getValue(data ++ data1))
+  //val res: MatcherResult = PatternMatcher.exec(pattern, LRTs.getValue(data ++ data1))
 
-  val pl = new PlotXY("t", "LRTs")
+//  val pl = new PlotXY("t", "LRTs")
+//
+//  pl.addline(LRTs.getValue(data ++ data1), "")
+//  pl.addline(res.pattern.getPlot(res.offset, 600 - 100), "")
+//
+//  pl.print("test.png")
 
-  pl.addline(LRTs.getValue(data ++ data1), "")
-  pl.addline(res.pattern.getPlot(res.offset, 600 - 100), "")
+  val detector = new LRTOfflineDetector[Double, DenseVector[Double]](model)
+  detector.init(data ++ data1)
 
-  pl.print("test.png")
+  val res = detector.findAll(data ++ data1)
 
+  println(res.mkString(", "))
 
 }

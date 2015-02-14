@@ -11,12 +11,17 @@ trait ColumnT[T, C] {
   def apply(index: Int): T
   def ++ (other: C): C
   def :+ (elem: T): C
+  def splitAt(index: Int): (C, C)
   def isNumeric: Boolean
 }
 
 class Column[T] (val data: ParArray[T]) extends ColumnT[T, Column[T]] {
   override def size = data.length
   override def slice(from: Int, to: Int): Column[T] = new Column[T](data.slice(from, to))
+  override def splitAt(index: Int): (Column[T], Column[T]) = {
+    val (data1, data2) = data.splitAt(index)
+    (new Column[T](data1), new Column[T](data2))
+  }
   override def apply(index: Int): T = data(index)
   override def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
   override def :+ (elem: T): Column[T] = new Column[T](data :+ elem)
@@ -55,6 +60,11 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
 
   def subset(from: Int, to: Int): Dataset[T] = {
     new Dataset[T](header, data.map(_.slice(from, to)))
+  }
+
+  def splitAt(index: Int): (Dataset[T], Dataset[T]) = {
+    val cols = data.map(_.splitAt(index))
+    (new Dataset[T](header, cols.map(_._1)), new Dataset[T](header, cols.map(_._2)))
   }
 
   def ++ (other: Dataset[T]): Dataset[T] = {

@@ -2,11 +2,11 @@ package models
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize.FisherMatrix
-import datasets.CellT.CellType
+import datasets.CellT.{TCellDouble, CellType}
 import datasets.{Dataset, WeightedDataset, DataHeader}
 
 
-trait Model[T >: CellType with Double] {
+trait Model[T>: TCellDouble] {
 
   def header: DataHeader
 
@@ -16,7 +16,7 @@ trait Model[T >: CellType with Double] {
 }
 
 
-trait IIDModel[T >: CellType with Double] extends Model[T] {
+trait IIDModel[T >: TCellDouble with Double] extends Model[T] {
 
   def likelihood(dataRow: IndexedSeq[T]): Double
   
@@ -26,7 +26,7 @@ trait IIDModel[T >: CellType with Double] extends Model[T] {
   }
 }
 
-trait ParametricModel[T >: CellType with Double, P] extends Model[T] {
+trait ParametricModel[T>: TCellDouble, P] extends Model[T] {
 
   override def likelihood(dataset: WeightedDataset[T]): Double = {
     assert(header equals dataset.header)
@@ -47,7 +47,7 @@ trait ParametricModel[T >: CellType with Double, P] extends Model[T] {
 
 }
 
-trait ParametricIIDModel[T >: CellType with Double] extends ParametricModel[T, DenseVector[Double]] {
+trait ParametricIIDModel[T>: TCellDouble] extends ParametricModel[T, DenseVector[Double]] {
 
   def likelihood(dataRow: IndexedSeq[T], parameter: DenseVector[Double]): Double
 
@@ -66,7 +66,7 @@ trait ParametricIIDModel[T >: CellType with Double] extends ParametricModel[T, D
 }
 
 
-abstract class GeneralRegressionIIDModel[T >: CellType with Double](
+abstract class GeneralRegressionIIDModel[T>: TCellDouble](
                                                            val header: DataHeader,
                                                            val regressionFunction: RegressionFunction[T, DenseVector[Double]],
                                                            val model: ParametricIIDModel[T],

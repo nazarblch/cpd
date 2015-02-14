@@ -11,6 +11,8 @@ import models.ParametricModel
 
 class AdaptiveGradientDescentOptimizer[T >: CellType with Double](val init: DenseVector[Double], val model: ParametricModel[T, DenseVector[Double]]) extends ParametricModel[T, DenseVector[Double]] {
 
+  // fixme: add P parameter for model
+
   override def MLE(dataset: WeightedDataset[T]): DenseVector[Double] = {
     val opt = FirstOrderMinimizer.OptParams(batchSize = 512, regularization = 0.0, alpha = 0.7, maxIterations = -1,
       useL1 = false,

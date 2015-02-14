@@ -46,4 +46,14 @@ object PatternMatcher {
   def exec(pattern: CurvePattern, data: Array[Double]): MatcherResult = {
     exec(pattern, DenseVector(data))
   }
+
+  def convolution(pattern: CurvePattern, data: DenseVector[Double]): Array[Double] = {
+
+    (0 until (data.length - pattern.getXSize)).map(i => {
+      val ys = data.slice(i, pattern.getXSize + i)
+      pattern.fitParameters(ys)
+      ys dot pattern.getYRange
+    }).toArray
+
+  }
 }

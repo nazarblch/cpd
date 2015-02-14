@@ -6,6 +6,6 @@ import datasets.Dataset
 
 trait OfflineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T] {
 
-  def findAll: IndexedSeq[Int]
+  def findAll(dataset: Dataset[T]): IndexedSeq[Int]
 
 }

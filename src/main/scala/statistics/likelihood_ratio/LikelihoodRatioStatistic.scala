@@ -5,14 +5,14 @@ import breeze.optimize._
 import datasets.CellT._
 import datasets._
 import models.{ParametricModel, ParametricIIDModel, Model}
-import statistics.WeightedStatistic
+import statistics.{WeightedStatistic}
 import utils.sqrt
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
 
 
-class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val model: Model[T], val windowSize: Int) {
+class LikelihoodRatioStatistic[T >: TCellDouble, D <: Dataset[T]](val model: Model[T], val windowSize: Int) {
 
 
   def windowCount(dataset: Dataset[T]): Int = {
@@ -26,6 +26,12 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
     val right: Int = middle + windowSize
     (left, middle, right)
   }
+
+  def getWindowMiddles(dataset: D): Array[Int] = {
+    val wc: Int = windowCount(dataset)
+    Array.range(0, wc).map(windowIndex => getWindowCoordinate(windowIndex)._2)
+  }
+
 
   def getWindowData(windowIndex: Int, dataset: D): (D, D) = {
     val (left, middle, right) = getWindowCoordinate(windowIndex)
@@ -50,6 +56,10 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
     ParArray.range(0, wc).map(windowIndex => getValue(windowIndex, dataset)).toArray
   }
 
+  def getValueWithLocations(dataset: D): Array[(Int, Double)] = {
+    getWindowMiddles(dataset).zip(getValue(dataset))
+  }
+
   def getValueSync(dataset: D): Array[Double] = {
     val wc: Int = windowCount(dataset)
 
@@ -59,7 +69,7 @@ class LikelihoodRatioStatistic[T >: CellType with Double, D <: Dataset[T]](val m
 }
 
 
-class ExtendedLikelihoodRatioStatistic[T >: CellType with Double](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
+class ExtendedLikelihoodRatioStatistic[T >: TCellDouble](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
     extends LikelihoodRatioStatistic[T, WeightedDataset[T]](model, windowSize) {
 
   def getXi1Xi2(windowIndex: Int, dataset: WeightedDataset[T]): (DenseVector[Double], DenseVector[Double]) = {
@@ -102,7 +112,7 @@ class ExtendedLikelihoodRatioStatistic[T >: CellType with Double](override val m
 
 
 
-class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
+class WeightedLikelihoodRatioStatistic[T >: TCellDouble](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
     extends LikelihoodRatioStatistic[T, WeightedDataset[T]](model, windowSize) with WeightedStatistic[T, Array[Double]] {
 
   val ones: scala.Vector[Double] = scala.Vector.fill(windowSize)(1.0)
@@ -139,3 +149,8 @@ class WeightedLikelihoodRatioStatistic[T >: CellType with Double](override val m
   }
 
 }
+
+
+
+
+
