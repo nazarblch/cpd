@@ -11,18 +11,13 @@ abstract class DetectorTester[T >: TCellDouble, D](
                                                     testData: Seq[TestElement[T]],
                                                     val measureNames: Set[String]) {
 
-  var measures: Set[QualityMeasure[T]] = QualityMeasures.apply[T](measureNames)
 
-  def testElement(element: TestElement[T], detector: D): Unit
+  def testElement(element: TestElement[T], detector: D, measures: Set[QualityMeasure[T]]): Unit
 
-  def run(detector: D) {
-    testData.foreach(elem => testElement(elem, detector))
-  }
-
-  def getScore: Set[(String, Option[Double])] = {
-    val res =  measures.map(measure => (measure.name, measure.getScore))
-    measures = QualityMeasures.apply[T](measureNames)
-    res
+  def run(detector: D): Set[(String, Option[Double])] = {
+    var measures: Set[QualityMeasure[T]] = QualityMeasures.apply[T](measureNames)
+    testData.foreach(elem => testElement(elem, detector, measures))
+    measures.map(measure => (measure.name, measure.getScore))
   }
 
 }
@@ -31,7 +26,7 @@ abstract class DetectorTester[T >: TCellDouble, D](
 class OnlineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], measureNames: Set[String])
     extends DetectorTester[T, OnlineChangePointDetector[T]](testData, measureNames) {
 
-  override def testElement(element: TestElement[T], detector: OnlineChangePointDetector[T]) {
+  override def testElement(element: TestElement[T], detector: OnlineChangePointDetector[T], measures: Set[QualityMeasure[T]]) {
     
     val dataset: Dataset[T] = element.data
     val firstCP: Int = if (element.reference.length == 0) dataset.size else element.reference(0)
@@ -52,7 +47,7 @@ class OnlineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]], meas
 class OfflineDetectorTester[T >: TCellDouble](testData: Seq[TestElement[T]],  measureNames: Set[String])
     extends DetectorTester[T, OfflineChangePointDetector[T]](testData, measureNames) {
 
-  override def testElement(element: TestElement[T], detector: OfflineChangePointDetector[T]) {
+  override def testElement(element: TestElement[T], detector: OfflineChangePointDetector[T], measures: Set[QualityMeasure[T]]) {
 
     val dataset: Dataset[T] = element.data
     detector.init(dataset)

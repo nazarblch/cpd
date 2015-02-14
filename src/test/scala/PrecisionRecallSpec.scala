@@ -24,9 +24,11 @@ class PrecisionRecallSpec extends FlatSpec {
     val precision: Precision[Double] = new Precision[Double]()
     val recall: Recall[Double] = new Recall[Double]()
     precision.addObservation(IndexedSeq(1,2,3,4,5,6,7), IndexedSeq(1,2,3,4,8), null)
+    precision.addObservation(IndexedSeq(5), IndexedSeq(4,8), null)
     recall.addObservation(IndexedSeq(1,5,6,7), IndexedSeq(3,5,7), null)
-    assert( math.abs(precision.getScore.get - 1.0 ) < 1e-5)
-    assert( math.abs(recall.getScore.get - 0.0 ) < 1e-5)
+    recall.addObservation(IndexedSeq(6,7), IndexedSeq(3,8), null)
+    assert( math.abs(precision.getScore.get - 5.0/8 ) < 1e-5)
+    assert( math.abs(recall.getScore.get - 3.0/5 ) < 1e-5)
   }
 
 

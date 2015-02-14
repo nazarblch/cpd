@@ -1,9 +1,13 @@
 package quality
 
+import breeze.numerics.log2
 import datasets.CellT.TCellDouble
 import datasets.Dataset
 import breeze.stats.mean
+import jep.Jep
 
+
+import scala.collection.immutable.Set
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -19,10 +23,16 @@ trait QualityMeasure[T >: TCellDouble] {
 
 object QualityMeasures {
 
+  val PRECISION = "Precision"
+  val RECALL = "Recall"
+  val DELAY = "Delay"
+  val NMI = "NMI"
+
   def createMeasure[T >: TCellDouble](name: String): QualityMeasure[T]  = name match {
-    case "Precision" => new Precision
-    case "Recall" => new Recall
-    case "Delay" => new AverageDelay
+    case PRECISION => new Precision
+    case RECALL => new Recall
+    case DELAY => new AverageDelay
+    case NMI => new NMI
   }
 
   def apply[T >: TCellDouble](names: Set[String]): Set[QualityMeasure[T]] = {
@@ -65,7 +75,7 @@ class Precision[T >: TCellDouble] extends PrecisionRecall[T] {
     if (updatesCount == 0) None else Some(res)
   }
 
-  override def name: String = "Precision"
+  override def name: String = QualityMeasures.PRECISION
 }
 
 class Recall[T >: TCellDouble] extends PrecisionRecall[T] {
@@ -75,7 +85,7 @@ class Recall[T >: TCellDouble] extends PrecisionRecall[T] {
     if (updatesCount == 0) None else Some(res)
   }
 
-  override def name: String = "Recall"
+  override def name: String = QualityMeasures.RECALL
 }
 
 class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
@@ -98,5 +108,52 @@ class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
     if (buf.length == 0) None else Some(mean(buf.toArray))
   }
 
-  override def name: String = "Delay"
+  override def name: String = QualityMeasures.DELAY
+}
+
+class NMI[T >: TCellDouble] extends QualityMeasure[T] {
+
+  def mutual_info(x: IndexedSeq[Int],y: IndexedSeq[Int]): Double = {
+    val N: Double = x.size
+    var I=0.0
+    val eps = 1e-5
+    for (l1 <- x.distinct; l2 <- y.distinct) {
+      val l1_ids: Set[Int] = x.zipWithIndex.filter({case(xi, i) => xi == l1}).map(_._2).toSet
+      val l2_ids: Set[Int] = y.zipWithIndex.filter({case(yi, i) => yi == l2}).map(_._2).toSet
+
+      val pxy = l1_ids.intersect(l2_ids).size.toDouble / N + eps
+      I += pxy * log2( pxy/((l1_ids.size/N)*(l2_ids.size/N)))
+    }
+    I
+  }
+
+  def nmi(x: IndexedSeq[Int],y: IndexedSeq[Int]): Double = {
+    val N: Double = x.size
+    val I=mutual_info(x,y)
+
+    var Hx = 0.0
+
+    for (l1 <- x.distinct) {
+      val l1_ids: Set[Int] = x.zipWithIndex.filter({case(xi, i) => xi == l1}).map(_._2).toSet
+      Hx += -(l1_ids.size.toDouble / N)* log2(l1_ids.size.toDouble / N)
+    }
+
+    var Hy = 0.0
+
+    for (l2 <- y.distinct) {
+      val l2_ids: Set[Int] = y.zipWithIndex.filter({case(yi, i) => yi == l2}).map(_._2).toSet
+      Hy += -(l2_ids.size.toDouble / N)* log2(l2_ids.size.toDouble / N)
+    }
+
+    I/((Hx+Hy)/2)
+  }
+
+
+  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]): Unit = {
+
+  }
+
+  override def getScore: Option[Double] = Some(1.0)
+
+  override def name: String = QualityMeasures.NMI
 }
