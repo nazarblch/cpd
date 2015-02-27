@@ -4,7 +4,6 @@ import breeze.numerics.log2
 import datasets.CellT.TCellDouble
 import datasets.Dataset
 import breeze.stats.mean
-import jep.Jep
 
 
 import scala.collection.immutable.Set
@@ -113,16 +112,30 @@ class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
 
 class NMI[T >: TCellDouble] extends QualityMeasure[T] {
 
+  val buf: ArrayBuffer[Double] = ArrayBuffer()
+
+  def format(x: IndexedSeq[Int], size: Int): IndexedSeq[Int] = {
+    val res = Array.fill[Int](size)(1)
+    var label = 1
+    x.sorted.foreach(xi => {
+      label += 1
+      for (i <- xi until size) {
+        res(i) = label
+      }
+    })
+    res.toIndexedSeq
+  }
+
   def mutual_info(x: IndexedSeq[Int],y: IndexedSeq[Int]): Double = {
     val N: Double = x.size
     var I=0.0
-    val eps = 1e-5
     for (l1 <- x.distinct; l2 <- y.distinct) {
       val l1_ids: Set[Int] = x.zipWithIndex.filter({case(xi, i) => xi == l1}).map(_._2).toSet
       val l2_ids: Set[Int] = y.zipWithIndex.filter({case(yi, i) => yi == l2}).map(_._2).toSet
 
-      val pxy = l1_ids.intersect(l2_ids).size.toDouble / N + eps
-      I += pxy * log2( pxy/((l1_ids.size/N)*(l2_ids.size/N)))
+      val pxy = l1_ids.intersect(l2_ids).size.toDouble / N
+
+      if (pxy > 1e-8) I += pxy * log2( pxy/((l1_ids.size/N)*(l2_ids.size/N)))
     }
     I
   }
@@ -145,15 +158,21 @@ class NMI[T >: TCellDouble] extends QualityMeasure[T] {
       Hy += -(l2_ids.size.toDouble / N)* log2(l2_ids.size.toDouble / N)
     }
 
-    I/((Hx+Hy)/2)
+    if(Hx < 1e-8 && Hy < 1e-8) 1.0
+    else 2 * I / (Hx + Hy)
   }
 
 
   override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]): Unit = {
-
+    val pred = format(predictions, data.size)
+    val ref = format(reference, data.size)
+    buf += nmi(pred, ref)
+    println("NMIs =" +  buf.mkString(","))
   }
 
-  override def getScore: Option[Double] = Some(1.0)
+  override def getScore: Option[Double] = {
+    if (buf.length == 0) None else Some(mean(buf.toArray))
+  }
 
   override def name: String = QualityMeasures.NMI
 }

@@ -6,7 +6,7 @@ import datasets.Dataset
 
 trait ChangePointDetector[T >: TCellDouble] {
 
-  def params: Map[String, Double] = Map()
+  def params: Map[String, String with Double] = Map()
 
   def init(dataset: Dataset[T]): Unit
 

@@ -1,6 +1,9 @@
 package datasets
 
-import datasets.CellT.CellType
+import java.io.FileWriter
+
+import breeze.linalg.DenseVector
+import datasets.CellT.{TCellDouble, CellType}
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
@@ -26,6 +29,10 @@ class Column[T] (val data: ParArray[T]) extends ColumnT[T, Column[T]] {
   override def ++ (other: Column[T]): Column[T] = new Column[T](data ++ other.data)
   override def :+ (elem: T): Column[T] = new Column[T](data :+ elem)
   override def isNumeric: Boolean = data(0).isInstanceOf[Double] || data(0).asInstanceOf[CellType].isNumeric
+  def getType: String = {
+    if (data(0).isInstanceOf[Double]) CellT.DOUBLE_TYPE_NAME else data(0).asInstanceOf[CellType].getType
+  }
+
 }
 
 object Column {
@@ -37,12 +44,12 @@ object Column {
 }
 
 
-class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val header: DataHeader,
+class Dataset[T >: TCellDouble](val header: DataHeader,
                  val data: ParVector[Column[T]],
                  val isNumeric: Boolean = false
                   ) {
 
-  assert(data(0).size > 0)
+  // assert(data(0).size > 0)
   assert(data.forall(_.size == data(0).size))
   assert(header.size == data.length)
 
@@ -74,9 +81,55 @@ class Dataset[T >: DoubleCellT with IntCellT with CatCellT with Double](val head
   }
 
   def ++ (row: IndexedSeq[T]): Dataset[T] = {
-    assert(row.length equals size)
+    assert(row.length equals dim)
     val newData: ParVector[Column[T]] = data.zip(row).map({case (col1, elem) => col1 :+ elem})
+    assert(newData.length == dim)
     new Dataset[T](header, newData, isNumeric)
+  }
+
+  def save(path: String): Unit = {
+    val head: String = header.data.zip(data.map(_.getType)).map{case(name, t) => name + ":" + t}.mkString(",")
+    val fw = new FileWriter(path)
+    fw.write(head + "\n")
+
+    getRowsIterator.foreach(row => fw.write(row.mkString(",") + "\n"))
+
+    fw.close()
+  }
+
+}
+
+object Dataset {
+
+  def apply[T >: TCellDouble](rows: IndexedSeq[IndexedSeq[T]]): Dataset[T] = {
+    val header = DataHeader(rows(0).length)
+    val cols: ParVector[Column[T]] =
+      ParVector.range(0, header.size).map(j => Column(rows.map(row => row(j)).toVector))
+    new Dataset[T](header, cols, true)
+  }
+
+  implicit def applyCast[T](value: IndexedSeq[T]): Dataset[Double] = value(0) match {
+      case data: DenseVector[Double] => applyVec(value.asInstanceOf[Vector[DenseVector[Double]]])
+      case data: Double => applyD(value.asInstanceOf[Vector[Double]])
+      case data: Int => applyD(value.asInstanceOf[Vector[Int]].map(_.toDouble))
+      case _ => applyB(value.asInstanceOf[Vector[Boolean]])
+  }
+
+  implicit def applyVec(data: IndexedSeq[DenseVector[Double]]): Dataset[Double] = {
+    val header = DataHeader(data(0).length)
+    val cols: ParVector[Column[Double]] =
+      ParVector.range(0, header.size).map(j => Column(data.map(row => row(j)).toVector))
+    new Dataset[Double](header, cols, true)
+  }
+
+  implicit def applyD(data: IndexedSeq[Double]): Dataset[Double] = {
+    val header = DataHeader(1)
+    val cols: ParVector[Column[Double]] = ParVector(Column[Double](data.toVector))
+    new Dataset[Double](header, cols, true)
+  }
+
+  implicit def applyB(data: IndexedSeq[Boolean]): Dataset[Double] = {
+    applyD(data.map(x => if (x) 1.0 else 0.0))
   }
 
 }

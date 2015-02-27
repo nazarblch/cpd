@@ -47,7 +47,12 @@ class LikelihoodRatioStatistic[T >: TCellDouble, D <: Dataset[T]](val model: Mod
     val L2 = model.likelihood(data2)
     val L = model.likelihood(data1 ++ data2)
 
-    math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
+    val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L + 1e-5)
+    if (res.isNaN) {
+      throw new Exception("NAN statistic value")
+    }
+    res
+
   }
 
   def getValue(dataset: D): Array[Double] = {
@@ -133,7 +138,7 @@ class WeightedLikelihoodRatioStatistic[T >: TCellDouble](override val model: Par
       }
     }
 
-    val lbfgs = new LBFGS[DenseVector[Double]](maxIter=100, m=3)
+    val lbfgs = new LBFGS[DenseVector[Double]](maxIter=50, m=3)
     val MLEH0: DenseVector[Double] = lbfgs.minimize(LH0, MLELeft)
     val L = - LH0.calculate(MLEH0)._1
 
@@ -141,7 +146,105 @@ class WeightedLikelihoodRatioStatistic[T >: TCellDouble](override val model: Par
     val L2 = model.likelihood(data._2)
     //val L12 = model.likelihood(data._1 ++ data._2)
 
-    math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
+
+    val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L + 1e-5)
+    if (res.isNaN) {
+      throw new Exception("NAN statistic value")
+    }
+    res
+  }
+
+  override def getValue(dataset: Dataset[T], weights: scala.Vector[Double], offset: Int): Array[Double] = {
+    super.getValue(WeightedDataset(dataset, weights))
+  }
+
+}
+
+
+class MeanVarWeightedLikelihoodRatioStatistic[T >: TCellDouble](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
+  extends LikelihoodRatioStatistic[T, WeightedDataset[T]](model, windowSize) with WeightedStatistic[T, Array[Double]] {
+
+  val ones: scala.Vector[Double] = scala.Vector.fill(windowSize)(1.0)
+
+  override def getValue(windowIndex: Int, dataset: WeightedDataset[T]): Double = {
+    val  data: (WeightedDataset[T], WeightedDataset[T]) = getWindowData(windowIndex, dataset)
+
+    val MLELeft: DenseVector[Double]  = model.MLE(data._1.toDataset, ones)
+    val MLERight: DenseVector[Double] = model.MLE(data._2.toDataset, ones)
+    val deltaMLE: DenseVector[Double] = MLERight - MLELeft
+
+
+    val LH0 = new DiffFunction[DenseVector[Double]] {
+      def calculate(m: DenseVector[Double]): (Double, DenseVector[Double]) = {
+        val x: DenseVector[Double] = DenseVector(m(0), 2.0)
+        (
+          -model.likelihood(data._1, x) - model.likelihood(data._2, x + deltaMLE),
+          DenseVector(-model.gradLikelihood(data._1, x)(0) - model.gradLikelihood(data._2, x + deltaMLE)(0))
+          )
+      }
+    }
+
+    val lbfgs = new LBFGS[DenseVector[Double]](maxIter=50, m=3)
+    val m: Double = lbfgs.minimize(LH0, DenseVector(MLELeft(0)))(0)
+
+    val LH0_v = new DiffFunction[DenseVector[Double]] {
+      def calculate(v: DenseVector[Double]): (Double, DenseVector[Double]) = {
+        val x: DenseVector[Double] = DenseVector(m, v(0))
+        (
+          -model.likelihood(data._1, x) - model.likelihood(data._2, x + deltaMLE),
+          DenseVector(-model.gradLikelihood(data._1, x)(1) - model.gradLikelihood(data._2, x + deltaMLE)(1))
+          )
+      }
+    }
+
+    val lbfgs_v = new LBFGS[DenseVector[Double]](maxIter=50, m=3)
+    var v: Double = lbfgs_v.minimize(LH0_v, DenseVector(2.0))(0)
+
+    if(v < 0.5) v = 0.5
+
+    val MLEH0: DenseVector[Double] = DenseVector(m, v)
+
+    val L = model.likelihood(data._1 ++ data._2, MLEH0)
+
+    val L1 = model.likelihood(data._1)
+    val L2 = model.likelihood(data._2)
+    //val L12 = model.likelihood(data._1 ++ data._2)
+
+
+    val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L + 1e-5)
+    if (res.isNaN) {
+      throw new Exception("NAN statistic value")
+    }
+    res
+  }
+
+  override def getValue(dataset: Dataset[T], weights: scala.Vector[Double], offset: Int): Array[Double] = {
+    super.getValue(WeightedDataset(dataset, weights))
+  }
+
+}
+
+
+
+
+class SimpleWeightedLikelihoodRatioStatistic[T >: TCellDouble](override val model: ParametricModel[T, DenseVector[Double]], override val windowSize: Int)
+  extends LikelihoodRatioStatistic[T, WeightedDataset[T]](model, windowSize) with WeightedStatistic[T, Array[Double]] {
+
+  val ones: scala.Vector[Double] = scala.Vector.fill(windowSize)(1.0)
+
+  override def getValue(windowIndex: Int, dataset: WeightedDataset[T]): Double = {
+    val  data: (WeightedDataset[T], WeightedDataset[T]) = getWindowData(windowIndex, dataset)
+
+    val L1 = model.likelihood(data._1)
+    val L2 = model.likelihood(data._2)
+    val L = model.likelihood(data._1 ++ data._2)
+
+    val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L)
+    if (res.isNaN) {
+      throw new Exception("NAN statistic value")
+    }
+
+    res
   }
 
   override def getValue(dataset: Dataset[T], weights: scala.Vector[Double], offset: Int): Array[Double] = {

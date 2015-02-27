@@ -12,6 +12,10 @@ class PlotXY(xlabel: String, ylabel: String) {
   p.xlabel = xlabel
   p.ylabel = ylabel
   p.legend = true
+  p.setYAxisDecimalTickUnits()
+
+  p.setXAxisDecimalTickUnits()
+  // p.logScaleX = true
 
 
   var lc = 0
@@ -29,6 +33,14 @@ class PlotXY(xlabel: String, ylabel: String) {
 
   def addline(y: Array[Double], name: String) {
     addline(DenseVector[Double](y), name)
+  }
+
+  def addline(x: Array[Double], y: Array[Double], name: String) {
+    addline(DenseVector[Double](x), DenseVector[Double](y), name)
+  }
+
+  def addline(y: Array[(Int, Double)], name: String) {
+    addline(DenseVector(y.map(_._1.toDouble)), DenseVector[Double](y.map(_._2)), name)
   }
 
   def print(path: String) {

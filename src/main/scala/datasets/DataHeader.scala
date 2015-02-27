@@ -11,3 +11,9 @@ class DataHeader(val data: IndexedSeq[String]) {
 
   def size = data.size
 }
+
+object DataHeader {
+  def apply(size: Int): DataHeader = {
+    new DataHeader(Vector.range(0, size).map("F_" + _))
+  }
+}

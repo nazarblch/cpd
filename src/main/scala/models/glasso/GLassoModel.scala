@@ -66,7 +66,7 @@ class GLassoModel(val oneDim: Int,
     val InvCov: DenseMatrix[Double] = toMatrix(parameter)
     val res = inv(InvCov) - getCovarianceMatrix(dataset) - gradReg(InvCov) * regularization
 
-    toVector(res)
+    toVector(res) * dataset.weights.sum
   }
 
   override def MLE(dataset: WeightedDataset[Double]): DenseVector[Double] = {

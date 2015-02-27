@@ -16,7 +16,7 @@ object Hist extends App {
 
   LoadData.print(data)
 
-  val model = new NormalModel(3)
+  val model = new NormalModel
   val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 10)
   val BootLRTs = new WeightedLikelihoodRatioStatistic[Double](model, 10)
 

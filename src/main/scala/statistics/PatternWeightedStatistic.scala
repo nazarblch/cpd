@@ -16,6 +16,7 @@ class PatternWeightedStatistic[T >: TCellDouble](val pattern: CurvePattern, val 
 
   override def getValue(dataset: Dataset[T], weights: Vector[Double], offset: Int): Array[Double] = {
     val stats = statistic.getValue(dataset, weights)
+    assert(!stats.exists(_.isNaN))
     getValue(stats)
   }
 
@@ -28,7 +29,7 @@ class PatternStatistic[T >: TCellDouble, D <: Dataset[T]](val pattern: CurvePatt
   }
 
   def getLocations(stats: Array[(Int, Double)]): Array[Int] = {
-    assert(pattern.getXSize % 2 == 0)
+    // assert(pattern.getXSize % 2 == 0)
     val h = pattern.getXSize / 2
     stats.map(_._1).slice(h, stats.length - h)
   }

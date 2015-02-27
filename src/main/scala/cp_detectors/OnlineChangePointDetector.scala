@@ -14,6 +14,7 @@ trait OnlineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T]
 
   def hasNewChangePoint: Boolean
 
+  def clear(): Unit
 }
 
 
@@ -29,6 +30,8 @@ object SimpleOnlineChangePointDetector extends OnlineChangePointDetector[Double]
   override def init(dataset: Dataset[Double]): Unit = {}
 
   override def name: String = "Simple"
+
+  override def clear(): Unit = {}
 }
 
 

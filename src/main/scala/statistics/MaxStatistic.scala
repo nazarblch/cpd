@@ -9,7 +9,9 @@ class MaxStatistic[T >: TCellDouble](val statistic: WeightedStatistic[T, Array[D
   extends WeightedStatistic[T, Double] {
 
   override def getValue(dataset: Dataset[T], weights: Vector[Double], offset: Int): Double = {
-    statistic.getValue(dataset, weights).max
+    val res = statistic.getValue(dataset, weights)
+    assert(!res.exists(_.isNaN))
+    res.max
   }
 
 }

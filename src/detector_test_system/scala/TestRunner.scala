@@ -1,38 +1,114 @@
 
 
-import java.io.File
+import java.io.{FileWriter, File}
 
-import cp_detectors.{OnlineChangePointDetector, ChangePointDetector}
+import cp_detectors.{OfflineChangePointDetector, OnlineChangePointDetector, ChangePointDetector}
 import datasets.CellT._
 import datasets.{DatasetLoader, DatasetConverter, Dataset}
 import quality.QualityMeasure
 
 import scala.collection.mutable
-import scala.xml.NodeSeq
+import scala.collection.mutable.ArrayBuffer
+import scala.xml._
 
-class TestConfiguration[T >: TCellDouble, D] (val tester: DetectorTester[T, D],
-                                              val params: Map[String, Double]) {
+class TestConfiguration[T >: TCellDouble, D <: ChangePointDetector[T]] (
+                                              val tester: DetectorTester[T, D],
+                                              val params: Map[String, Any]) {
+
+  override def toString: String = "config: " + params.toString()
+
+  def corresponds(res: TestResult): Boolean = {
+    val paramEq = params.toSeq.sortBy(_._1).mkString(",") equals res.params.toSeq.sortBy(_._1).mkString(",")
+    paramEq
+  }
 
 }
 
-class TestResult (val params: Map[String, Double], val value: Option[Double], val measureName: String) {}
+class TestResult (val params: Map[String, Any], val value: Option[Double], val measureName: String) {
+  def toXML: Node =
+    <result>
+      <measure>{measureName}</measure>
+      <value>{value.getOrElse("")}</value>
+      <params>
+      {params.toSeq.map(p => {p._1 + "=" + p._2}).mkString(",")}
+      </params>
+    </result>
+}
 
-class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq[TestConfiguration[T, D]]) {
+object TestResult {
+
+  def apply(node: Node): TestResult = {
+    val params: Map[String, Any] = (node \ "params").text.trim.split(",").map(p => (p.split("=")(0), p.split("=")(1))).toMap
+    new TestResult(params, Some((node \ "value").text.toDouble), (node \ "measure").text)
+  }
+
+}
+
+
+
+class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq[TestConfiguration[T, D]],
+                                                                  val resDir: String) {
 
   private val history: mutable.HashMap[String, Seq[TestResult]] = mutable.HashMap()
 
+  def resPath(detector: D): String = {
+    resDir +"/"+ detector.name + ".xml"
+  }
+
+  def loadResults(detector: D): Seq[Node] = {
+
+    val file = new File(resPath(detector))
+    if (! file.exists() ) {
+      val fw = new FileWriter(resPath(detector))
+      fw.write("<root> \n " )
+      fw.write("</root> \n " )
+      fw.close()
+    }
+
+    val res = XML.loadFile(resPath(detector)) \\ "result"
+    // results.update(detector.name, ArrayBuffer() ++ res)
+    res
+  }
+
+  def updateResults(detector: D, results: Seq[TestResult]): Unit = {
+
+    results.foreach(res => println("write res: " + res.toXML))
+    val loaded = loadResults(detector)
+
+    val fw = new FileWriter(resPath(detector), false)
+    fw.write("<root> \n " )
+    (loaded ++ results.map(_.toXML)).foreach(node => fw.write("\n" + node.toString() + "\n"))
+    fw.write("</root> \n " )
+    fw.flush()
+    fw.close()
+  }
+
+
   private def runTest(conf: TestConfiguration[T, D], detector: D): Unit = {
     val res = conf.tester.run(detector).toSeq.map({case (measure, value) => new TestResult(detector.params ++ conf.params, value, measure)})
+    println(res.map(tr => tr.measureName + "=" + tr.value.getOrElse("")).mkString(", "))
+    updateResults(detector, res)
     history.update(detector.name, history.getOrElse(detector.name, Seq()) ++ res)
   }
 
-  def testDetector(detector: D): Unit = {
-    tests.foreach(conf => runTest(conf, detector))
+  def testDetector(detector: D, retest: Boolean): Unit = {
+    tests.foreach(conf => {
+      println(conf.toString)
+      if (retest) {
+        val fw = new FileWriter(resPath(detector))
+        fw.write("<root> \n " )
+        fw.write("</root> \n " )
+        fw.close()
+      }
+      val isTested = loadResults(detector).exists(node => conf.corresponds(TestResult(node)))
+      if (!isTested || retest) runTest(conf, detector)
+      else println("already tested")
+    })
   }
 
   def getPlot(measureName: String, detectorName: String, parameterName: String): Seq[(Double,Double)] = {
     history.get(detectorName).get.filter(tr => tr.measureName == measureName).filter(_.value.isDefined).
-      map(tr => (tr.params.get(parameterName).get, tr.value.get))
+      map(tr => (tr.params.get(parameterName).get.toString.toDouble, tr.value.get))
   }
 
 }
@@ -40,7 +116,7 @@ class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq
 
 object TestDataLoader {
 
-  class Directory(val path: String, val params: Map[String, Double]){}
+  class Directory(val path: String, val params: Map[String, String]){}
 
   def parseXML(path: String): Seq[Directory] = {
     val node = scala.xml.XML.loadFile(path)
@@ -49,7 +125,7 @@ object TestDataLoader {
       val path = (dir \ "path").text
 
       val params = (dir \ "parameter").map { param =>
-        ((param \ "name").text.trim, (param \ "value").text.toDouble)
+        ((param \ "name").text.trim, (param \ "value").text)
       }
 
       new Directory(path, params.toMap)
@@ -74,11 +150,25 @@ object TestDataLoader {
 
   }
 
-  def loadOnlineTestConfigurations(confPath: String, measures: Set[String]): Seq[TestConfiguration[Double, OnlineChangePointDetector[Double]]] = {
-    val dirs = parseXML(confPath)
+  def parse(s: String): Option[Double] = try { Some(s.toDouble) } catch {case _ => None}
+
+  def loadOnlineTestConfigurations(confPath: String,
+                                   family: String,
+                                   measures: Set[String]): Seq[TestConfiguration[Double, OnlineChangePointDetector[Double]]] = {
+    val dirs = parseXML(confPath).filter(_.params.get("family").get.trim equals family)
     dirs.map(dir => new TestConfiguration[Double, OnlineChangePointDetector[Double]](
       new OnlineDetectorTester[Double](loadTestData(dir.path), measures),
-      dir.params
+      dir.params.map({case (k,v) => (k, parse(v).getOrElse(v))})
+    ))
+  }
+
+  def loadOfflineTestConfigurations(confPath: String,
+                                   family: String,
+                                   measures: Set[String]): Seq[TestConfiguration[Double, OfflineChangePointDetector[Double]]] = {
+    val dirs = parseXML(confPath).filter(_.params.get("family").get.trim equals family)
+    dirs.map(dir => new TestConfiguration[Double, OfflineChangePointDetector[Double]](
+      new OfflineDetectorTester[Double](loadTestData(dir.path), measures),
+      dir.params.map({case (k,v) => (k, parse(v).getOrElse(v))})
     ))
   }
 

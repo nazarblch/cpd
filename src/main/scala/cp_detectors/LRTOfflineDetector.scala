@@ -7,19 +7,22 @@ import datasets.Dataset
 import models.ParametricModel
 import patterns.TrianglePattern
 import statistics.{PatternStatistic, MaxStatistic, PatternWeightedStatistic, TailStatistic}
-import statistics.likelihood_ratio.{LikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic}
+import statistics.likelihood_ratio.{MeanVarWeightedLikelihoodRatioStatistic, LikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic}
+import viz.utils.PlotXY
 
 import scala.collection.mutable.ArrayBuffer
 
 
-class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, DenseVector[Double]])
+class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, DenseVector[Double]], val CONFIDENCE: Double = 0.03)
   extends OfflineChangePointDetector[T] {
 
   // fixme: check the same statistics for bootstrap and for CP search
 
   override def findAll(dataset: Dataset[T]): IndexedSeq[Int] = {
 
-    assert(configurations.forall(_.upperBound.isDefined))
+    calibrate(dataset.subset(0, 100))
+
+    assert(configurations.filter(_.windowSize < dataset.size / 4.0).forall(_.upperBound.isDefined))
 
     val res: ArrayBuffer[Int] = ArrayBuffer()
 
@@ -28,8 +31,8 @@ class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, Dens
     if (cp.isDefined) {
       res += cp.get
       val (data1, data2) = dataset.splitAt(cp.get)
-      if (data1.size > 2 * windowSizes.min) res ++= findAll(data1)
-      if (data2.size > 2 * windowSizes.min) res ++= findAll(data2)
+      if (data1.size > 4 * windowSizes.min) res ++= new LRTOfflineDetector[T, P](model, CONFIDENCE ).findAll(data1)
+      if (data2.size > 4 * windowSizes.min) res ++= new LRTOfflineDetector[T, P](model, CONFIDENCE ).findAll(data2)
     }
 
     res.toVector.sorted
@@ -40,10 +43,9 @@ class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, Dens
                 var upperBound: Option[Double],
                 var maxDist: Option[TailStatistic]){}
 
-  val windowSizes = Array(10, 20, 100)
-  val windowWeights = Array(1.0, 0.5, 0.25)
-  val SAMPLE_SIZE = 10
-  val CONFIDENCE = 0.05
+  val windowSizes = Array(10, 15, 20)
+  val windowWeights = Array(3.0, 1.0, 0.5)
+  val SAMPLE_SIZE = 100
   val configurations: Array[Config] = windowSizes.zip(windowWeights).map{case(h, w) => new Config(h, w, None, None)}
 
   private def setMaxDist(config: Config, dataset: Dataset[T]): Unit = {
@@ -62,15 +64,19 @@ class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, Dens
 
   private def setUpperBounds(dataset: Dataset[T]): Unit = {
 
-    for (config <- configurations) {
+    for (config <- configurations.filter(_.maxDist.isDefined)) {
       config.upperBound = Some(config.maxDist.get.quantile(CONFIDENCE))
     }
 
   }
 
-  override def init(dataset: Dataset[T]): Unit = {
+  def init(dataset: Dataset[T]): Unit = {
 
-    for (config <- configurations) {
+  }
+
+  def calibrate(dataset: Dataset[T]): Unit = {
+
+    for (config <- configurations.filter(_.windowSize < dataset.size / 4.0)) {
       setMaxDist(config, dataset)
     }
 
@@ -83,15 +89,25 @@ class LRTOfflineDetector[T >: TCellDouble, P](val model: ParametricModel[T, Dens
     val cp_candidates: Array[Boolean] = Array.fill[Boolean](dataset.size)(false)
     val ratings: Array[Double] = Array.fill[Double](dataset.size)(0D)
 
-    for (config <- configurations.filter(_.windowSize < dataset.size / 2)) {
+    for (config <- configurations.filter(_.windowSize < dataset.size / 4.0)) {
       // fixme: prevent statistics recalculation
       val lrt = new LikelihoodRatioStatistic[T, Dataset[T]](model, config.windowSize)
       val pattern = new TrianglePattern(2 * config.windowSize)
       val patt_lrt = new PatternStatistic[T, Dataset[T]](pattern, lrt)
       val parr_lrt_res = patt_lrt.getValueWithLocations(dataset)
 
-      parr_lrt_res.filter(_._2 > config.upperBound.get).foreach{case(i,v) => cp_candidates(i) = true}
-      parr_lrt_res.foreach{case(i,v) => ratings(i) += v * config.windowWeight}
+      parr_lrt_res.filter(_._2 > config.upperBound.get).foreach{case(i,v) => {
+        cp_candidates(i) = true
+        ratings(i) += v * config.windowWeight / config.windowSize
+      }}
+
+
+
+
+//      val pl = new PlotXY("t", "LRTs")
+//      pl.addline(parr_lrt_res, "patt_lrt")
+//      pl.addline(Array.fill[Double](parr_lrt_res.length)(config.upperBound.get), "boot")
+//      pl.print("test.png")
     }
 
     if (cp_candidates.forall(!_)) {

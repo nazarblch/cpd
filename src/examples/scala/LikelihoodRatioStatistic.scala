@@ -20,7 +20,7 @@ object LikelihoodRatioStatistic extends App {
   val col1: Column[Double] = new Column[Double](Gaussian(2.2,1).sample(300).toArray.par)
   val data1 = new Dataset[Double](header, ParVector(col1), true)
 
-  val model = new AdaptiveGradientDescentOptimizer[Double](DenseVector.zeros[Double](1), new NormalModel(3))
+  val model = new AdaptiveGradientDescentOptimizer[Double](DenseVector(0,1), new NormalModel)
   val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
 
   val pattern = new TrianglePattern(100)

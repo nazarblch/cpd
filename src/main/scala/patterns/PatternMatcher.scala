@@ -52,7 +52,8 @@ object PatternMatcher {
     (0 until (data.length - pattern.getXSize)).map(i => {
       val ys = data.slice(i, pattern.getXSize + i)
       pattern.fitParameters(ys)
-      ys dot pattern.getYRange
+      val conv = ys dot pattern.getYRange
+      conv
     }).toArray
 
   }

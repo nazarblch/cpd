@@ -1,6 +1,6 @@
 import breeze.stats.distributions.Gaussian
 import datasets.{Dataset, Column, DataHeader}
-import models.standart.NormalModel
+import models.standart.{NormalModelMean, NormalModel}
 import patterns.{PatternMatcher, MatcherResult, TrianglePattern}
 import statistics.likelihood_ratio.{WeightedLikelihoodRatioStatistic, LikelihoodRatioStatistic}
 import viz.utils.PlotXY
@@ -8,15 +8,15 @@ import viz.utils.PlotXY
 import scala.collection.parallel.immutable.ParVector
 
 object WLikelihoodRatioStatistic extends App {
-  def header: DataHeader = new DataHeader(IndexedSeq("double"))
+  def header: DataHeader = DataHeader(1)
 
   val col: Column[Double] = new Column[Double](Gaussian(2,1).sample(300).toArray.par)
   val data = new Dataset[Double](header, ParVector(col), true)
 
-  val col1: Column[Double] = new Column[Double](Gaussian(4,1).sample(300).toArray.par)
+  val col1: Column[Double] = new Column[Double](Gaussian(40,1).sample(300).toArray.par)
   val data1 = new Dataset[Double](header, ParVector(col1), true)
 
-  val model = new NormalModel(1)
+  val model = new NormalModelMean
   val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
 
   val BootLRTs = new WeightedLikelihoodRatioStatistic[Double](model, 50)
