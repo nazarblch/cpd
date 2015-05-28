@@ -4,12 +4,12 @@ import _root_.addData.BOCP
 import breeze.linalg.{DenseVector, DenseMatrix}
 import com.mathworks.toolbox.javabuilder.MWClassID
 import com.mathworks.toolbox.javabuilder.MWNumericArray
-import datasets.Dataset
+import datasets.{OneColumnDataset, Dataset}
 
 import scala.collection.mutable.ArrayBuffer
 
 
-class D1BayesianOnlineCPDetector extends OnlineChangePointDetector[Double] {
+class D1BayesianOnlineCPDetector extends OnlineChangePointDetector[Double, OneColumnDataset[Double]] {
 
   val MAX_TIME = 1000
   val bocp = new BOCP()
@@ -27,13 +27,13 @@ class D1BayesianOnlineCPDetector extends OnlineChangePointDetector[Double] {
   var Rt: MWNumericArray = new MWNumericArray(1.0, MWClassID.DOUBLE)
 
 
-  override def addData(row: IndexedSeq[Double]): Unit = {
+  override def addData(row: Double): Unit = {
 
-    assert(row.length == 1)
 
-    data(size) = Some(row(0))
 
-    val X: Double = row(0)
+    data(size) = Some(row)
+
+    val X: Double = row
     val t: Int = size + 1
 
 
@@ -73,7 +73,7 @@ class D1BayesianOnlineCPDetector extends OnlineChangePointDetector[Double] {
     betaT  = new MWNumericArray(Array(1.0), MWClassID.DOUBLE)
   }
 
-  override def init(dataset: Dataset[Double]): Unit = {}
+  override def init(dataset: OneColumnDataset[Double]): Unit = {}
 
   override def name: String = "BOCPD"
 }

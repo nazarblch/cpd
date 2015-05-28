@@ -4,8 +4,8 @@ import datasets.CellT.TCellDouble
 import datasets.Dataset
 
 
-trait OfflineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T] {
+trait OfflineChangePointDetector[Row, Self] extends ChangePointDetector[Row, Self] {
 
-  def findAll(dataset: Dataset[T]): IndexedSeq[Int]
+  def findAll(dataset: Self): IndexedSeq[Int]
 
 }

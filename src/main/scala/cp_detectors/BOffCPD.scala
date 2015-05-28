@@ -3,9 +3,9 @@ package cp_detectors
 import addData.BOCP
 import breeze.linalg.DenseMatrix
 import com.mathworks.toolbox.javabuilder.{MWClassID, MWNumericArray}
-import datasets.Dataset
+import datasets.{OneColumnDataset, Dataset}
 
-class BOffCPD extends OfflineChangePointDetector[Double] {
+class BOffCPD extends OfflineChangePointDetector[Double, OneColumnDataset[Double]] {
 
   val MAX_TIME = 1000
   val bocp = new BOCP()
@@ -23,13 +23,11 @@ class BOffCPD extends OfflineChangePointDetector[Double] {
   var Rt: MWNumericArray = new MWNumericArray(1.0, MWClassID.DOUBLE)
 
 
-  def addData(row: IndexedSeq[Double]): Unit = {
+  def addData(row: Double): Unit = {
 
-    assert(row.length == 1)
+    data(size) = Some(row)
 
-    data(size) = Some(row(0))
-
-    val X: Double = row(0)
+    val X: Double = row
     val t: Int = size + 1
 
 
@@ -60,7 +58,7 @@ class BOffCPD extends OfflineChangePointDetector[Double] {
     if (hasNewChangePoint(pos)) Some(pos - WH - 1) else None
   }
 
-  override def findAll(dataset: Dataset[Double]): IndexedSeq[Int] = {
+  override def findAll(dataset: OneColumnDataset[Double]): IndexedSeq[Int] = {
     data = Array.fill[Option[Double]](MAX_TIME)(None)
     R = DenseMatrix.zeros[Double](MAX_TIME, MAX_TIME)
     R(0,0) = 1.0
@@ -77,7 +75,7 @@ class BOffCPD extends OfflineChangePointDetector[Double] {
     IndexedSeq.range(0, dataset.size).flatMap(pos => getCP(pos))
   }
 
-  override def init(dataset: Dataset[Double]): Unit = {}
+  override def init(dataset: OneColumnDataset[Double]): Unit = {}
 
   override def name: String = "BOCPD"
 }

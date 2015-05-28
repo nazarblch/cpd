@@ -5,10 +5,10 @@ import datasets.Dataset
 
 // fixme: make max extrapolation for big data sets
 
-class MaxStatistic[T >: TCellDouble](val statistic: WeightedStatistic[T, Array[Double]])
-  extends WeightedStatistic[T, Double] {
+class MaxStatistic[Row, Self <: Dataset[Row, Self]](val statistic: WeightedStatistic[Row, Self, Array[Double]])
+  extends WeightedStatistic[Row, Self, Double] {
 
-  override def getValue(dataset: Dataset[T], weights: Vector[Double], offset: Int): Double = {
+  override def getValue(dataset: Self, weights: Vector[Double], offset: Int): Double = {
     val res = statistic.getValue(dataset, weights)
     assert(!res.exists(_.isNaN))
     res.max
@@ -17,10 +17,10 @@ class MaxStatistic[T >: TCellDouble](val statistic: WeightedStatistic[T, Array[D
 }
 
 
-class AggregatedMinStatistic[T >: TCellDouble](val statistics: Seq[WeightedStatistic[T, Double]])
-  extends WeightedStatistic[T, Double] {
+class AggregatedMinStatistic[Row, Self <: Dataset[Row, Self]](val statistics: Seq[WeightedStatistic[Row, Self, Double]])
+  extends WeightedStatistic[Row, Self, Double] {
 
-  override def getValue(dataset: Dataset[T], weights: Vector[Double], offset: Int): Double = {
+  override def getValue(dataset: Self, weights: Vector[Double], offset: Int): Double = {
     statistics.map(_.getValue(dataset, weights, offset)).min
   }
 

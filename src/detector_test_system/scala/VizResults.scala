@@ -4,11 +4,11 @@ import viz.utils.PlotXY
 
 import scala.xml.{XML, Node}
 
-class VizResults(measure: String, param: String, family: String, resDir: String = "testres_offline") {
+class VizResults(measure: String, param: String, family: String, resDir: String = "testdataonline_res") {
 
   val pl = new PlotXY(param, measure)
-  pl.p.ylim(0.0, 1.0)
-  var maxY = 1.0
+  pl.p.ylim(0.0, 1.05)
+  var maxY = 1.05
 
   def resPath(detector: String): String = {
     resDir +"/"+ detector + ".xml"
@@ -23,7 +23,7 @@ class VizResults(measure: String, param: String, family: String, resDir: String 
 
   def addLine(detector: String): Unit = {
 
-    val res = loadResults(detector)
+    val res = loadResults(detector).sortBy(_.params.get(param).get.toString.toDouble)
     val X = res.map(_.params.get(param).get.toString.toDouble).toArray
     val Y = res.map(_.value.get).toArray
 

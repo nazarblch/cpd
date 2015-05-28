@@ -1,21 +1,23 @@
 import java.io.{FileWriter, File}
 
-import datasets.Dataset
-import generate.{DataGenerator, HeterogeneousDataGenerator}
+import datasets.{MultiColumnDataset, Dataset}
+import generate.{BinarySignalsGenerator, DataGenerator, HeterogeneousDataGenerator}
 
 object GenerateData extends App {
 
-  val size = 500
-  val kant = 50
-  val delta = 8.0
-  val p = 2
-  val interval = 200
-  val family = DataGenerator.NORMAL
-  val dir = "testdata"
+  val size = 100
+  val kant = 120
+  val delta = 0.25
+  val p = 1
+  val interval = 50
+  val family = DataGenerator.POISSON
+  val dir = "testdataonline"
   val sub_dir = dir + "/family_" + family + "_size_" + size + "_delta_" + delta + "_p_" + p
 
   val DATA_NAME = "data.csv"
   val REF_NAME = "reference.csv"
+
+  BinarySignalsGenerator.maxCount = 1
 
   val xml_line =
     <directory>
@@ -39,7 +41,7 @@ object GenerateData extends App {
     </directory>
 
 
-  writeXml("testdata/config.xml")
+  writeXml(dir + "/config.xml")
 
   def writeXml(path: String): Unit = {
 
@@ -72,7 +74,7 @@ object GenerateData extends App {
     fw.close()
   }
 
-  def write(signals: Array[Boolean], data: Dataset[Double]): Unit = {
+  def write(signals: Array[Boolean], data: MultiColumnDataset[Double]): Unit = {
     val file = new File(sub_dir)
 
     val num: Int =

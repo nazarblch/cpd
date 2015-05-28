@@ -3,31 +3,32 @@ package cp_detectors
 import bootstrap.{SmoothOnesGenerator, WeightedBootstrap, Bootstrap}
 import breeze.linalg.{DenseVector, DenseMatrix}
 import breeze.stats.distributions.{Gaussian, MultivariateGaussian}
-import datasets.Dataset
+import datasets.{Column, DataHeader, OneColumnDataset, Dataset}
 import models.ParametricModel
 import models.standart.NormalModel
-import org.ddahl.jvmr.RInScala
 import patterns.{StaticHalfTrianglePattern, HalfTrianglePattern, TrianglePattern}
 import statistics.{TailStatistic, MaxStatistic, PatternWeightedStatistic}
-import statistics.likelihood_ratio.{SimpleWeightedLikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic}
+import statistics.likelihood_ratio.{WeightedStatisticFactory, SimpleWeightedLikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic}
 
+import scala.collection.mutable
+import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 
-class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]]) extends OnlineChangePointDetector[Double] {
+class LRTOnlineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricModel[Row, Self, DenseVector[Double]],
+                                                         val wstatFactory: WeightedStatisticFactory) extends OnlineChangePointDetector[Row, Self] {
 
-  val WINDOW_SIZES: Array[Int] = Array(5, 7, 10, 12, 15, 20)
+  val WINDOW_SIZES: Array[Int] = Array(30, 50, 70)
   val CONFIDENCE = 0.1
-  val BOOT_SIZE = 200
-
-  var upperBounds: Array[Double] = _
+  val BOOT_SIZE = 100
 
 
   ///////////
 
-  val buf: ArrayBuffer[IndexedSeq[Double]] = ArrayBuffer()
+  val buf: ArrayBuffer[Row] = ArrayBuffer()
   val cp: ArrayBuffer[Boolean] = ArrayBuffer()
   val LRT: Map[Int, ArrayBuffer[Double]] = WINDOW_SIZES.map(h => (h, ArrayBuffer[Double]())).toMap
+  val convs: Map[Int, ArrayBuffer[Double]] = WINDOW_SIZES.map(h => (h, ArrayBuffer[Double]())).toMap
 
 
 //  def importRLib(path: String) {
@@ -43,7 +44,7 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
 //    R.eval("InitMultiscaleCP(data = input,  H = WH)")
 //  }
 
-  override def addData(row: IndexedSeq[Double]): Unit = {
+  override def addData(row: Row): Unit = {
     buf += row
 //    if (buf.length == 2 * WINDOW_SIZES.max + 1) {
 //      pushDataToR()
@@ -72,10 +73,10 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
 
   override def hasNewChangePoint: Boolean = {
 
+      val dataset = new OneColumnDataset[Double](DataHeader(1), Column.apply[Double](buf.toVector.map(_.asInstanceOf[Double])), true).asInstanceOf[Self]
+      val R_out = MultipleCPCheck(dataset)
 
-      val R_out = MultipleCPCheck(buf.flatten)
-
-      cp += R_out.zip(WINDOW_SIZES).map{case (s, h) =>
+      cp += R_out.map{case (h, s) =>
         val head = math.min(3 * h, cp.length)
         cp.takeRight(head).forall(!_) && s
       }.exists(x => x)
@@ -89,11 +90,12 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
     cp.clear()
     // R.eval("data <- list()")
     LRT.foreach(_._2.clear())
+    convs.foreach(_._2.clear())
   }
 
-  def toRDataSeq(dataset: Dataset[Double]): Array[Array[Double]] = {
-    dataset.getRowsIterator.toArray.map(_.toArray)
-  }
+//  def toRDataSeq(dataset: Self): Array[Array[Double]] = {
+//    dataset.getRowsIterator.toArray.map(_.toA)
+//  }
 
   def toRDataSeq(row: IndexedSeq[Double]): Array[Double] = {
     row.toArray
@@ -118,22 +120,24 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
 //
 //  }
 
-  def Likelihood(data: IndexedSeq[Double]): Double = {
+  def Likelihood(data: Self): Double = {
 
-    model.likelihood(Dataset.applyD(data))
+    model.likelihood(data)
 
   }
 
-  def MultipleCPCheck (data: IndexedSeq[Double]): Seq[Boolean] = {
+  def MultipleCPCheck (data: Self): Seq[(Int, Boolean)] = {
 
-    val out = Array.fill(WINDOW_SIZES.length)(false)
+    val out: mutable.HashMap[Int, Boolean] = mutable.HashMap()
 
-    WINDOW_SIZES.filter(_ <= data.length / 2).zipWithIndex.foreach{case(h, i) =>
+    WINDOW_SIZES.foreach(h => out.update(h, false))
 
-      val n = data.length
-      val L1 = Likelihood(data.slice(n - 2 * h, n - h))
-      val L2 = Likelihood(data.slice(n - h, n))
-      val L = Likelihood(data.slice(n - 2 * h, n))
+    WINDOW_SIZES.filter(_ <= data.size / 2).foreach{h =>
+
+      val n = data.size
+      val L1 = Likelihood(data.subset(n - 2 * h, n - h))
+      val L2 = Likelihood(data.subset(n - h, n))
+      val L = Likelihood(data.subset(n - 2 * h, n))
 
       if(L1 + L2 < L - 0.001){
         throw new Exception("incorrect stat value")
@@ -147,18 +151,19 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
         val conv: Double = new HalfTrianglePattern(h).fitParameters(stat)
 
         //println(conv)
+        convs.get(h).get += conv
 
-        if(conv > upperBounds(i)){
-          out(i) = true
+        if(conv > configurations.filter(_.windowSize == h)(0).upperBound.get){
+          out.update(h, true)
         }
 
       }
     }
 
-    out
+    out.toSeq
   }
 
-  override def name: String = "OnlineLRTVar"
+  override def name: String = "LRTOnline"
 
   class Config (val windowSize: Int,
                 var upperBound: Option[Double],
@@ -166,33 +171,34 @@ class LRTOnlineDetector(val model: ParametricModel[Double, DenseVector[Double]])
 
   val configurations: Array[Config] = WINDOW_SIZES.map{h => new Config(h, None, None)}
 
-  private def setMaxDist(config: Config, dataset: Dataset[Double]): Unit = {
+  private def setMaxDist(config: Config, dataset: Self): Unit = {
 
-    val wlrt = new SimpleWeightedLikelihoodRatioStatistic[Double](model, config.windowSize)
-    val pattern = new StaticHalfTrianglePattern(config.windowSize)
-    val patt_wlrt = new PatternWeightedStatistic[Double](pattern, wlrt)
-    val max_patt_wlrt = new MaxStatistic[Double](patt_wlrt)
+    val wlrt = wstatFactory(model, config.windowSize)
+    val pattern = new HalfTrianglePattern(config.windowSize)
+    val patt_wlrt = new PatternWeightedStatistic[Row, Self](pattern, wlrt)
+    val max_patt_wlrt = new MaxStatistic[Row, Self](patt_wlrt)
 
-    val bootstrap: Bootstrap[Double] = new WeightedBootstrap[Double](new SmoothOnesGenerator, max_patt_wlrt)
+    val bootstrap: Bootstrap[Row, Self] = new WeightedBootstrap[Row, Self](new SmoothOnesGenerator, max_patt_wlrt)
 
     val sample = bootstrap.sample(dataset, BOOT_SIZE)
 
     config.maxDist = Some(new TailStatistic(sample.data))
   }
 
-  private def setUpperBounds(dataset: Dataset[Double]): Unit = {
+  private def setUpperBounds(dataset: Self): Unit = {
 
     for (config <- configurations.filter(_.maxDist.isDefined)) {
       config.upperBound = Some(config.maxDist.get.quantile(CONFIDENCE))
     }
 
-    upperBounds = configurations.map(_.upperBound.get)
-
   }
 
-  override def init(dataset: Dataset[Double]): Unit = {
+  override def init(dataset: Self): Unit = {
+
+    clear()
 
     for (config <- configurations) {
+      config.upperBound = None
       setMaxDist(config, dataset)
     }
 

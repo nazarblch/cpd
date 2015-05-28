@@ -4,11 +4,11 @@ import datasets.CellT.TCellDouble
 import datasets.Dataset
 
 
-trait ChangePointDetector[T >: TCellDouble] {
+trait ChangePointDetector[Row, Self] {
 
   def params: Map[String, String with Double] = Map()
 
-  def init(dataset: Dataset[T]): Unit
+  def init(dataset: Self): Unit
 
   def name: String
 

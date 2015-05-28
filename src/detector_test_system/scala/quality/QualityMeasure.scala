@@ -10,9 +10,9 @@ import scala.collection.immutable.Set
 import scala.collection.mutable.ArrayBuffer
 
 
-trait QualityMeasure[T >: TCellDouble] {
+trait QualityMeasure[Row, Self] {
 
-  def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]): Unit
+  def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[Row, Self]): Unit
 
   def getScore: Option[Double]
 
@@ -27,26 +27,26 @@ object QualityMeasures {
   val DELAY = "Delay"
   val NMI = "NMI"
 
-  def createMeasure[T >: TCellDouble](name: String): QualityMeasure[T]  = name match {
+  def createMeasure[Row, Self](name: String): QualityMeasure[Row, Self]  = name match {
     case PRECISION => new Precision
     case RECALL => new Recall
     case DELAY => new AverageDelay
     case NMI => new NMI
   }
 
-  def apply[T >: TCellDouble](names: Set[String]): Set[QualityMeasure[T]] = {
-    names.map(createMeasure[T])
+  def apply[Row, Self](names: Set[String]): Set[QualityMeasure[Row, Self]] = {
+    names.map(createMeasure[Row, Self])
   }
 }
 
-abstract class PrecisionRecall[T >: TCellDouble] extends QualityMeasure[T] {
+abstract class PrecisionRecall[Row, Self] extends QualityMeasure[Row, Self] {
 
   var selected: Int = 0
   var relevant: Int = 0
   var intersected: Int = 0
   var updatesCount: Int = 0
 
-  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]) {
+  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[Row, Self]) {
     assert(predictions.distinct.length == predictions.length)
     assert(reference.distinct.length == reference.length)
     selected += predictions.length
@@ -67,7 +67,7 @@ abstract class PrecisionRecall[T >: TCellDouble] extends QualityMeasure[T] {
 }
 
 
-class Precision[T >: TCellDouble] extends PrecisionRecall[T] {
+class Precision[Row, Self] extends PrecisionRecall[Row, Self] {
 
   override def getScore: Option[Double] = {
     val res = if (selected == 0) 1.0 else  intersected.toDouble / selected
@@ -77,7 +77,7 @@ class Precision[T >: TCellDouble] extends PrecisionRecall[T] {
   override def name: String = QualityMeasures.PRECISION
 }
 
-class Recall[T >: TCellDouble] extends PrecisionRecall[T] {
+class Recall[Row, Self] extends PrecisionRecall[Row, Self] {
 
   override def getScore: Option[Double] = {
     val res = if (relevant == 0) 1.0 else  intersected.toDouble / relevant
@@ -87,11 +87,11 @@ class Recall[T >: TCellDouble] extends PrecisionRecall[T] {
   override def name: String = QualityMeasures.RECALL
 }
 
-class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
+class AverageDelay[Row, Self] extends QualityMeasure[Row, Self] {
 
   val buf: ArrayBuffer[Double] = ArrayBuffer()
 
-  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]): Unit = {
+  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[Row, Self]): Unit = {
     val refWithInf = reference :+ Int.MaxValue
     (0 until reference.length).foreach(i => {
       val left = refWithInf(i)
@@ -101,6 +101,7 @@ class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
         buf += insideInterval.min - left
       }
     })
+    println("pred = " + predictions.mkString(","), "| ref = " + reference.mkString(","))
   }
 
   override def getScore: Option[Double] = {
@@ -110,7 +111,7 @@ class AverageDelay[T >: TCellDouble] extends QualityMeasure[T] {
   override def name: String = QualityMeasures.DELAY
 }
 
-class NMI[T >: TCellDouble] extends QualityMeasure[T] {
+class NMI[Row, Self] extends QualityMeasure[Row, Self] {
 
   val buf: ArrayBuffer[Double] = ArrayBuffer()
 
@@ -163,10 +164,11 @@ class NMI[T >: TCellDouble] extends QualityMeasure[T] {
   }
 
 
-  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[T]): Unit = {
+  override def addObservation(predictions: IndexedSeq[Int], reference: IndexedSeq[Int], data: Dataset[Row, Self]): Unit = {
     val pred = format(predictions, data.size)
     val ref = format(reference, data.size)
     buf += nmi(pred, ref)
+    println("pred = " + predictions.mkString(","), "| ref = " + reference.mkString(","))
     println("NMIs =" +  buf.mkString(","))
   }
 

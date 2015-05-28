@@ -8,14 +8,14 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.Sorting
 
 
-trait Bootstrap[T >:  DoubleCellT with IntCellT with CatCellT with Double] {
-  def sample(dataset: Dataset[T], sampleSize: Int): DenseVector[Double]
+trait Bootstrap[Row, Self <: Dataset[Row, Self]] {
+  def sample(dataset: Self, sampleSize: Int): DenseVector[Double]
 
-  def mean(dataset: Dataset[T], sampleSize: Int): Double = breeze.stats.mean(sample(dataset, sampleSize))
+  def mean(dataset: Self, sampleSize: Int): Double = breeze.stats.mean(sample(dataset, sampleSize))
 
-  def variance(dataset: Dataset[T], sampleSize: Int): Double = breeze.stats.variance(sample(dataset, sampleSize))
+  def variance(dataset: Self, sampleSize: Int): Double = breeze.stats.variance(sample(dataset, sampleSize))
 
-  def quantile(leqPr: Double, dataset: Dataset[T], sampleSize: Int): Double = {
+  def quantile(leqPr: Double, dataset: Self, sampleSize: Int): Double = {
     val orderStatistic: Int = (sampleSize * leqPr).toInt
     val data: Array[Double] = sample(dataset, sampleSize).toArray
     Sorting.quickSort(data)
@@ -23,18 +23,19 @@ trait Bootstrap[T >:  DoubleCellT with IntCellT with CatCellT with Double] {
   }
 }
 
-class WeightedBootstrap[T >:  DoubleCellT with IntCellT with CatCellT with Double](val weightsGenerator: SmoothOnesGenerator,
-                                                                                   val statistic: WeightedStatistic[T, Double]) extends Bootstrap[T] {
+class WeightedBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: SmoothOnesGenerator,
+                                                                                   val statistic: WeightedStatistic[Row, Self, Double]) extends Bootstrap[Row, Self] {
 
-  def sample(dataset: Dataset[T], sampleSize: Int): DenseVector[Double] = {
+  def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
     DenseVector.fill[Double](sampleSize)(statistic.getValue(dataset, weightsGenerator.generateVector(dataset.size)))
   }
+
 }
 
-class WeightedVectorBootstrap[T >:  DoubleCellT with IntCellT with CatCellT with Double](val weightsGenerator: SmoothOnesGenerator,
-                                                                                         val statistic: WeightedStatistic[T, Array[Double]]) extends Bootstrap[T] {
+class WeightedVectorBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: SmoothOnesGenerator,
+                                                                                         val statistic: WeightedStatistic[Row, Self, Array[Double]]) extends Bootstrap[Row, Self] {
 
-  def sample(dataset: Dataset[T], sampleSize: Int): DenseVector[Double] = {
+  def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
 
     val res: ArrayBuffer[Double] = ArrayBuffer.apply[Double]()
 

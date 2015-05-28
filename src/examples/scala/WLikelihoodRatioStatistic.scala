@@ -8,24 +8,24 @@ import viz.utils.PlotXY
 import scala.collection.parallel.immutable.ParVector
 
 object WLikelihoodRatioStatistic extends App {
-  def header: DataHeader = DataHeader(1)
-
-  val col: Column[Double] = new Column[Double](Gaussian(2,1).sample(300).toArray.par)
-  val data = new Dataset[Double](header, ParVector(col), true)
-
-  val col1: Column[Double] = new Column[Double](Gaussian(40,1).sample(300).toArray.par)
-  val data1 = new Dataset[Double](header, ParVector(col1), true)
-
-  val model = new NormalModelMean
-  val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
-
-  val BootLRTs = new WeightedLikelihoodRatioStatistic[Double](model, 50)
-
-
-  val pl = new PlotXY("t", "LRTs")
-
-  pl.addline(LRTs.getValue(data ++ data1), "LRT")
-  pl.addline(BootLRTs.getValue(data ++ data1, Gaussian(1,1).sample(600).toVector), "BootLRT")
-
-  pl.print("test.png")
+//  def header: DataHeader = DataHeader(1)
+//
+//  val col: Column[Double] = new Column[Double](Gaussian(2,1).sample(300).toArray.par)
+//  val data = new Dataset[Double](header, ParVector(col), true)
+//
+//  val col1: Column[Double] = new Column[Double](Gaussian(40,1).sample(300).toArray.par)
+//  val data1 = new Dataset[Double](header, ParVector(col1), true)
+//
+//  val model = new NormalModelMean
+//  val LRTs = new LikelihoodRatioStatistic[Double,Dataset[Double]](model, 50)
+//
+//  val BootLRTs = new WeightedLikelihoodRatioStatistic[Double](model, 50)
+//
+//
+//  val pl = new PlotXY("t", "LRTs")
+//
+//  pl.addline(LRTs.getValue(data ++ data1), "LRT")
+//  pl.addline(BootLRTs.getValue(data ++ data1, Gaussian(1,1).sample(600).toVector), "BootLRT")
+//
+//  pl.print("test.png")
 }

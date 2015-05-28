@@ -5,6 +5,8 @@ import java.util.Random
 
 object BinarySignalsGenerator {
 
+  var maxCount = 100000
+
   val r = new Random()
 
   def nextBoolean(p: Double): Boolean = {
@@ -18,6 +20,8 @@ object BinarySignalsGenerator {
   def draw(size: Int, averageInterval: Int, kant: Int = 0): Array[Boolean] = {
     val p = 1.0 / averageInterval
     var count: Int  = (size * p + getDirection * math.sqrt(size * p * (1 - p)) / 2).toInt
+
+    if (count > maxCount) count = maxCount
 
     assert(count >= 0)
 

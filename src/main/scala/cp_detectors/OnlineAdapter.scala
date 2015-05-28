@@ -1,16 +1,16 @@
 package cp_detectors
 
 import datasets.CellT._
-import datasets.Dataset
+import datasets.{OneColumnDataset, Column, DataHeader, Dataset}
 
 import scala.collection.mutable.ArrayBuffer
 
 
-class OnlineAdapter[T >: TCellDouble](val detector: OfflineChangePointDetector[T],
+class OnlineAdapter[Row, Self <: Dataset[Row, Self]](val detector: OfflineChangePointDetector[Row, Self],
                                       val min_buf_size: Int,
-                                      val offset: Int) extends OnlineChangePointDetector[T] {
+                                      val offset: Int) extends OnlineChangePointDetector[Row, Self] {
 
-  var buf: Option[Dataset[T]] = None
+  var buf: Option[Self] = None
 
   override def hasNewChangePoint: Boolean = {
 
@@ -30,17 +30,17 @@ class OnlineAdapter[T >: TCellDouble](val detector: OfflineChangePointDetector[T
     buf = None
   }
 
-  override def init(dataset: Dataset[T]): Unit = {
+  override def init(dataset: Self): Unit = {
     detector.init(dataset)
   }
 
   override def name: String = detector.name
 
-  override def addData(row: IndexedSeq[T]): Unit = {
+  override def addData(row: Row): Unit = {
     if (buf.isEmpty) {
-      buf = Some(Dataset(IndexedSeq(row)))
+      buf = Some(new OneColumnDataset[Double](DataHeader(1), Column.apply[Double](), true).asInstanceOf[Self] :+ row)
     } else {
-      buf = Some(buf.get ++ row)
+      buf = Some(buf.get :+ row)
     }
   }
 }

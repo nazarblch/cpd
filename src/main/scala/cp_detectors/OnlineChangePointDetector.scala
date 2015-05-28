@@ -6,11 +6,11 @@ import datasets.Dataset
 import scala.util.Random
 
 
-trait OnlineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T] {
+trait OnlineChangePointDetector[Row, Self] extends ChangePointDetector[Row, Self] {
 
-  def addData(dataset: Dataset[T]): Unit = dataset.getRowsIterator.foreach(addData)
+  //def addData(dataset: Dataset[Row, Self]): Unit = dataset.getRowsIterator.foreach(addData)
 
-  def addData(row: IndexedSeq[T]): Unit
+  def addData(row: Row): Unit
 
   def hasNewChangePoint: Boolean
 
@@ -18,20 +18,22 @@ trait OnlineChangePointDetector[T >: TCellDouble] extends ChangePointDetector[T]
 }
 
 
-object SimpleOnlineChangePointDetector extends OnlineChangePointDetector[Double] {
+object SimpleOnlineChangePointDetector extends OnlineChangePointDetector[Double, Any] {
 
   val Pr: Double = 0.4
   val r = new Random()
 
-  override def addData(row: IndexedSeq[Double]): Unit = {}
+  override def addData(row: Double): Unit = {}
 
   override def hasNewChangePoint: Boolean = r.nextDouble() < Pr
 
-  override def init(dataset: Dataset[Double]): Unit = {}
+
 
   override def name: String = "Simple"
 
   override def clear(): Unit = {}
+
+  override def init(dataset: Any): Unit = {}
 }
 
 

@@ -3,16 +3,16 @@ package models.glasso
 import breeze.linalg._
 import breeze.numerics._
 import breeze.math._
-import datasets.{WeightedDataset, DataHeader}
+import datasets.{MultiColumnDataset, WeightedDataset, DataHeader}
 import models.ParametricModel
 
 class GLassoModel(val oneDim: Int,
                   override val header: DataHeader,
-                  val regularization: Double = 0.1) extends ParametricModel[Double, DenseVector[Double]] {
+                  val regularization: Double = 0.1) extends ParametricModel[scala.Vector[Double], MultiColumnDataset[Double], DenseVector[Double]] {
 
   override def dim = oneDim * oneDim
 
-  def getCovarianceMatrix(dataset: WeightedDataset[Double]): DenseMatrix[Double] = {
+  def getCovarianceMatrix(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]]): DenseMatrix[Double] = {
 
     val X0: DenseVector[Double] = dataset.getRowsWithWeightIterator.foldLeft(DenseVector.zeros[Double](oneDim))({case(res, (row, w)) => {
       val X: DenseVector[Double] = DenseVector(row.toArray)
@@ -53,23 +53,23 @@ class GLassoModel(val oneDim: Int,
     res
   }
 
-  override def likelihood(dataset: WeightedDataset[Double], parameter: DenseVector[Double]): Double = {
+  override def likelihood(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]], parameter: DenseVector[Double]): Double = {
     val cov = getCovarianceMatrix(dataset)
     val InvCov: DenseMatrix[Double] = toMatrix(parameter)
 
     dataset.weights.sum * ( log(det(InvCov)) - trace(cov * InvCov) - regularization * Reg(InvCov) )
   }
 
-  override def fisherMatrix(dataset: WeightedDataset[Double]): DenseMatrix[Double] = null
+  override def fisherMatrix(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]]): DenseMatrix[Double] = null
 
-  override def gradLikelihood(dataset: WeightedDataset[Double], parameter: DenseVector[Double]): DenseVector[Double] = {
+  override def gradLikelihood(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]], parameter: DenseVector[Double]): DenseVector[Double] = {
     val InvCov: DenseMatrix[Double] = toMatrix(parameter)
     val res = inv(InvCov) - getCovarianceMatrix(dataset) - gradReg(InvCov) * regularization
 
     toVector(res) * dataset.weights.sum
   }
 
-  override def MLE(dataset: WeightedDataset[Double]): DenseVector[Double] = {
+  override def MLE(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
     val data = dataset.toDataset.getRowsIterator.map(_.toArray).toArray
 
     val M: InverseCovarianceMatrix = new InverseCovarianceMatrix(data)

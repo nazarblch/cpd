@@ -7,7 +7,7 @@ trait CurvePattern {
   def getXRange: DenseVector[Int]
   def getXSize: Int
   def getY(x: Int): Double
-  def getYRange: DenseVector[Double]
+  // def getYRange: DenseVector[Double]
   def fitParameters(yValues: DenseVector[Double]): Double
   def getPlot(offset: Int, length: Int): DenseVector[Double] = {
 
@@ -21,6 +21,8 @@ trait CurvePattern {
 
     res
   }
+
+  def convolution(yValues: DenseVector[Double]): Double
 }
 
 class MatcherResult(val offset: Int, val pattern: CurvePattern) {
@@ -52,7 +54,7 @@ object PatternMatcher {
     (0 until (data.length - pattern.getXSize)).map(i => {
       val ys = data.slice(i, pattern.getXSize + i)
       pattern.fitParameters(ys)
-      val conv = ys dot pattern.getYRange
+      val conv = pattern.convolution(ys)
       conv
     }).toArray
 

@@ -10,7 +10,7 @@ import statistics.likelihood_ratio.LikelihoodRatioStatistic
 
 object BOCPDTest extends App {
 
-  val data: Array[IndexedSeq[Double]] = (Gaussian(2,1).sample(50) ++ Gaussian(4,1).sample(50) ++ Gaussian(2,1).sample(50)).map(x => Vector[Double](x)).toArray
+  val data = Gaussian(2,1).sample(50) ++ Gaussian(4,1).sample(50) ++ Gaussian(2,1).sample(50)
 
   val detector = new D1BayesianOnlineCPDetector
 

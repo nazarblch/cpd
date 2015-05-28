@@ -8,27 +8,27 @@ import scala.collection.IndexedSeq
 object LoadData extends App {
 
 
-  def getHeaderSeq[T >: CellType with Double](dataset: Dataset[T]): IndexedSeq[String] = dataset.isNumeric match {
+  def getHeaderSeq[Row, Self <: Dataset[Row, Self]](dataset: Self): IndexedSeq[String] = dataset.isNumeric match {
     case true => dataset.header.data
-    case false => dataset.header.data.zip(dataset.getRow(0).map(_.asInstanceOf[CellType].getType)).map{case (name,t) => name + ":" + t}
+    case false => dataset.header.data
   }
 
-  def print[T >: CellType with Double](dataset: Dataset[T]): Unit = {
+  def print[Row, Self <: Dataset[Row, Self]](dataset: Self): Unit = {
     println( Tabulator.format(Seq(
-      getHeaderSeq(dataset)
+      getHeaderSeq[Row, Self](dataset)
     ) ++
-    dataset.getRowsIterator
+    dataset.toMatrix
     ))
   }
 
-  val data: Dataset[CellType] = DatasetLoader.loadFromFile("data/data.csv")
+  val data = DatasetLoader.loadFromFile("data/data.csv")
 
-  print(data)
+  print[CellType, OneColumnDataset[CellType]](data)
 
 
-  val data1: Dataset[Double] = DatasetConverter.toNumeric(DatasetLoader.loadFromFile("data/numeric.csv"))
+  val data1 = DatasetConverter.toNumeric(DatasetLoader.loadFromFile("data/numeric.csv"))
 
-  print(data1)
+  print[Double, OneColumnDataset[Double]](data1)
 
 
 }

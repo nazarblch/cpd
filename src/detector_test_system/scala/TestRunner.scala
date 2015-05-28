@@ -4,15 +4,15 @@ import java.io.{FileWriter, File}
 
 import cp_detectors.{OfflineChangePointDetector, OnlineChangePointDetector, ChangePointDetector}
 import datasets.CellT._
-import datasets.{DatasetLoader, DatasetConverter, Dataset}
+import datasets._
 import quality.QualityMeasure
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.xml._
 
-class TestConfiguration[T >: TCellDouble, D <: ChangePointDetector[T]] (
-                                              val tester: DetectorTester[T, D],
+class TestConfiguration[Row, Self <: Dataset[Row, Self], D <: ChangePointDetector[Row, Self]] (
+                                              val tester: DetectorTester[Row, Self, D],
                                               val params: Map[String, Any]) {
 
   override def toString: String = "config: " + params.toString()
@@ -46,7 +46,7 @@ object TestResult {
 
 
 
-class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq[TestConfiguration[T, D]],
+class TestsManager[Row, Self <: Dataset[Row, Self], D <: ChangePointDetector[Row, Self]](val tests: Seq[TestConfiguration[Row, Self, D]],
                                                                   val resDir: String) {
 
   private val history: mutable.HashMap[String, Seq[TestResult]] = mutable.HashMap()
@@ -84,7 +84,7 @@ class TestsManager[T >: TCellDouble, D <: ChangePointDetector[T]](val tests: Seq
   }
 
 
-  private def runTest(conf: TestConfiguration[T, D], detector: D): Unit = {
+  private def runTest(conf: TestConfiguration[Row, Self, D], detector: D): Unit = {
     val res = conf.tester.run(detector).toSeq.map({case (measure, value) => new TestResult(detector.params ++ conf.params, value, measure)})
     println(res.map(tr => tr.measureName + "=" + tr.value.getOrElse("")).mkString(", "))
     updateResults(detector, res)
@@ -133,17 +133,17 @@ object TestDataLoader {
 
   }
 
-  def loadTestElementFromFile(path: String): TestElement[Double] = {
+  def loadTestElementFromFile(path: String): TestElement[Double, OneColumnDataset[Double]] = {
 
-    val dataset: Dataset[Double] = DatasetConverter.toNumeric(DatasetLoader.loadFromFile(path + "/data.csv"))
+    val dataset: OneColumnDataset[Double] = DatasetConverter.toNumeric(DatasetLoader.loadFromFile(path + "/data.csv"))
     val reference: Vector[Int] = io.Source.fromFile(path + "/reference.csv").getLines().map(line => {
       if (line.trim.split(",")(0).toInt == 1) true else false
     }).toVector.zipWithIndex.filter(_._1).map(_._2)
 
-    new TestElement[Double](dataset, reference)
+    new TestElement[Double, OneColumnDataset[Double]](dataset, reference)
   }
 
-  def loadTestData(path: String): Seq[TestElement[Double]] = {
+  def loadTestData(path: String): Seq[TestElement[Double, OneColumnDataset[Double]]] = {
 
     new File(path).listFiles().filter(_.isDirectory).
       map(file => loadTestElementFromFile(file.getAbsolutePath))
@@ -154,20 +154,20 @@ object TestDataLoader {
 
   def loadOnlineTestConfigurations(confPath: String,
                                    family: String,
-                                   measures: Set[String]): Seq[TestConfiguration[Double, OnlineChangePointDetector[Double]]] = {
+                                   measures: Set[String]): Seq[TestConfiguration[Double, OneColumnDataset[Double], OnlineChangePointDetector[Double, OneColumnDataset[Double]]]] = {
     val dirs = parseXML(confPath).filter(_.params.get("family").get.trim equals family)
-    dirs.map(dir => new TestConfiguration[Double, OnlineChangePointDetector[Double]](
-      new OnlineDetectorTester[Double](loadTestData(dir.path), measures),
+    dirs.map(dir => new TestConfiguration[Double, OneColumnDataset[Double], OnlineChangePointDetector[Double, OneColumnDataset[Double]]](
+      new OnlineDetectorTester[Double, OneColumnDataset[Double]](loadTestData(dir.path), measures),
       dir.params.map({case (k,v) => (k, parse(v).getOrElse(v))})
     ))
   }
 
   def loadOfflineTestConfigurations(confPath: String,
                                    family: String,
-                                   measures: Set[String]): Seq[TestConfiguration[Double, OfflineChangePointDetector[Double]]] = {
+                                   measures: Set[String]): Seq[TestConfiguration[Double, OneColumnDataset[Double], OfflineChangePointDetector[Double, OneColumnDataset[Double]]]] = {
     val dirs = parseXML(confPath).filter(_.params.get("family").get.trim equals family)
-    dirs.map(dir => new TestConfiguration[Double, OfflineChangePointDetector[Double]](
-      new OfflineDetectorTester[Double](loadTestData(dir.path), measures),
+    dirs.map(dir => new TestConfiguration[Double, OneColumnDataset[Double], OfflineChangePointDetector[Double, OneColumnDataset[Double]]](
+      new OfflineDetectorTester[Double, OneColumnDataset[Double]](loadTestData(dir.path), measures),
       dir.params.map({case (k,v) => (k, parse(v).getOrElse(v))})
     ))
   }

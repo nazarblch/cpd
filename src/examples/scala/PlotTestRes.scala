@@ -3,19 +3,19 @@
  */
 object PlotTestRes extends App {
 
-  val fam = "Po"
+  val fam = "N"
 
   val viz1 = new VizResults("Precision", "delta", fam)
 
-  viz1.plot(Seq("OnlineLRTVar", "OnlineLRT", "BOCPD", "RMeanVar"))
+  viz1.plot(Seq("LRTOnline", "BOCPD", "RMeanVar"))
 
   val viz2 = new VizResults("Recall", "delta", fam)
 
-  viz2.plot(Seq("OnlineLRTVar", "OnlineLRT", "BOCPD", "RMeanVar"))
+  viz2.plot(Seq("LRTOnline", "BOCPD", "RMeanVar"))
 
   val viz3 = new VizResults("Delay", "delta", fam)
 
-  viz3.plot(Seq("OnlineLRTVar", "OnlineLRT", "BOCPD", "RMeanVar"))
+  viz3.plot(Seq("LRTOnline", "BOCPD", "RMeanVar"))
 
 }
 
