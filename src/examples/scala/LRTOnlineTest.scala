@@ -3,7 +3,7 @@ import breeze.stats.distributions.Gaussian
 import cp_detectors.{LRTOnlineDetector, D1BayesianOnlineCPDetector}
 import datasets.{OneColumnDataset, Dataset}
 import models.standart.{NormalModelMean, NormalModel}
-import org.ddahl.jvmr.RInScala
+
 import patterns.{StaticHalfTrianglePattern, HalfTrianglePattern, TrianglePattern}
 import statistics.{PatternStatistic, PatternWeightedStatistic}
 import statistics.likelihood_ratio.{MeanVarWeightedLikelihoodRatioStatistic, LikelihoodRatioStatistic}

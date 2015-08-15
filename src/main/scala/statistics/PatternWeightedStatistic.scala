@@ -29,7 +29,8 @@ class PatternWeightedStatistic[Row, Self <: Dataset[Row, Self]](val pattern: Cur
 
 }
 
-class PatternStatistic[Row, Self <: Dataset[Row, Self]](val pattern: CurvePattern, val statistic: LikelihoodRatioStatistic[Row, Self]) {
+class PatternStatistic[Row, Self <: Dataset[Row, Self]](val pattern: CurvePattern, val statistic: LikelihoodRatioStatistic[Row, Self])
+  extends Statistic[Row, Self, Array[Double]] {
 
   def getValue(stats: Array[(Int, Double)]): Array[Double] = {
     PatternMatcher.convolution(pattern, DenseVector(stats.map(_._2)))
@@ -46,7 +47,7 @@ class PatternStatistic[Row, Self <: Dataset[Row, Self]](val pattern: CurvePatter
     getLocations(stats).zip(getValue(stats))
   }
 
-
+  override def getValue(dataset: Self, offset: Int): Array[Double] = getValueWithLocations(dataset).map(_._2)
 }
 
 object PatternStatistic {

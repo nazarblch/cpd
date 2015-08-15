@@ -9,11 +9,14 @@ import models.ParametricModel
 
 
 
-class AdaptiveGradientDescentOptimizer[T >: CellType with Double](val init: DenseVector[Double], val model: ParametricModel[T, DenseVector[Double]]) extends ParametricModel[T, DenseVector[Double]] {
+class AdaptiveGradientDescentOptimizer[Row, Self <: Dataset[Row, Self]](
+                                                                         val init: DenseVector[Double],
+                                                                         val model: ParametricModel[Row, Self, DenseVector[Double]])
+     extends ParametricModel[Row, Self, DenseVector[Double]] {
 
   // fixme: add P parameter for model
 
-  override def MLE(dataset: WeightedDataset[T]): DenseVector[Double] = {
+  override def MLE(dataset: WeightedDataset[Row, Self]): DenseVector[Double] = {
     val opt = FirstOrderMinimizer.OptParams(batchSize = 512, regularization = 0.0, alpha = 0.7, maxIterations = -1,
       useL1 = false,
       tolerance = 1E-4,
@@ -28,13 +31,13 @@ class AdaptiveGradientDescentOptimizer[T >: CellType with Double](val init: Dens
     opt.minimize[DenseVector[Double]](f, init)
   }
 
-  def likelihood(dataset: WeightedDataset[T], parameter: DenseVector[Double]): Double = model.likelihood(dataset, parameter)
+  def likelihood(dataset: WeightedDataset[Row, Self], parameter: DenseVector[Double]): Double = model.likelihood(dataset, parameter)
 
   def dim: Int = model.dim
 
-  def fisherMatrix(dataset: WeightedDataset[T]): DenseMatrix[Double] = null
+  def fisherMatrix(dataset: WeightedDataset[Row, Self]): DenseMatrix[Double] = null
 
-  def gradLikelihood(dataset: WeightedDataset[T], parameter: DenseVector[Double]): DenseVector[Double] = model.gradLikelihood(dataset, parameter)
+  def gradLikelihood(dataset: WeightedDataset[Row, Self], parameter: DenseVector[Double]): DenseVector[Double] = model.gradLikelihood(dataset, parameter)
 
   def header: DataHeader = model.header
 

@@ -2,7 +2,7 @@ package bootstrap
 
 import breeze.linalg.DenseVector
 import datasets.{Dataset, CatCellT, IntCellT, DoubleCellT}
-import statistics.WeightedStatistic
+import statistics.{WeightedStatistic, Statistic}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Sorting
@@ -23,8 +23,17 @@ trait Bootstrap[Row, Self <: Dataset[Row, Self]] {
   }
 }
 
+class RefDistBootstrap[Row, Self <: Dataset[Row, Self]](val dataGenerator: Double => Self,
+                                                         val statistic: Statistic[Row, Self, Double]) {
+
+  def sample(sampleSize: Int): DenseVector[Double] = {
+    DenseVector.fill[Double](sampleSize)(statistic.getValue(dataGenerator.apply(0.0)))
+  }
+
+}
+
 class WeightedBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: SmoothOnesGenerator,
-                                                                                   val statistic: WeightedStatistic[Row, Self, Double]) extends Bootstrap[Row, Self] {
+                                                         val statistic: WeightedStatistic[Row, Self, Double]) extends Bootstrap[Row, Self] {
 
   def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
     DenseVector.fill[Double](sampleSize)(statistic.getValue(dataset, weightsGenerator.generateVector(dataset.size)))
@@ -33,7 +42,7 @@ class WeightedBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: S
 }
 
 class WeightedVectorBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: SmoothOnesGenerator,
-                                                                                         val statistic: WeightedStatistic[Row, Self, Array[Double]]) extends Bootstrap[Row, Self] {
+                                                               val statistic: WeightedStatistic[Row, Self, Array[Double]]) extends Bootstrap[Row, Self] {
 
   def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
 

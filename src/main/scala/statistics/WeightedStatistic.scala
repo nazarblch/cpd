@@ -11,6 +11,10 @@ trait WeightedStatistic[Row, Self <: Dataset[Row, Self], V] {
   def getValue(dataset: Self, weights: Vector[Double], offset: Int = 0): V
 }
 
+trait Statistic[Row, Self <: Dataset[Row, Self], V] {
+  def getValue(dataset: Self, offset: Int = 0): V
+}
+
 abstract class AdditiveWeightedStatistic[Row, Self <: Dataset[Row, Self]](dimension: Int) extends WeightedStatistic[Row, Self, Double] {
   def getValue(row: Row): Double
   def getValue(dataset: Dataset[Row, Self], weights: Vector[Double]): Double =

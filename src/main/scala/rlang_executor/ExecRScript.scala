@@ -3,6 +3,7 @@ package rlang_executor
 import breeze.stats.distributions.Gaussian
 import org.ddahl.jvmr.RInScala
 
+
 object ExecRScript extends App {
 
   val R = RInScala()

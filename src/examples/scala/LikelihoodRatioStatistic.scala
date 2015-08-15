@@ -18,26 +18,26 @@ object LikelihoodRatioStatistic extends App {
 
   def header: DataHeader = DataHeader(1)
 
-  val col: Column[Double] = Column[Double](Gaussian(2,10).sample(1000))
+  val load = io.Source.fromFile("/home/nazar/Downloads/MyData.csv").getLines().drop(1)
+    .map(_.trim.toDouble).toVector.slice(0, 600000)
+
+  val col: Column[Double] = Column[Double](load)
   val data = new OneColumnDataset[Double](header, col, true)
 
-  val col1: Column[Double] = Column[Double](Gaussian(4,10).sample(1000))
-  val data1 = new OneColumnDataset[Double](header, col1, true)
 
-  //val model = new AdaptiveGradientDescentOptimizer[Double](DenseVector(0,1), new NormalModel)
-  val model = new NormalModel
+  val model = new NormalModelMean(1)
   // val lrt = new ExtendedLikelihoodRatioStatistic[Double, OneColumnDataset[Double]](model, 50)
 
-  val stat = MeanVarWeightedLikelihoodRatioStatistic(model, 100)
+  //val stat = MeanVarWeightedLikelihoodRatioStatistic(model, 100)
 
-  val lrt_1 = new LikelihoodRatioStatistic[Double, OneColumnDataset[Double]](model, 100)
+  val h = 50
+  val pattern = new TrianglePattern(2 * h)
+  val lrt = new LikelihoodRatioStatistic(model, h)
+  val patt_lrt = new PatternStatistic[Double, OneColumnDataset[Double]](pattern, lrt)
 
   val pl = new PlotXY("t", "conv")
-  val r = Exponential(1)
-  //val wdata = WeightedDataset(data ++ data1, )
-
-  pl.addline(stat.getValue(data ++ data1, Vector.fill(2000)(r.draw())), "xi")
-  pl.addline(lrt_1.getValue(data ++ data1), "lrt")
+  pl.addline(patt_lrt.getValue(data), "conv")
+  //pl.addline(load.map(_ * 300).toArray, "data")
 
   //pl.addline(lrt.get_delta_xi_norm(wdata), "xi")
   //pl.addline(lrt_1.getValue(wdata.toDataset), "stat")
@@ -66,7 +66,8 @@ object LikelihoodRatioStatistic extends App {
 //  pl.addline(sample, "sample")
 
 
-  pl.print("test.png")
+  pl.print("res50.png")
+
 
 
 

@@ -7,10 +7,10 @@ import statistics.EmpiricalDistributionFunction
  */
 object EmpiricalDistribution extends App {
 
-  val data: Dataset[CellType] = DatasetLoader.loadFromFile("data/data.csv")
-
-  val x = EmpiricalDistributionFunction.value(data, data.getRow(4))
-
-  println(x)
+//  val data: Dataset[CellType] = DatasetLoader.loadFromFile("data/data.csv")
+//
+//  val x = EmpiricalDistributionFunction.value(data, data.getRow(4))
+//
+//  println(x)
 
 }

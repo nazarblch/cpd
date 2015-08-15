@@ -7,7 +7,7 @@ import datasets.{Column, DataHeader, OneColumnDataset, Dataset}
 import models.ParametricModel
 import models.standart.NormalModel
 import patterns.{StaticHalfTrianglePattern, HalfTrianglePattern, TrianglePattern}
-import statistics.{TailStatistic, MaxStatistic, PatternWeightedStatistic}
+import statistics.{TailStatistic, MaxWeightedStatistic, PatternWeightedStatistic}
 import statistics.likelihood_ratio.{WeightedStatisticFactory, SimpleWeightedLikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic}
 
 import scala.collection.mutable
@@ -176,7 +176,7 @@ class LRTOnlineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricMo
     val wlrt = wstatFactory(model, config.windowSize)
     val pattern = new HalfTrianglePattern(config.windowSize)
     val patt_wlrt = new PatternWeightedStatistic[Row, Self](pattern, wlrt)
-    val max_patt_wlrt = new MaxStatistic[Row, Self](patt_wlrt)
+    val max_patt_wlrt = new MaxWeightedStatistic[Row, Self](patt_wlrt)
 
     val bootstrap: Bootstrap[Row, Self] = new WeightedBootstrap[Row, Self](new SmoothOnesGenerator, max_patt_wlrt)
 

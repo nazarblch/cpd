@@ -82,6 +82,8 @@ abstract class Dataset[Row, Self](val header: DataHeader,
 
   def mapV(f: (Row => DenseVector[Double])): IndexedSeq[DenseVector[Double]]
 
+  def getColumns: Vector[Column[Double]]
+
 }
 
 
@@ -145,6 +147,8 @@ class MultiColumnDataset[T >: TCellDouble](override val header: DataHeader,
   override def map(f: (Vector[T]) => Double): IndexedSeq[Double] = getRowsIterator.map(f)
 
   override def mapV(f: (Vector[T]) => DenseVector[Double]): IndexedSeq[DenseVector[Double]] = getRowsIterator.map(f)
+
+  override def getColumns: Vector[Column[Double]] = data.map(_.asInstanceOf[Column[Double]])
 }
 
 
@@ -207,6 +211,8 @@ class OneColumnDataset[T >: TCellDouble](override val header: DataHeader,
   override def map(f: (T) => Double): Vector[Double] = data.data.map(f)
 
   override def mapV(f: (T) => DenseVector[Double]): Vector[DenseVector[Double]] = data.data.map(f)
+
+  override def getColumns: Vector[Column[Double]] = Vector(data.asInstanceOf[Column[Double]])
 }
 
 
@@ -319,6 +325,8 @@ class WeightedDataset[Row, Self <: Dataset[Row, Self]](
   override def map(f: (Row) => Double): Vector[Double] = null
 
   override def mapV(f: (Row) => DenseVector[Double]): Vector[DenseVector[Double]] = null
+
+  override def getColumns: Vector[Column[Double]] = null
 }
 
 

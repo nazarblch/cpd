@@ -6,7 +6,7 @@ import datasets.CellT._
 import datasets.Dataset
 import models.ParametricModel
 import patterns.{StaticTrianglePattern, TrianglePattern}
-import statistics.{PatternStatistic, MaxStatistic, PatternWeightedStatistic, TailStatistic}
+import statistics.{PatternStatistic, MaxWeightedStatistic, PatternWeightedStatistic, TailStatistic}
 import statistics.likelihood_ratio._
 import viz.utils.PlotXY
 
@@ -58,7 +58,7 @@ class LRTOfflineDetector[Row, Self <: Dataset[Row, Self], P](val model: Parametr
     val wlrt = wstatFactory(model, config.windowSize)
     val pattern = new TrianglePattern(2 * config.windowSize)
     val patt_wlrt = new PatternWeightedStatistic[Row, Self](pattern, wlrt)
-    val max_patt_wlrt = new MaxStatistic[Row, Self](patt_wlrt)
+    val max_patt_wlrt = new MaxWeightedStatistic[Row, Self](patt_wlrt)
 
     val bootstrap: Bootstrap[Row, Self] = new WeightedBootstrap[Row, Self](new SmoothOnesGenerator, max_patt_wlrt)
 
