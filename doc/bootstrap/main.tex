@@ -1,0 +1,69 @@
+
+
+
+
+
+
+
+
+\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+%\newcommand{\subjclass}[1]{\par\noindent\emph{JEL codes:} #1\\}
+
+ 
+  \begin{document}
+    
+
+  %\section{Introduction}
+  %\input{intro}	
+  
+  %\section{Related work}
+  %\input{rel_work}  
+    
+  	\section{Likelihood restriction}
+  \input{likelihood}  
+   
+ \section{LRT Statistic}
+ \input{LRT}  
+  
+ \section{Multiplier Bootstrap}
+ \input{bootstrap}  
+  
+  \section{Uniform bands}
+
+  	\input{uniform}
+
+  
+  \section{LRT Critical values calibration}
+  \input{calibration}  
+  
+ \section{Matrix deviations}
+  \input{matrix}
+  
+ \section{Max-norm Gaussian }
+ \input{max_norm}
+  
+ 
+  
+  %\section{Experiments}
+  %\input{experiments}  
+  
+  %\section{Conclusion}
+  %\input{conclusion}
+    
+%\bibliography{references}{}
+
+\section{Appendix}
+
+\input{matrix_app}
+
+    
+  \end{document}  

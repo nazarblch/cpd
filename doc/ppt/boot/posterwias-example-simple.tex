@@ -1,0 +1,114 @@
+%
+% K. Kawinkel, H. Pletat, J. Fuhrmann
+%
+% Sample poster demonstrating standard features of the WIAS poster style
+% 
+\documentclass[english,26pt,a0paper]{wiasposter}
+
+
+% Allow for German umlauts
+\usepackage[utf8]{inputenc}
+
+\title{Postertest}
+\author{K. Kawinkel, H. Pletat, J. Fuhrmann}
+\name{H. Pletat} % In footer 
+\email{henrik.pletat@wias-berlin.de}
+
+% Further, optional footer fields:
+%\institution
+%\address
+%\telephone
+%\fax 
+%\url
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\wiasframebox{3}{200}{white}{%
+\wiaspic{r}{100mm}{\includegraphics[width=1\linewidth]{blue.pdf}}
+Die Integrierung der Bilder innerhalb eines Flie{\ss}textes sollte m{\"o}glichst mit \(\backslash\)wiaspic erfolgen. Das erm{\"o}glicht ein Umlaufen des Flie{\ss}textes. Hier geschehen mit:
+\par
+\flushleft
+\(\backslash\)wiaspic\{Ausrichtung, links(l) oder rechts(r) (hier r)\}\{Gesamtbreite x (hier 100mm)\} 
+\{\(\backslash\)includegraphics[width=1\(\backslash\)linewidth]
+\{Datei des Bildes (hier blue.pdf)\}%
+
+Wenn es gew{\"u}nscht wird, Bilder einzeln in Boxen zu platzieren, empfiehlt es sicht \(\backslash\)includegraphics einfach ohne die vordefinierte wrapfigure-Umgebung von \(\backslash\)wiaspic zu definieren. 
+	}
+%
+\wiasbarbox{5}{200}{wiasblue20}{Head}{%
+\wiaspic{l}{150mm}{\includegraphics[width=0.5\linewidth]{blue.pdf}%
+\includegraphics[width=0.5\linewidth]{red.pdf}\caption{Bildunterschrift}}%
+Hier sind zwei Bilder in einer wiaspic-Umgebung eingebettet:
+\flushleft
+\(\backslash\)wiaspic\{Ausrichtung, links(l) oder rechts(r) (hier l)\}\\
+\{Gesamtbreite x (hier 150mm)\}\{ \\%
+\(\backslash\)includegraphics[width=Breite im Verh{\"a}ltnis zur Gesamtbreite x \\(hier 0.5)\(\backslash\)linewidth]\{Datei des 1. Bildes (hier blue.pdf)\}%
+\\
+\(\backslash\)includegraphics[width=Breite im Verh{\"a}ltnis zur Gesamtbreite x \\(hier 0.5)\(\backslash\)linewidth]\{Datei des 2. Bildes (hier red.pdf)\}\\%
+\(\backslash\)caption\{Bildunterschrift\}\}
+%
+}%
+
+
+%
+\wiasframebox{4}{500}{white}{
+Einige Tipps zur Handhabung:
+
+\begin{itemize}{
+
+\item{
+Der Blauwert basiert auf dem Farbton HKS 43 (CMYK=100, 60, 0, 0) und ist in den Logos des WIAS sowie der Leibniz Gemeinschaft verwendet worden. Die Aufrasterung dieses Farbtons (wiasblue) erfolgt von 10--60 \%. Die farbigen Balken sowie der Kopf des Plakates sind mit einem kr{\"a}ftigeren Blauton versehen (CMYK=100, 60, 0, 40), um einen besseren Kontrast zum Boxeninhalt zu schaffen. 
+}
+\item{
+Das Dokument enh{\"a}lt 8 Spalten-Unterteilungen, die SIe frei w{\"a}hlen k{\"o}nnen. Auch Verschachtelungen sind m{\"o}glich, so dass Sie nach Bedarf die Kastengr{\"o}{\ss}e anpassen  k{\"o}nnen.}
+}
+
+\item{Die Boxen im Einzelnen:}
+
+\begin{itemize}{\raggedright%
+\item{\(\backslash\)wiasframebox ist eine einfache Box mit Rahmen (z.B. Framebox 2):\\
+\(\backslash\)wiasframebox\{Breite, Anzahl der Spalten angegeben: 1--8\}\{H{\"o}he in mm\}\{Farbe: white, wiasblue10--60\}\{Inhalt der Box, kann bestehen aus Text und Grafiken\}
+}
+
+\item{\(\backslash\)wiasbarbox ist eine Box mit Rahmen und Balken, worin eine {\"U}berschrift platziert wird (z.B. Barbox 1):\\
+\(\backslash\)wiasbarbox\{Breite 1--8\}\{H{\"o}he in mm\}\{Farbe, white, wiasblue10--60\}\\
+\{{\"U}berschrift\}\{Inhalt der Box, kann bestehen aus Text und Grafiken\}
+}
+
+\item{\(\backslash\)wiascombibox wird benutzt, um zwei oder mehrere Boxen zu verschachteln. Dabei wird wieder auf \(\backslash\)wiasframebox und \(\backslash\)wiasbarbox zur{\"u}ckgegriffen (siehe Barbox1, Framebox 2 und Framebox 3): \\
+\(\backslash\)wiascombibox\{Spaltenbreite insgesamt (hier 4)\}\{\%\\%
+\(\backslash\)wiasbarbox\{Teilmenge der Spaltenzahl (hier 2)\}\{H{\"o}he der Teilbox in mm \\(hier 300)\}\{Farbe (white)\}\{{\"U}berschrift (Barbox1)\}\{Inhalt (text)\}\%\\%
+\(\backslash\)wiasframebox\{Teilmenge der Spaltenzahl (hier 2)\}\{H{\"o}he der Teilbox in mm \\(hier ebenfalls 300)\}\{Farbe (wiasblue40)\}\{Inhalt (Framebox 2)\}\%\\%
+\(\backslash\)par \\
+\(\backslash\)wiasframebox\{Spaltenbreite (hier 4)\}\{H{\"o}he der Teilbox in mm (hier 187)\}\{Farbe (wiasblue30)\}\{Inhalt (Framebox 3)\}\%\\%
+\}\\
+Wie Sie sehen, ist die Spaltenh{\"o}he der letzten Box etwas ungerade, obwohl die links definierte Box exakt 500 betr{\"a}gt. Man muss also ein bisschen ausprobieren, um die Boxen gleichschenklig enden zu lassen. 
+}}
+\end{itemize}
+
+\item{
+Alle Abst{\"a}nde zwischen den Boxen sind 10 mm gro{\ss}. Durch Leerzeichen k{\"o}nnen sich die Boxen um ein paar Millimeter verschieben. Daher ist gro{\ss}e Sorgfalt geboten. Es empfiehlt sich auch, am Ende der Boxen jeweils mit \% auszukommentieren. So entstehen keine zus{\"a}tzlichen Abst{\"a}nde.}
+
+\end{itemize}
+}%
+\wiascombibox{4}{%
+\wiasbarbox{2}{300}{white}{Barbox1}{text}%
+\wiasframebox{2}{300}{wiasblue40}{Framebox 2}%
+\par
+\wiasbarbox{4}{187}{wiasblue30}{References}{
+\renewcommand{\refname}{}
+\vspace{-2cm}
+\bibliographystyle{unsrt}
+\bibliography{posterwias-example-simple}
+\nocite{Macneal1953}
+\nocite{EymardGallouetHerbin2000}
+}%
+
+}
+
+
+
+
+\end{document}
+

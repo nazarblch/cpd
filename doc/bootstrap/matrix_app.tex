@@ -1,0 +1,733 @@
+
+\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+%\newcommand{\subjclass}[1]{\par\noindent\emph{JEL codes:} #1\\}
+
+ 
+  \begin{document}
+
+
+\subsection{Vector Hoeffding inequality}
+
+\begin{theorem}
+\label{vec_hoeff}
+Let $\E X_i = 0$, $\Vert X_i \Vert < c_i / 2$, then for independent random variables
+\[
+\P\left(\left\Vert \sum_{i=1}^{n} X_i \right\Vert > t \right) \leq \text{exp} \left( - \frac{(t - v)^2}{2v^2} \right), 
+\quad t \geq v,
+\]
+\[
+v^2 = \frac{1}{4} \sum_{i=1}^{n} c_i^2.
+\]
+\[
+\P\left(\left\Vert \sum_{i=1}^{n} X_i \right\Vert > v (1 + \sqrt{2x}) \right) \leq e^{-x}.
+\]
+\end{theorem}
+\begin{proof}
+Bounded difference inequality state with $|Z(\ldots,X_i,\ldots) - Z(\ldots,X_i',\ldots)| \leq c_i$ that
+\[
+\P(Z - \E Z > t) \leq  \exp \left( - \frac{2 t^2}{\sum_i c_i^2} \right). 
+\]
+\[
+\pr{\normp{\sum_{i=1}^{n} X_i} - \E \normp{\sum_{i=1}^{n} X_i} > t - \E\normp{\sum_{i=1}^{n} X_i} } \leq \exp \left( - \frac{\left(t - \E \normp{\sum_{i=1}^{n} X_i} \right)^2}{2v^2} \right),
+\] 
+\[
+\E \normp{\sum_{i=1}^{n} X_i} \leq \sqrt{  \E \normp{\sum_{i=1}^{n} X_i}^2 } \leq 
+ \sqrt{ \sum_{i=1}^{n} \E \normp{X_i}^2 } \leq v.
+\]
+\end{proof}
+
+
+\subsection{Matrix Bernstein inequality}
+
+\begin{theorem}[Master bound]
+\label{MastBound}
+Assume that  \(\Sv_{1},\dots,\Sv_{n}\) are independent Hermitian matrices of the same size and  
+\(\Zv = \sum_{i=1}^{n} \Sv_{i} \). 
+Then 
+\begin{EQA}
+	\E \supA_{\max}(\Zv)
+	& \leq &
+	\inf_{\theta>0}\frac{1}{\theta} 
+	\log \tr\exp\left(\sum_{i=1}^{n}\log\E\ex^{\theta \Sv_{i}}\right),
+\label{MaCheEx}
+	\\
+	\P\{\supA_{\max}(\Zv) \geq \zq\} 
+	& \leq & 
+	\inf_{\theta>0} \ex^{-\theta \zq} \, 
+		\tr\exp\left(\sum_{i=1}^{n}\log\E \ex^{\theta \Sv_{i}}\right).
+\label{MaCheProb}
+\end{EQA}
+\end{theorem}
+
+
+
+\begin{proof} 
+By the Markov inequality 
+\begin{EQA}
+	\P\{\supA_{\max}(\Zv) \geq \zq\} 
+	&\leq&
+ 	\inf_{\theta} \ex^{-\theta \zq} \E \exp(\theta \supA_{\max}(\Zv)).
+\end{EQA}
+Recall the spectral mapping theorem: for any function \( f\colon \R \to\R \) 
+and Hermitian matrix \( A \) eigenvalues of \(f(A)\) are equal to eigenvalues of \(A\). 
+Thus 
+\begin{EQA}
+	\exp(\theta \supA_{\max}(\Zv))
+ 	&= &
+ 	\exp( \supA_{\max}(\theta\Zv) ) 
+ 	= 
+ 	\supA_{\max}\bigl( \exp(\theta \Zv ) \bigr) 
+	\leq 
+	\tr \, \ex^{\theta \Zv} .
+\end{EQA}
+Therefore,
+\begin{EQA}
+	\P\{\supA_{\max}(\Zv) \geq \zq\}
+	&\leq &
+	\inf_{\theta} \ex^{-\theta \zq} \E\tr\exp(\theta \Zv),
+\label{Tr3.2.1}
+\end{EQA}
+and \eqref{MaCheProb} follows.
+
+
+To prove \eqref{MaCheEx} fix \(\theta\). 
+Using the spectral mapping theorem one can get that 
+\begin{EQA}
+	\E \supA_{\max}(\Zv) 
+	& = &
+	\frac{1}{\theta}\E \supA_{\max}(\theta \Zv)  
+	= 
+	\frac{1}{\theta} \log\E\exp \bigl( \supA_{\max}(\theta \Zv) \bigr)
+	=
+	\frac{1}{\theta} \log\E \supA_{\max}\bigl( \exp (\theta \Zv) \bigr) \, . 
+\label{Tr3.2.2}
+\end{EQA}
+Thus we get 
+\begin{EQA}
+	\E\supA_{\max}(\Zv)
+	& \leq &
+	\frac{1}{\theta} \log \tr \E \exp(\theta \Zv).
+\label{Tr3.2.2.1}
+\end{EQA}
+The final step in proving the master inequalities is to bound from above 
+\( \E\tr\exp\left(\sum_{i=1}^{n} \Sv_{i} \right)\). 
+To do this we use Jensen's inequality for the convex function  
+\( \tr \exp(H + \log(X)) \) (in matrix \(X\)), where \(H\) is deterministic Hermitian  matrix.  For a  random Hermitian matrix \( X \) one can write
+\begin{EQA}
+	\E \tr\exp(H + X) 
+	&=& 
+	\E \tr \exp(H + \log \ex^{X})
+	\leq   
+	\tr \exp(H + \log \E \ex^{X}).
+\label{Tr3.4.1}
+\end{EQA}
+Convexity of function $( \tr \exp(H + \log(X)) )$ is followed from   
+\[
+\tr \exp(H + \log(X)) = \max_{Y \succ 0} [\tr(YH) - (D(Y; X) - \tr X)],
+\]
+where $D(Y; X)$ is relative entropy 
+\[
+D(Y; X) = \phi(X) - [\phi(Y) + \langle \nabla\phi(Y), X - Y \rangle],
+\quad \phi(X) = \tr(X \log X)
+\]
+due to the partial maximum and $D(Y; X)$ are concave functions.
+
+Denote by \( \E_{i} \) the conditional expectation with respect to  random matrix \( X_{i} \).  To bound \( \E \tr\exp\left(\sum_{i=1}^{n} \Sv_{i}\right) \)  we use \eqref{Tr3.4.1} for the sum of independent Hermitian matrices by taking the conditional expectations with respect to \( i \)-th matrix:
+\begin{EQA}
+	\E\tr\exp\left(\sum_{i=1}^{n} \Sv_{i}\right) 
+ 	&= &
+	\E\E_{n}\tr\exp\left(\sum_{i=1}^{n-1} \Sv_{i} + \Sv_{n}\right) 
+	\\ 
+ 	& \leq & 
+	\E\tr\exp\left(\sum_{i=1}^{n-1} \Sv_{i} + \log(\E_{n}\exp(\Sv_{n}))\right) 
+	\\
+	& \leq &  
+	\tr\exp\left(\sum_{i=1}^{n}\log\E \ex^{\theta \Sv_{i}} \right).
+\label{Tr3.4.1}
+\end{EQA}
+%
+To complete the prove of the Master's theorem combine  \eqref{Tr3.2.1} and \eqref{Tr3.2.2.1} with \eqref{Tr3.4.1}.
+\end{proof}
+
+\medskip
+
+The same result applied to \( - \Zv \) yields the bound for the operator norm \( \| \Zv \| \):
+\begin{EQA}
+	\P\{ \| \Zv \|_{\oper} \geq \zq\} 
+	& \leq & 
+	2 \inf_{\theta>0} \ex^{-\theta \zq} \, 
+		\tr\exp\left(\sum_{i=1}^{n}\log\E \ex^{\theta \Sv_{i}}\right).
+\label{MaCheProb2}
+\end{EQA}
+
+\begin{theorem}[Bernstein inequality for a sum of random Hermitian  matrices]
+\label{BernSqTh}
+Let \(\Zv = \sum_{i=1}^{n} \Sv_{i}\), where \(\Sv_{i}\), \(i=1,\dots,n\) are independent, random, Hermitian  matrices of the dimension \(d\times d\) and 
+\begin{EQA}
+ 	\supA_{\max}(\Sv_{i}) 
+	& \leq & 
+	R.
+\end{EQA}
+Denote \( \vp^{2} = \vp^{2}(\Zv) = \|\E (\Zv^{2}) \|_{\oper} \). 
+Then 
+\begin{EQA}
+ 	\E\supA_{\max}(\Zv)
+	& \leq  & 
+	\sqrt{2\vp^{2}\log(d)}+\frac{1}{3}R\log(d),
+\label{BernSqE}
+	\\
+	\P \bigl\{ \supA_{\max}(\Zv) \geq \zq \bigr\} 
+	& \leq & 
+	d \exp \left( \frac{-\zq^{2}/2}{\vp^{2} + R \zq/3} \right).
+\label{BernSqP}
+\end{EQA}
+\end{theorem}
+
+
+\begin{proof}
+Note that 
+\begin{EQA}
+	\vp^{2} 
+	&=& 
+	\left\|\sum_{i=1}^{n}\E \Sv_{i}^{2}\right\|_{\oper} \, .
+\end{EQA}
+For the sake of simplicity let \( \vp^{2} = 1 \). 
+Denote 
+\begin{EQA}
+	g(\theta)
+ 	&= &
+ 	\frac{\theta^{2}/2}{1-R\theta/3}.
+\end{EQA}
+Apart the Master inequalities, we use the following lemma:
+
+\begin{lemma}
+\label{PreBern}
+Let \(\Zv\) be a random Hermitian  matrix \(\E \Zv = 0 \), \( \supA_{\max}(\Zv) \leq R\), then for \(0< \theta<3/R \) the following inequalities hold
+\begin{EQA}
+	\E \ex^{\theta \Zv}
+	&\leq &
+ 	\exp\left(\frac{\theta^{2}/2}{1-R\theta/3} \E(\Zv^{2})\right),
+	\\
+	\log \E \ex^{\theta \Zv}
+	&\leq&
+ 	\frac{\theta^{2}/2}{1-R\theta/3} \E(\Zv^{2}).
+\end{EQA}
+\end{lemma}
+ 
+\begin{proof}
+Decompose the exponent in the following way
+\begin{EQA}
+	\ex^{\theta \Zv}
+ 	&= &
+	\Id + \theta \Zv + (\ex^{\theta \Zv}-\theta \Zv - \Id) 
+	= 
+	\Id + \theta \Zv + \Zv \cdot f(\Zv)\cdot \Zv,
+\end{EQA}
+where 
+\begin{EQA}
+ 	f(x) 
+	& = &
+	\frac{\ex^{\theta x}-\theta x - 1}{x^{2}}, \quad \text{for} \quad x\not=0, \quad 
+	f(0) = \frac{\theta^{2}}{2}.
+\end{EQA}
+One can check that the function \(f(x)\) is non-decreasing, thus for \(x\leq R\), one has 
+\(f(x)\leq f(R)\). 
+By the matrix transfer rule 
+\( f(\Zv)\leq f(R) \Id \) and 
+\begin{EQA}
+ 	\E \ex^{\theta \Zv} 
+	& = & 
+	\Id + f(R) \E \Zv^{2}.
+\end{EQA}
+In order to estimate \(f(R)\)  use \(q!\geq 2\cdot 3^{q-2}\) to get 
+\begin{EQA}
+  	f(R) 
+	& = &
+	\frac{\ex^{\theta R}-\theta R - \Id}{R^{2}} 
+	= 
+	\frac{1}{R^{2}}\sum_{q=2}^{\infty}\frac{(\theta R)^q}{q!}
+	\leq 
+	\theta^{2} \sum_{q=2}^{\infty} \frac{(R\theta)^{q-2}}{3^{q-2}} 
+	= \frac{\theta^{2}/2}{1-R\theta/3}.
+\end{EQA}
+To get the result of the Lemma note that \(1+a\leq \ex^{a}\).
+\end{proof}
+
+To prove \eqref{BernSqE} and \eqref{BernSqP} we apply the Master inequalities and 
+Lemma \ref{PreBern}:
+\begin{EQA}
+	\E\supA_{\max}(\Zv)
+	& \leq &
+	\inf_{\theta>0}\frac{1}{\theta} 
+	\log \tr\exp \left( \sum_{i=1}^{n} \log \E\exp(\theta \Sv_{i})\right) 
+	\\
+	& \leq  &
+	\inf_{0<\theta<3/R}\frac{1}{\theta} 
+	\log\tr\exp \left( g(\theta) \sum_{i=1}^{n} \E \Sv_{i}^{2}\right) 
+	\\
+	& \leq  &
+	\inf_{0<\theta<3/R}\frac{1}{\theta}\log\tr\exp \left( g(\theta) \E \Zv^{2}\right) 
+	\\
+	& \leq & 
+	\inf_{0<\theta<3/R}\frac{1}{\theta}\log d \exp \left( g(\theta) \|\E \Zv^{2}\|_{\oper} \right)
+	\\ 
+	& \leq &
+	\inf_{0<\theta<3/R}\left\{\frac{\log(d)}{\theta} + \frac{\theta/2}{1-R\theta/3}\right\}. 
+\end{EQA}
+Minimizing the right hand side in \(\theta\) one can get \eqref{BernSqE}.
+
+The second inequality can be obtained in the same manner:
+\begin{EQA}
+	\P\{\supA_{\max}(\Zv) \geq \zq \}
+	& \leq  & 
+	\inf_{\theta>0}\ex^{-\theta \zq}  \tr\exp \left( \sum_{i=1}^{n} \log \E\exp(\theta \Sv_{i})\right) 
+	\\
+	& \leq  & 
+	\inf_{0<\theta<3/R}\ex^{-\theta \zq}  \tr \exp \left( g(\theta) \E \Zv^{2}\right) 
+	\\
+	& \leq & 
+	\inf_{0<\theta<3/R}\ex^{-\theta \zq}  d \exp \left( g(\theta) \|\E \Zv^{2}\|_{\oper}\right)
+	\\ 
+	& \leq & 
+	\inf_{0<\theta<3/R}\ex^{-\theta \zq}  d \exp \left( g(\theta)\right).
+\end{EQA}
+Here instead of minimizing the right hand side in \(\theta\) we have used 
+\(\theta = \zq/{(1+R \zq/3)}\).
+\end{proof}
+
+
+\begin{theorem}[Bernstein inequality for a sum of random Hermitian  matrices]
+Let \(\Zv = \sum_{i=1}^{n}\Sv_{i}\), where \(\Sv_{i}\), \(i=1,\dots,n\) are  independently distributed random matrices of the size \(d_{1}\times d_{2}\) and 
+\begin{EQA}
+ 	\|\Sv_{i}\|_{\oper} 
+ 	& \leq &
+  	R. 
+\end{EQA}
+Denote \(\vp^{2} = \vp^{2}(\Zv) 
+= \max\left\{\|\E(\Zv^{*} \Zv)\|_{\oper}, \|\E(\Zv \Zv^{*})\|_{\oper}\right\} \). 
+Then 
+\begin{EQA}
+ 	\E \| \Zv \|_{\oper}
+	& \leq & 
+	\sqrt{2\vp^{2}\log(d_{1}+d_{2})} + \frac{1}{3} R\log(d),
+\label{BernSqE12}
+  	\\
+	\P\{\| \Zv \|_{\oper} \geq \zq \} 
+	& \leq & 
+	(d_{1}+d_{2}) \exp \left( \frac{-\zq^{2}/2}{\vp^{2} + R \zq/3}\right).
+\label{BernSqP12}
+\end{EQA}
+\end{theorem}
+
+\begin{proof}
+Use the following hint: define the matrix
+\begin{EQA}
+ 	H(\Zv) 
+ 	&=& 
+ 	\begin{pmatrix} 
+		0 & \Zv 
+		\\ 
+		\Zv^{*} & 0 
+	\end{pmatrix}.
+\end{EQA}
+It can be easily seen that \(\vp^{2} =  \|H(\Zv)^{2}\|_{\oper}\), and 
+\(\|\Zv\|_{\oper} = \supA_{\max}\bigl( H(\Zv) \bigr) \), 
+thus applying Theorem \ref{BernSqTh} to \( H(\Zv) \) the statements \eqref{BernSqE} and \eqref{BernSqP} are straightforward.
+\end{proof}
+
+
+\begin{theorem}[Bernstein inequality for moment restricted matrices]
+Suppose that 
+\[
+\forall i: \; \E \psi^2 \left( \frac{\normp{X_i}}{M} \right) \leq 1, 
+\]
+\[
+ R = M \psi^{-1} \left( \frac{2}{\delta} \frac{n M^2}{ \vp^{2}  } \right ),
+ \quad
+ \delta \in (0, 2/\psi(1)).
+\]
+Then for $\zq R \leq (e - 1)(1 + \delta) \vp^{2}$ 
+\[
+\P\{\| \Zv \|_{\oper} \geq \zq \} \leq 2p \exp \left \{ - \frac{\zq^2}{ 2(1 + \delta) \vp^2 + 2R \zq/3 } \right \} 
+\]
+A standart case for $\psi$ is $\psi(u) = e^{u^{\alpha}} - 1$, which leads to $R = M \log^{1/\alpha} ( \frac{2}{\delta} \frac{n M^2}{ \vp^{2}  }  + 1)$.
+\end{theorem}
+
+\begin{proof}
+According to Master bound one have to estimate $\E e^{\theta \Sv }$ for $\Sv$ in $\Sv_1,\ldots,\Sv_n$. Denote a  function 
+\[
+f(u) = \frac{e^u - 1 - u}{u^2}
+\]
+Taylor expansion yields 
+\[
+\E e^{\theta \Sv } \leq I_p + \theta^2 \E \Sv^2 f(\theta \normp{\Sv})
+\] 
+\[
+\log \E e^{\theta \Sv } \leq \theta^2 \E \Sv^2 f(\theta \normp{\Sv}) \leq 
+\theta^2 f(\theta \tau) \E \Sv^2  + I_p \theta^2 \E \normp{\Sv}^2 f(\theta \normp{\Sv}) I(\normp{\Sv} \geq \tau)
+\]
+\[
+\E \normp{\Sv}^2 f(\theta \normp{\Sv}) I(\normp{\Sv} \geq \tau) \leq
+M^2 \E \psi^2 \left( \frac{\normp{\Sv}}{M} \right) \left( \psi \left( \frac{\tau}{M} \right) \right)^{-1}
+\leq 
+M^2 \left( \psi \left( \frac{\tau}{M} \right) \right)^{-1}
+ \]
+ \[
+ M^2 \left( \psi \left( \frac{R}{M} \right) \right)^{-1} = \frac{\delta \vp^2}{2n}
+ \]
+ \[
+ \log \E e^{\theta \Sv } \leq 
+\theta^2 f(\theta R) \E \Sv^2  + I_p \theta^2  \frac{\delta \vp^2}{2n}
+ \]
+ \[
+  \tr\exp \left( \sum_{i=1}^{n} \log \E\exp(\theta \Sv_{i})\right) \leq 
+  \tr\exp \left( \theta^2 f(\theta R) \E \sum_i \Sv_i^2 \right) \exp \left(    \theta^2  \frac{\delta \vp^2}{2} \right)
+ \]
+
+\end{proof}
+
+\subsection{Matrix deviation bounds}
+The next result provides a deviation bound for a matrix valued quadratic forms. 
+\begin{theorem}[Deviation bound for matrix quadratic forms]
+\label{CUvepsUv}
+Consider a \( \dimp \times n \) matrix \( \UV \) such that
+\begin{EQA}
+\label{OrthoU}
+	\UV \UV^{\T}
+	&=&
+	\Id_{\dimp} .
+\end{EQA}
+Let the columns \( \uv_{1},\dots,\uv_{n} \in \R^{\dimp} \) of the matrix \( \UV \) satisfy
+\begin{EQA}
+\label{BoundRow}
+ 	\|\uv_{i}\|
+ 	&\leq &
+ 	\td
+\end{EQA}
+for a fixed constant \( \td \).
+For a random vector \( \epsv = (\eps_{1},\ldots,\eps_{n})^{\T} \) with independent standard Gaussian components, define
+\begin{EQA}
+	\Zv 
+	& \eqdef &
+	\UV \diag\bigl\{ \epsv \cdot \epsv - 1 \bigr\} \UV^{\T}
+	=
+	\sum_{i=1}^{n} (\eps_{i}^{2} - 1) \uv_{i}\uv_{i}^{\T}.
+\label{ZvUVecem1UVT}
+\end{EQA}
+Then 
+\begin{EQA}
+	\P\Bigl( 
+		\| \Zv \|_{\oper}
+		\geq  
+		2 \td \sqrt{ \xx + \log (2\dimp)} + 2 \td^{2} (\xx + \log (2\dimp)) 
+	\Bigr)
+	& \leq &
+	\ex^{-\xx}.
+\label{Zvop2tdxx2p}
+\end{EQA}
+%\end{lemma}
+\end{theorem}
+
+\begin{proof}
+From the Master inequality \eqref{MaCheProb2} %(see Theorem \ref{MastBound})
+\begin{EQA}
+\label{matrix_chernoff}
+	\P\bigl( 
+		\| \Zv \|_{\oper}
+		\geq 
+		\zq
+	\bigr)
+	& \leq &
+	2 \inf_{\theta> 0} \ex^{-\theta \zq} 
+		\tr \exp \biggl\{ 
+		\sum_{i=1}^{n} \log \E\exp( \theta (\eps_{i}^{2}-1) \uv_{i} \uv_{i}^{\T}) 
+	\biggr\} .
+\end{EQA}
+Now we use the following general fact:
+
+\begin{lemma}
+\label{LlEexiUv}
+If \( \xi \) is a random variable and \( \Pi \) is a projector in \( \R^{\dimp} \), then 
+\begin{EQA}
+	\log \E \exp(\xi \Pi) 
+	&=&
+	\log \bigl( \E \ex^{\xi} \bigr) \Pi .
+\label{logEexxiUv}
+\end{EQA}
+\end{lemma}
+\begin{proof}
+The result \eqref{logEexxiUv} can be easily obtained by applying twice the spectral mapping theorem. 
+\end{proof}
+
+This result yields, in particular, for any unit vector \( \uv \in \R^{\dimp} \)
+\begin{EQA}
+	\log \E \exp\bigl( \xi \uv \uv^{\T} \bigr)
+	&=&
+	\log \bigl( \E \ex^{\xi} \bigr) \uv \uv^{\T} .
+\label{logEexxiuvuvT}
+\end{EQA}
+Moreover, for any vector \( \uv \in \R^{\dimp} \), 
+the normalized product \( \uv \uv^{\T} / \| \uv \|^{2} \) is a rank-one projector, 
+and hence,
+\begin{EQA}
+	\log \E \exp\bigl( \xi \uv \uv^{\T} \bigr)
+	&=&
+	\log \bigl( \E \ex^{\xi \| \uv \|^{2}} \bigr) \frac{\uv \uv^{\T}}{\| \uv \|^{2}} \, .
+\label{logEexxiuv2uv2}
+\end{EQA}
+%
+With \( \Uv_{i} \eqdef \uv_{i} \uv_{i}^{\T} / \| \uv_{i} \|^{2} \) and 
+\( \xi_{i} = \theta (\eps_{i}^{2}-1) \), we derive
+\begin{EQA}
+	\log \E\exp\bigl\{ \theta (\eps_{i}^{2}-1) \uv_{i} \uv_{i}^{\T} \bigr\}
+	&=&
+	\log \E \exp\bigl\{ \theta (\eps_{i}^{2}-1) \| \uv_{i} \|^{2} \bigr\} \Uv_{i}
+	\\
+	&=&
+	\log\left(  
+		\frac{\exp\bigl( - \| \uv_{i} \|^{2}\theta\bigr)}{\sqrt{1 - 2\|\uv_{i}\|^{2} \theta}}
+	\right) \Uv_{i}
+	\\
+	&=&
+	\biggl\{ 
+		- \|\uv_{i}\|^{2}\theta - \frac{1}{2} \log(1 - 2 \theta \| \uv_{i} \|^{2}) 
+	\biggr\}
+	\Uv_{i}
+\label{logEtei2m1i}
+\end{EQA}
+and by \eqref{matrix_chernoff}
+\begin{EQA}
+	&& \nquad
+	\P\bigl( \| \Zv \|_{\oper} \geq \zq \bigr)
+	\\
+	& \leq &
+	2 \inf_{\theta > 0 } \ex^{-\theta \zq} 
+	\tr	\exp \biggl\{ 
+		\sum_{i=1}^{n} \frac{\uv_{i}\uv_{i}^{\T}}{\|\uv_{i}\|^{2}} 
+		\Bigl\{ - \|\uv_{i}\|^{2}\theta - \frac{1}{2} \log(1 - 2 \theta \| \uv_{i} \|^{2}) 
+		\Bigr\} 
+	\biggr\}.
+	\qquad
+\label{MastEqLog}
+\end{EQA}	
+Denote \( \etav = (\eta_{1},\dots,\eta_{n})^{\T}\), where 
+\begin{EQA}
+	\eta_{i}
+	&=&  
+	- \theta - \frac{\log(1 - 2\|\uv_{i}\|^{2} \theta)}{2\|\uv_{i}\|^{2}}.
+\end{EQA}
+The use of %\( \UV^{\T} \UV = \Id \) 
+\eqref{jmu2v221mup} and \eqref{BoundRow} yields for \(\theta<(2\td^{2})^{-1}\) 
+\begin{EQA}
+	\eta_{i}
+	&=&
+	\frac{1}{2 \| \uv_{i} \|^{2}} 
+	\bigl\{ 2 \theta \| \uv_{i} \|^{2} - \log(1 - 2 \theta \|\uv_{i}\|^{2}) \bigr\}
+	\\
+	& \leq &
+	\frac{\bigl( 2 \theta \| \uv_{i} \|^{2} \bigr)^{2}}
+		 {4 \| \uv_{i} \|^{2}(1 - 2 \theta \td^{2})}
+	\leq 
+	\frac{\theta^{2} \td^{2}}{(1 - 2 \theta \td^{2})} .
+\label{ei12ui241m2}
+\end{EQA}
+%\begin{EQA}
+%	\eta_{i} 
+%	& \leq & 
+%	2\|\uv_{i}\|^{4} \theta^{2}.
+%\end{EQA}
+Then by \eqref{MastEqLog} and \( \UV \UV^{\T} = \Id_{\dimp} \) using \( \mu = 2 \theta \td^{2} \)
+\begin{EQA}
+\label{}
+	\P\bigl( 
+		\| \Zv \|_{\oper}
+		\geq  
+		t
+	\bigr)
+	& \leq &
+	2 \inf_{\theta > 0 } \ex^{-\theta \zq} 
+	\tr	\exp \bigl\{ \UV \diag(\etav) \UV^{\T} \bigr\}
+	\leq 
+	2 \inf_{\theta > 0 } \ex^{-\theta \zq} 
+	\tr	\exp \bigl\{ \| \etav \|_{\infty} \Id_{\dimp} \bigr\}
+	\\
+	& \leq &
+	2 \dimp \inf_{\theta > 0} \exp\biggl\{ 
+		- \theta \zq + \frac{\theta^{2} \td^{2}}{1 - 2 \theta \td^{2}} 
+	\biggr\} 
+	=
+	2 \dimp \inf_{\mu > 0} \exp\biggl\{ 
+		- \mu \frac{t}{2 \td^{2}} + \frac{\mu^{2} \td^{-2}}{1 - \mu} 
+	\biggr\} .
+\end{EQA}	
+%Therefore, 
+Lemma~\ref{Lmuvpxx} helps to bound 
+%similarly to \eqref{x2xv4x12} 
+for \( \xxp = \xx + \log (2\dimp) \) and \( t = 2 \td \xxp^{1/2} + 2 \td^{2} \xxp \) 
+that  
+\begin{EQA}
+	\inf_{\mu > 0} \exp\biggl\{ 
+		- \mu \frac{t}{2 \td^{2}} + \frac{\mu^{2} \td^{-2}}{1 - \mu} 
+	\biggr\}
+	& = &
+	\inf_{\mu > 0} \biggl\{ 
+		- \mu \bigl( \td^{-1} \xxp^{1/2} + \xxp \bigr) + \frac{\mu^{2} \td^{-2}}{4(1 - \mu)} 
+	\biggr\}
+	\leq 
+	- \xxp \, .
+\label{inft0tt21m2t2}
+\end{EQA}
+Therefore,
+%\( t = 2 \td^{2}\bigl\{ \log (\dimp) + \xx \bigr\} 
+%+ 2 \td \bigl\{ \log (\dimp) + \xx \bigr\}^{1/2} \)
+\begin{EQA}
+	\P\biggl( 
+		\|\Zv \|_{\oper}
+		\geq  
+		2 \td \sqrt{ \xxp} 
+		+ 2\td^{2} \xxp
+	\biggr)
+	& \leq &
+	2 \dimp \, \ex^{ - \xxp}
+	=
+	\ex^{-\xx}
+\end{EQA}
+as required.
+\end{proof}
+
+\begin{cons} For non i.i.d $\varepsilon = R^{1/2}\xi$ 
+\begin{EQA}
+	\P\biggl( 
+		\|\Zv \|_{\oper}
+		\geq \lambda_{\max}(R) (  
+		2 \td \sqrt{ \xxp} 
+		+ 2\td^{2} \xxp )
+	\biggr)
+	& \leq &	
+	\ex^{-\xx}
+\end{EQA}
+\end{cons}
+
+\begin{cons} 
+\label{abstract_mdev}
+\begin{EQA}
+	\P\biggl( 
+		\| \UV \diag(\eta) \UV^{T}  \|_{\oper} > z \biggr)
+	& \leq &	
+	2p \inf_{\mu} \exp \left\{ -\mu z + \max_i \frac{1}{\normp{u_i}^2} \log \E e^{ \mu \normp{u_i}^2 \eta_i } \right\}
+\end{EQA}
+\end{cons}
+
+\begin{theorem}[Deviation bound for matrix Gaussian sums]
+\label{CUvepsB}
+Let vectors \(\uv_{1},\dots,\uv_{n}\) in \( \R^{\dimp} \) satisfy
+\begin{EQA}
+\label{BoundRowmat}
+ 	\|\uv_{i}\|
+ 	&\leq &
+ 	\td
+\end{EQA}
+for a fixed constant \(\td\).
+Let \(\eps_{i}\) be independent standard Gaussian, \( i=1,\ldots,n \).  
+Then for each vector \( \Bias = (b_{1},\ldots,b_{n})^{\T} \in \R^{n} \), 
+the matrix \( \Zv_{1} \) with
+\begin{EQA}
+	\Zv_{1}
+	& \eqdef &
+	\sum_{i=1}^{n} \eps_{i} b_{i} \uv_{i} \uv_{i}^{\T}
+\end{EQA}
+fulfills
+\begin{EQA}
+	\P\biggl( 
+		\| \Zv_{1} \|_{\oper}
+		\geq  
+		\td^{2} \| \Bias \| \sqrt{2 \xx} 
+	\biggr)
+	& \leq &
+	2 \ex^{-\xx}.
+\end{EQA}
+%\end{lemma}
+\end{theorem}
+
+\begin{proof}
+As \( \eps_{i} \) are i.i.d. standard normal and \( \E \ex^{a \eps_{i}} = \ex^{a^{2}/2} \) for 
+\( |a| < 1/2 \),
+%\begin{EQA}
+%	\log \E \exp\bigl( \theta \eps_{i} b_{i} \| \uv_{i} \|^{2} \bigr)
+%	&=&
+%	\theta^{2} b_{i}^{2} \| \uv_{i} \|^{4}/2
+%\label{logEexteibi}
+%\end{EQA}
+%and ,
+it follows from the Master inequality and Lemma~\ref{LlEexiUv} 
+\begin{EQA}
+\label{matrix_chernoff1}
+	\P\bigl( 
+		\| \Zv_{1} \|_{\oper} \geq \zq
+	\bigr)
+	& \leq &
+	2 \inf_{\theta > 0} \ex^{-\theta \zq} 
+		\tr \exp \biggl\{ 
+		\sum_{i=1}^{n} \log \E\exp( \theta \eps_{i} b_{i} \uv_{i} \uv_{i}^{\T}) 
+	\biggr\} 
+	\\
+	& \leq &
+	2 \inf_{\theta > 0} \ex^{-\theta \zq} 
+	\tr \exp \biggl\{ 
+		\sum_{i=1}^{n} \frac{\theta^{2} b_{i}^{2} \| \uv_{i} \|^{4}}{2} \,\,
+		\frac{\uv_{i}\uv_{i}^{\T}}{\|\uv_{i}\|^{2}} 
+	\biggr\} .
+\end{EQA}
+Moreover, as \( \| \uv_{i} \| \leq \td \) and 
+\( \Uv_{i} = \uv_{i} \uv_{i}^{\T} / \| \uv_{i} \|^{2} \) is a rank-one projector with 
+\( \tr \Uv_{i} = 1 \), it holds
+\begin{EQA}
+	\tr \exp \biggl\{ 
+		\frac{\theta^{2}}{2} \sum_{i=1}^{n} b_{i}^{2} \| \uv_{i} \|^{4} \Uv_{i}
+	\biggr\}
+	& \leq &
+	\exp \tr\biggl( \frac{\theta^{2} \td^{4}}{2} \sum_{i=1}^{n} b_{i}^{2} \Uv_{i} \biggr)
+	=
+	\exp \frac{\theta^{2} \td^{4} \| \Bias \|^{2}}{2} \, .
+\label{trexdPs422}
+\end{EQA}
+This implies
+for \( \zq = \td^{2} \| \Bias \| \sqrt{2 \xx} \)
+\begin{EQA}
+	\P\bigl( 
+		\| \Zv_{1} \|_{\oper} \geq \zq
+	\bigr)
+	& \leq &
+	2 \inf_{\theta > 0} \exp\biggl(
+		- \theta \zq + \frac{1}{2} \theta^{2} \td^{4} \| \Bias \|^{2} 
+	\biggr)
+	=
+	2 \ex^{-\xx} 
+\label{PZott0t12}
+\end{EQA}
+and the assertion follows.
+\end{proof}
+
+\begin{cons} For non i.i.d $\varepsilon = R^{1/2}\xi$ 
+\begin{EQA}
+	\P\biggl( 
+		\| \Zv_{1} \|_{\oper}
+		\geq  \sqrt{\lambda_{\max}(R)}
+		\td^{2} \| \Bias \| \sqrt{2 \xx} 
+	\biggr)
+	& \leq &
+	2 \ex^{-\xx}.
+\end{EQA}
+\end{cons}
+
+
+\end{document}

@@ -1,0 +1,50 @@
+Comparison of
+$
+\max_t \langle P ,  (\Vert  X_1 \Vert, \ldots, \Vert  X_n \Vert)  \rangle (t) 
+$
+and
+$
+\max_t \langle P , (\Vert  X_1^b \Vert, \ldots, \Vert  X_n^b \Vert) \rangle (t)
+$
+could be done by Slepian inequality and replacing norm with max-product function ($\max_t P \max_{\gamma_1 \ldots \gamma_n} \Gamma X  $), where 
+\[
+\Gamma = \diag (\gamma_1^T \ldots \gamma_n^T),
+\quad
+P =  \diag (P_h^T \ldots P_h^T)
+\] 
+\begin{lemma}
+\[
+ \max_{\gamma \in G_{\varepsilon}} \gamma^T S   \leq  \Vert S \Vert \leq \frac{1}{1 - \varepsilon} \max_{\gamma \in G_{\varepsilon}} \gamma^T S, 
+\]
+\end{lemma}
+where $|G_{\varepsilon}| \leq  (2/\varepsilon)^{p-1}$, $S(t) \in \R^{p}$, $ 1\leq t\leq M$
+By anti-concentration lemma one could obtain inequality for measures
+\[
+\bigg| \P (\max_{t} \Vert S(t) \Vert < q) - \P ( \max_{t} \max_{\gamma \in G_{\varepsilon}} \gamma^T S(t) < q) \bigg| 
+\leq 
+8 \sqrt{p} \varepsilon q \frac{\sigma_2}{\sigma_1^2}\sqrt{\log \left( M \frac{2}{\varepsilon} \right)}
+\] 
+Since $max_{\gamma_i}$ functions are independent the next theorem take place with $|Gh_{\varepsilon}| \leq h (2/\varepsilon)^{p-1} $
+\begin{theorem}
+\[
+\bigg| \P ( \max_t \langle P ,  (\Vert  X_1 \Vert, \ldots, \Vert  X_n \Vert)  \rangle (t)  < q) - \P (\max_t  \max_{\gamma_1 \ldots \gamma_n} P \Gamma X < q) \bigg| 
+\leq 
+8 \sqrt{p} \varepsilon q \frac{\sigma_2}{\sigma_1^2}\sqrt{\log \left(  \frac{2nh}{\varepsilon} \right)}
+\] 
+\end{theorem}
+
+\begin{theorem}
+\[
+ \P (\max_t  \max_{\gamma_1 \ldots \gamma_n} P \Gamma X < q) - 
+ \P (\max_t  \max_{\gamma_1 \ldots \gamma_n} P \Gamma X^b < q)  
+ \leq 
+ \]
+ \[
+ \leq  
+ \left( 
+\frac{\beta \Vert g' \Vert_\infty}{\delta} + \frac{\Vert g'' \Vert_\infty }{2 \delta^2}
+\right) \Vert \triangle P \Gamma \Sigma \Gamma^T P^T \Vert_{\oper} + 8 \sqrt{p} \delta \frac{\sigma_2}{\sigma_1^2}\sqrt{\log \left(  \frac{2nh}{\varepsilon} \right)}
+\]
+\end{theorem}
+
+ 

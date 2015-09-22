@@ -1,0 +1,139 @@
+\label{sec:theory}
+\subsection{LRT statistic}
+%We are to derive essential properties of the Generalised Likelihood Ratio (GLR) statistic that form base of the CP detection algorithm. %Statements in this section rely on assumption 
+This section presents main results that describe theoretical properties of the likelihood-ratio statistics (LRT). They are essential for the proposed algorithm of change point detection. Further assume that log-likelihood function $L(\theta) = L(Y,\theta)$ has rather precise approximation by its quadratic part in local region $\localr$  of $\theta^*$, $\localr \subseteq \R^p$, where
+\[
+\theta^* = \argmax_{\theta} \E L(\theta),
+\quad
+\widehat{\theta} = \argmax_{\theta} L(\theta)
+\]
+and $\localr = \{\Vert D (\theta - \theta^*) \Vert < r \}$. \cite{wilks2013} provides required conditions for justified quadratic approximation and parameter concentration in the local region.
+Approximation error involves the next variables for its estimation:
+\[
+  \alpha(\theta, \theta_0) = L(\theta) - L(\theta_0)   - (\theta - \theta_0)^T \gradL( \theta_0) +  \frac{1}{2} \Vert D (\theta - \theta_0) \Vert^2, 
+\]
+\[
+\chi(\theta, \theta_0) = D^{-1} \nabla \alpha(\theta, \theta_0) 
+= D^{-1} (\gradL(\theta) - \gradL( \theta_0) ) +  D (\theta - \theta_0). 
+\]
+Let  in region $\Theta_0(r)$ with probability $1 - e^{-x}$:
+\begin{equation}\label{cond_A}\tag{A}
+\frac{| \alpha(\theta, \theta^*)  |}{\Vert D(\theta - \theta^*) \Vert} \leq \diamondsuit (r, x),  
+\quad
+  \Vert \chi(\theta, \theta^*) \Vert \leq  \diamondsuit (r, x).
+\end{equation}
+
+Firstly, to provide a simple non-strict explanation of what kind of distribution the main statistic  $\dLh$ is supposed to have, review  $\dLh$ as
+\[
+\dLh = L(\widehat{\theta}) -  L(\widehat{\theta}_{H_0}), 
+\quad L(\theta) = L_1(\theta_1) + L_2(\theta_2), 
+\]
+\[
+\quad L_1 = L(Y_1,\ldots,Y_h), \; L_2 = L(Y_h,\ldots,Y_{2h}), 
+\]
+where $\widehat{\theta}_{H_0}$ is argmax of $L$ under condition $H_0: \theta_1^* = \theta_2^*$. Then due to quadratic approximation $\dLh$  corresponds to Tailor equation with point $\widehat{\theta}$:
+\[
+\dLh \approx \frac{1}{2} \Vert D(\widehat{\theta} - \widehat{\theta}_{H_0})  \Vert^2.
+\]   
+If $\widehat{\theta}$ and $\widehat{\theta}_{H_0}$ tend to be Normal and $H_0$ is true then their difference are close to a centered Normal variable. If $H_0$ is false -- the Normal variable will have mean that  is equal to $D(\theta^* - \theta_{H_0}^*)$. 
+
+The next theorem  presents  generalized result for non-quadratic model. 
+\begin{theorem}
+\label{dl_theorem}
+Assume condition (\ref{cond_L_star}) and quadratic Laplace approximation (\ref{cond_A}) of $L_1$ and $L_2$   are fulfilled with probability $1 - 2 e^{-x}$, additionally with probability $1 - 2 e^{-x}$
+\[
+\Vert \xi_i \Vert \leq z(x), 
+\quad z^2(x) = \max_i p_{B_i} + 6 \lambda_{B_i} x,
+\] 
+\[\tag{B}
+B_i = D_i^{-1} \Var (\nabla L_i(\theta^*))D_i^{-1},
+\quad p_B = \tr(B), 
+\quad \lambda_B  = \lambda_{\max} (B).
+\]
+Then in the local region with probability $1 - 8 e^{-x}$ 
+\[
+2 \dLh = \Vert  \dxi + \dtheta \Vert^2  + O(\{r + z(x)\} \diamondsuit (r, x)),
+\]
+where
+\[
+\dxi  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\dtheta  = \Sigma (\theta_2^* - \theta_1^*),
+\]
+\[\tag{S}
+\Sigma^2 = D_2^2 D^{-2} D_1^2 D^{-2} D_2^2 + D_1^2 D^{-2} D_2^2 D^{-2} D_1^2
+ = D_1^2 D^{-2}D_2^2 \approx \frac{1}{4} D^2. 
+\]
+\end{theorem}    
+
+\begin{remark} 
+\label{dxi_limit}
+In increasing sample size $n \to \infty$ the stochastic component tends to Normal distribution: 
+\[
+\dxi \to \mathcal{N}(0, B_1 + B_2).
+\]
+\end{remark}
+
+\begin{remark}
+For the condition $\widehat{\theta} \in \Theta_1(r) \cap \Theta_2(r)$ the restriction of the parameter  $\theta^*$  variability is required
+\begin{equation}\label{cond_L_star}
+\tag{L*}
+\Vert D(\theta_1^* - \theta_2^*) \Vert \leq r.
+\end{equation}
+\end{remark}
+
+Proof of  a similar statement (theorem \ref{dl_theorem}) for statistic $\sqrt{2 \dLh}$ one could get from condition (\ref{cond_A}). With probability $1 - 2e^{-x}$
+\begin{align*}
+\left| \dLh (\widehat{\theta}_1, \widehat{\theta}_2) - \frac{1}{2} \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert^2 \right|  
+&\leq
+2 \Vert D_1(\widehat{\theta}_1 - \widehat{\theta}) \Vert \diamondsuit (r, x) + 2 \Vert D_2(\widehat{\theta}_2 - \widehat{\theta}) \Vert \diamondsuit (r, x) \\ 
+&\leq  4  \Vert  \Sigma(\widehat{\theta}_2 - \widehat{\theta}_1)  \Vert  \diamondsuit (r, x).
+\end{align*}
+Inequality $|a - b| \leq |a^2 - b^2| / b, \; b >0$ converts the previous term to
+\[
+\left| \sqrt{ 2  \dLh (\widehat{\theta}_1, \widehat{\theta}_2) } -  \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert \right| \leq 
+8   \diamondsuit (r, x).
+\]
+Replacement $(\widehat{\theta}_1, \widehat{\theta}_2)$ with $(D_1^{-1}\xi_1 + \theta_1^*, \; D_2^{-1}\xi_2 + \theta_2^*)$ results in
+\[
+\left| \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert  - 
+\Vert  \dxi +  \dtheta \Vert 
+\right | 
+\]
+\[
+\leq  \Vert \Sigma(\widehat{\theta}_1 - \theta_1^*) - \Sigma D_1^{-1} \xi_1 \Vert
++ \Vert \Sigma(\widehat{\theta}_2 - \theta_2^*) - \Sigma D_2^{-1} \xi_2 \Vert
+\leq  2 \diamondsuit (r, x).
+\]
+The next theorem summarizes the statements above.  
+\begin{theorem}
+\label{dl_sq_theorem}
+Assume condition (\ref{cond_L_star}) and quadratic Laplace approximation (\ref{cond_A}) with probability $1 - 2 e^{-x}$ are fulfilled. Then  with probability $1 - 4 e^{-x}$ in the local region  $\Theta_1(r) \cap \Theta_2(r)$ took place
+\[
+\left| 
+\sqrt{ 2\dLh} - 
+\Vert \dxi + \dtheta \Vert 
+\right| \leq 
+10  \diamondsuit (r, x).
+\]
+where $\dxi$ and $\dtheta$ are defined in theorem \ref{dl_theorem}.
+\end{theorem}
+
+\begin{remark}
+ The constant near  $\diamondsuit (r, x)$ could be decreased,  expanding  series of $L_1(\theta)$, $L_2(\theta)$ and $L(\theta)$ in the local regions around $\theta_1^*$, $\theta_2^*$ and $\theta^*$ instead of MLE values:
+\[
+\bigg |
+2 \dLh  -  \Vert  \dxi +  \dtheta \Vert^2 
+\bigg | 
+\leq (4 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+\end{remark}
+
+\begin{remark}
+Weighted LRT statistic (\ref{Tb}) has  similar approximation:
+\[
+2 \dLh^{\flat} \approx  \Vert D(\widehat{\theta}^b - \widehat{\theta}_{H_0}^b)  \Vert^2 =  \Vert \dxi^{\flat}  \Vert^2.
+\] 
+where $\widehat{\theta}^{\flat}_{H_0}$ is argmax of $L^{\flat}$ under condition $H_0: \widehat{\theta}_2 - \widehat{\theta}_1 = \widehat{\theta}_{12}$, which is true. That's why the mean of difference $(\widehat{\theta}^b - \widehat{\theta}_{H_0}^b)$  is zero.
+\end{remark}
+

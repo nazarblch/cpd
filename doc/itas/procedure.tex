@@ -1,0 +1,33 @@
+\label{sec:procedure}
+This section provides  the description of the proposed algorithm. Let $(\P(\theta), ~\theta \in \Theta \subseteq \mathbb{R}^p)$ be a local parametric assumption about the nature of data inside a window $(Y_{t-h},..., Y_{(t + h - 1)})$. The generalised likelihood ratio test is 
+\[
+T_{h}(t) = \sup_{\theta \in \Theta}L(\theta; Y_{t-h},..., Y_{t-1}) + \sup_{\theta \in \Theta}L(\theta; Y_{t},...,
+Y_{t + h-1})
+\]
+\[
+-\sup_{\theta \in \Theta}\{L(\theta; Y_{t-h},..., Y_{t-1}) + L(\theta; Y_{t},..., Y_{t+h-1})\},
+\]
+where $L(\theta;\cdot)$ is a log-likelihood function. 
+To control a change point pattern, the procedure monitors $2h$ values of the LRT simultaneously:
+\[
+\mathbb{T}_h(t) = (\sqrt{2T_h(t - h)},..., \sqrt{2T_h(t + h - 1)}).
+\]
+The test statistics in hand is a convolution of $\mathbb{T}_h(t)$ with a predefined change-point pattern $P_h \in \R^{2h}$.
+
+\[
+    \hat{\mathbb{T}}_h(t) = \left<\mathbb{T}_h(t), P_h\right>.
+\]
+
+Under \textit{online} framework, the algorithm marks a time moment $\tau$ as a change point,  if test statistics $\hat{T}_{h}(\tau + h)$ exceeds critical value $z(h)$ at the moment $\tau + h$:
+\[
+\{\tau: \hat{\mathbb{T}}_{h}(\tau - h) > z(h)\}.
+\]
+
+Under \textit{offline} setting, $\tau$ is a change point if
+\[
+\{\tau = \argmax_{t \in \{1,...,M\}} \sum_{h \in H} w_h \dLhConv(t),\quad \exists h \in H: \hat{\mathbb{T}}_{h}(\tau) > z(h)\},
+\]
+where $M$ is a time moment till which the data is observed, $\{w_h\}_{h \in H}$ -- weights for window size preferences. 
+
+In both cases the procedure repeats itself simultaneously on different scales $H = \{h_1,..., h_N\}$. The greater the number $k$ of such scales $h_{i_1},...,h_{i_k}$  where $\tau$ is marked as a change point, the more sure algorithm is, that $\tau$ the \textit{true} change point is.
+

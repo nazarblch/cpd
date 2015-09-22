@@ -1,0 +1,17 @@
+\label{sec:survey}
+Methods that are used for change point detection can be classified in many different ways. Below we provide several standard ones. \\
+\textit{Retrospective and sequential methods}.\\
+This approach divides methods into two groups not by their properties, but by the area of their application.  Under \textit{retrospective} or \textit{offline} setting observed data set is fixed and the goal is to extract homogeneous regions. These methods are widely applicable for analysis of data that is not changing over time, e.g. images or DNA \citet{RecombBaeysian}. A very detailed survey of existing methods can be found in \citet{ParStatChen}. \textit{Sequential} or \textit{online} methods solve the problem of the \textit{quickest} change point detection. It is assumed, that the data is aggregated from running random process. The goal is to find changes in the nature of process as soon as possible. This problem arises across many scientific areas: quality control \citet{QualContr1}, cybersecurity \citet{Cyber1}, \citet{Cyber2}, econometrics \citet{SpokoinyCP}, \citet{Econom2}, geodesy e.t.c. Overview of the state-of-art methods for quickest change point detection are described in \citet{ReviewPolun} or \citet{Shiryaev}. 
+
+\textit{Frequentist and Bayesian methods}.\\
+\textit{Frequentist} approaches do not make any preliminary \textit{a prior} assumption about the stochastic nature of target parameter, i.d. it is supposed to be fixed value, not a random variable, e.g. \citet{Freq1}, \citet{Freq2}.
+\textit{Bayesian} change point models, on the contrary, treat parameter as random variable, e.g. \citet{Bayes1}, \citet{Bayes2}. These methods are quite common in bio-statistics.
+
+\textit{Parametric and non-parametric}.\\
+All algorithms that assume observed data to obey some unknown stochastic law $\mathbb{P}_{\theta}$, that belongs to some known parametric family $(\mathbb{P}_{\theta}, \theta \in \Theta \subseteq \R^p)$ are called \textit{parametric}, e.g. \citet{Param1}, \citet{Param2}. Up-to-date survey of exiting methods and its applications can be found also in \citet{ParStatChen}.
+\textit{Non-parametric} methods have more wide range of application, as they do not use any assumptions of this type, e.g.\citet{NonParam1}, \citet{NonParam2}. Many non-parametric methods can be found in \citet{NonParamRev}.
+
+The concept of multiscality is, for example, exploited in \citet{multiscaleCP1}, \citet{SpokoinyCP} and \citet{MultiscaleCP2}. It means, that observed data is analysed on different scales simultaneously. In this work we broaden the idea of multiscale change point detection proposed in \citet{SpokoinyCP}.
+
+As this realm of research is developing rapidly, more and more methods combine several of described techniques, e.g.  \textit{bayesian},  \textit{parametric} or \textit{non-parametric}  sequential change point detection \citet{BayesOnlineWeb}, \citet{RossCP}. There is a significant cohort of free soft-ware for researchers written in R and MatLab \citet{CPRepR}, \citet{BayesOnlineWeb}, \citet{GausMixtWeb}.
+

@@ -1,0 +1,40 @@
+\documentclass[a4paper,12pt]{report} 
+     
+\usepackage[intlimits]{amsmath}
+\usepackage{amsthm,amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+%\usepackage{graphicx}
+\usepackage[final]{graphicx,epsfig} 
+\usepackage{longtable}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+
+
+
+
+\begin{document}
+
+\begin{samepage}
+
+\begin{center}
+\textbf{Multiplier  bootstrap with misspecified models }\\
+\underline{N. Buzun}, V. Spokoiny \\
+ Weierstrass Institute for Applied Analysis and Stochastics \\ $ $ \\
+ 
+ \textbf{Abstract}
+\end{center}
+
+\nopagebreak
+
+
+
+This research  deals with multiplier bootstrap techniques which provide quantiles estimation for various types of statistics. 
+In substance multiplier bootstrap generates weight $u_i$ for each fixed data element $Y_i$ and correspondingly simulates values of a log likelihood function $L(Y)$ as a weighted sum $L(u,Y) = \sum_i u_i l(Y_i)$.  
+It was observed that if a stochastic model has misspecification (data $Y$ and model $L$ distribution differs significantly) bootstrap simulation generates variables with higher variance comparing to  real $Y$ generation. The aim is	 to reveal evident intuitive explanation for variance augmentation and determine model properties which have influence on it. Technique that provides variance reduction (presmoothing) is also considered on an example of Gaussian and Generalised linear models.             
+
+\end{samepage}
+
+\end{document}

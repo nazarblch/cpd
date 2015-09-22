@@ -1,0 +1,37 @@
+\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+%\newcommand{\subjclass}[1]{\par\noindent\emph{JEL codes:} #1\\}
+
+ 
+  \begin{document}
+  
+  Gaussian approximation realize sequential replacement of random arguments in function $ \E f(X_1,\ldots,X_n)$ by its normal duplicates with the same moments:
+  \[
+  \E f(X_1,\ldots,X_n), \E f(\tX_1,\ldots,X_n), \ldots, \E f(\tX_1,\ldots,\tX_n),
+  \] 
+  \[
+  \E X_i  = m_i, 
+  \quad
+  \Var X_i = S_i,
+  \quad
+  \tX_i \in \ND(m, S_i).
+  \]
+  Each replacement iteration yields error from Tailor expansion 
+  \[
+  \text{err}_i = \sup_{x} \normp{\nabla_x^3 \E f(\tX_1,\ldots, x ,\ldots,X_n)}_1 \left( \E \normp{X_i}_{\infty}^3 + \E \normp{\tX_i}_{\infty}^3 \right).
+  \] 
+  For case when $X_1,\ldots,X_n$ composes sum and $f = \Ind h$ 
+  \[
+   \sup_{x} \normp{\nabla_x^3 \E f(\tX_1, \ldots, x ,\ldots,X_n)}_1 \leq  \sup_{x} \normp{\nabla_x^3 \E f(\tX_1, \ldots, x ,\ldots, \tX_n)}_1 + \text{err}[:i]  \normp{  \nabla^3 \int     \nabla f(X) dX}_1
+  \]
+  
+  
+  \end{document}

@@ -1,0 +1,100 @@
+     \documentclass[a4paper,12pt]{report} %размер бумаги устанавливаем А4, шрифт 
+     
+     \usepackage[intlimits]{amsmath}
+\usepackage{amsthm,amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+%\usepackage{graphicx}
+\usepackage[final]{graphicx,epsfig} 
+\usepackage{longtable}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage[usenames]{color}
+
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+
+\usepackage{hyperref}
+
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}.}
+
+%\usepackage[backend=bibtex]{biblatex}
+%\bibliography{vldb}
+
+\graphicspath{{img/}}
+\newcommand{\imgh}[3]{\begin{figure}[!h]\center{\includegraphics[width=#1]{#2}}\caption{#3}\label{Fig:#2}\end{figure}}
+
+
+
+    \usepackage{geometry} % Меняем поля страницы
+    \geometry{left=2cm}% левое поле
+    \geometry{right=1.5cm}% правое поле
+    \geometry{top=1cm}% верхнее поле
+    \geometry{bottom=2cm}% нижнее поле
+
+ %   \renewcommand{\theenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+  %  \renewcommand{\labelenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\theenumii}{.\arabic{enumii}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}% Меняем везде перечисления на цифра.цифра
+  %  \renewcommand{\theenumiii}{.\arabic{enumiii}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}% Меняем везде перечисления на цифра.цифра
+    
+    
+
+
+\usepackage{verbatim}
+
+\theoremstyle{definition}
+%\newtheorem{problem}{\noindent\normalsize\bfЗадача \No\!\!}
+\newtheorem{problem}{\noindent\normalsize\bf{}}[section]
+\renewcommand{\theproblem}{\arabic{problem}}
+\newtheorem*{example}{\noindent\normalsize\bf{}Пример}
+\newtheorem*{definition}{\noindent\normalsize\bf{}Определение}
+\newtheorem*{remark}{\noindent\normalsize\bf{}Замечание}
+\newtheorem{theorem}{\noindent\normalsize\bf{}Теорема}
+\newtheorem*{lemma}{\noindent\normalsize\bf{}Лемма}
+\newtheorem*{suite}{\noindent\normalsize\bf{}Следствие}
+
+
+\newtheorem*{ordre}{\noindent\normalsize\bf{}Указание}
+
+\newenvironment{solution}{\begin{proof}\vspace{1em}} {\end{proof} \vspace{2em}}
+
+
+\newcommand{\rg}{\ensuremath{\mathrm{rg}}}
+\newcommand{\grad}{\ensuremath{\mathrm{grad}}}
+\newcommand{\diag}{\ensuremath{\mathrm{diag}}}
+\newcommand{\const}{\ensuremath{\mathop{\mathrm{const}}}\nolimits}
+\newcommand{\Var}{\ensuremath{\mathop{\mathbb{D}}}\nolimits}
+\newcommand{\Exp}{\ensuremath{\mathrm{{\mathbb E}}}}
+\newcommand{\PR}{\ensuremath{\mathrm{{\mathbb P}}}}
+\newcommand{\Be}{\ensuremath{\mathrm{Be}}}
+\newcommand{\Po}{\ensuremath{\mathrm{Po}}}
+\newcommand{\Bi}{\ensuremath{\mathrm{Bi}}}
+\newcommand{\Ker}{\ensuremath{\mathrm{Ker}}}
+\newcommand{\Real}{\ensuremath{\mathrm{Re}}}
+\newcommand{\Lin}{\ensuremath{\mathrm{Lin}}}
+\newcommand{\Gl}{\ensuremath{\mathrm{Gl}}}
+\newcommand{\mes}{\ensuremath{\mathrm{mes}}}
+\newcommand{\cov}{\ensuremath{\mathrm{cov}}}
+\newcommand{\fix}{\noindent\normalsize\frownie{} \color{red}} 
+
+
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+basicstyle=\ttfamily,
+columns=fullflexible,
+showstringspaces=false,
+commentstyle=\color{gray}\upshape
+}
+
+
+\usepackage[]{algorithm2e}

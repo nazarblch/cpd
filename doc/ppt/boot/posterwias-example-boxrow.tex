@@ -1,0 +1,125 @@
+\documentclass[english,26pt,a0paper]{wiasposter}
+\usepackage[utf8]{inputenc}
+\title{Boxrows}
+\author{J. Fuhrmann}
+\name{H. Pletat} % In footer 
+\email{henrik.pletat@wias-berlin.de}
+
+% Further, optional footer fields:
+%\institution
+%\address
+%\telephone
+%\fax 
+%\url
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+
+
+\wiasrowheight{100}
+
+\wiasleftbox{OneBoxRow}{
+OneBoxRow macht einen grossen Kasten.
+Allerdings muss die Farbe jeweils vor der nächsten Zeile gesetzt werden.
+}
+\wiasboxbackground{wiasblue20}
+\wiasoneboxrow{
+Wall Street was gripped by a  fresh panic tonight as fears spread that
+the Greek debt  crisis will trigger a new  catastrophe for the fragile
+global banking system.
+The chaos was compounded as one major bank was said to have made a big
+trading "error" by trying to sell a huge number of shares by mistake.
+}
+\wiasrowheight{200}
+
+\wiasleftbox{TwoBoxRow}{
+TwoBoxRow geht auch, aber 
+Allerdings muss die Farbe jeweils vor der nächsten Box gesetzt werden.
+}
+\wiasboxbackground{white}
+\wiastwoboxrow{
+Wall Street was gripped by a  fresh panic tonight as fears spread that
+the Greek debt  crisis will trigger a new  catastrophe for the fragile
+global banking system.
+The chaos was compounded as one major bank was said to have made a big
+trading "error" by trying to sell a huge number of shares by mistake.
+\wiasboxbackground{wiasblue20}
+}
+{
+A barge  arrived at the  scene of the  Gulf of Mexico oil  spill today
+carrying a  five-storey, 100-tonne containment  dome that it  is hoped
+will stem the leak that is threatening the US coast.
+
+Engineers believe that the dome  could be the best short-term solution
+to controlling the 220,000 gallons  of oil being spewed into the water
+each day  since an  explosion at the  Deepwater Horizon rig  two weeks
+ago. The technique has not been tested before at such depths.
+}
+
+
+\wiasleftbox{ThreeBoxRow mit langem Titel links}{
+TwoBoxRow geht auch, aber 
+Allerdings muss die Farbe jeweils vor der nächsten Box gesetzt werden.
+$\backslash{}$rowlabelheight entfällt damit.
+}
+\wiasboxbackground{white}
+\wiasthreeboxrow{
+Wall Street was gripped by a  fresh panic tonight as fears spread that
+the Greek debt  crisis will trigger a new  catastrophe for the fragile
+global banking system.
+The chaos was compounded as one major bank was said to have made a big
+trading "error" by trying to sell a huge number of shares by mistake.
+}
+{
+A barge  arrived at the  scene of the  Gulf of Mexico oil  spill today
+carrying a  five-storey, 100-tonne containment  dome that it  is hoped
+will stem the leak that is threatening the US coast.
+
+Engineers believe that the dome  could be the best short-term solution
+to controlling the 220,000 gallons  of oil being spewed into the water
+each day  since an  explosion at the  Deepwater Horizon rig  two weeks
+ago. The technique has not been tested before at such depths.
+}
+{
+
+Neanderthal DNA may be commonplace  in human genomes outside Africa as
+a  result  of  interbreeding  around  60,000  years  ago.  Photograph:
+AFP/Getty Images
+
+There  is a  little  Neanderthal in  nearly  all of  us, according  to
+scientists who compared the genetic  makeup of humans with that of our
+closest ancient relatives.
+
+Most people living outside Africa can trace up to 4\% of their DNA to a
+Neanderthal  origin, a  consequence of  interbreeding between  the two
+groups after the great migration from the contintent.
+
+
+ }
+
+
+\wiasboxbackground{wiasblue20}
+
+
+\wiasleftbox{Gemischte Größen gehen auch}{
+
+}
+\wiasbox{2}{Anthropologists have long speculated  that early humans may have mated
+with  Neanderthals,  but  the  latest  study  provides  the  strongest
+evidence  so far, suggesting  that such  encounters took  place around
+60,000 years ago in the Fertile Crescent region of the Middle East.
+}
+\wiasbox{4}{
+Small, pioneering groups of modern humans began to leave Africa 80,000
+years ago and reached land occupied by the Neanderthals as they spread
+into Eurasia.  The two  may have lived  alongside each other  in small
+groups until the Neanderthals died out 30,000 years ago. }
+
+
+
+\end{document}

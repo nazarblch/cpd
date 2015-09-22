@@ -1,0 +1,113 @@
+Algorithm~\ref{alg:lrt_online}, \ref{alg:lrt_offline} summarises these ideas for sequential case. Here the current moment is supposed to be ${\tau + 2h_N - 2}$ and a candidate for the change point is $\tau$.
+
+Algorithm~\ref{alg:bootstrap} presents the procedure of calculation of a critical value $z_h$ for a fixed window size $2h$. Let $\mathbb{Y} = (Y_1,..., Y_M)$ be a training set. Let weighted likelihood function be a convolution of i.i.d likelihood components and a weight vector $(u_1,\ldots,u_M)$: 
+\begin{equation*}\label{Lb}\tag{Lb}
+L^{\flat}(\theta; Y_1,\ldots, Y_M) = \sum_{m = 1}^{M} u_m l(\theta, Y_m),
+\end{equation*}
+where $\{u_m\}_{m = 1}^M$ are i.i.d. and $\E u_m = \Var u_m = 1$. Then bootstrapped generalised likelihood ratio test is
+\begin{align*}\label{Tb}\tag{Tb}
+T_{h}^{\flat}(t) &= \sup_{\theta \in \Theta}L^{\flat}(\theta; \YLL) + \sup_{\theta \in \Theta}L^{\flat}(\theta; \YRR) \\
+&-\sup_{\theta \in \Theta}\{L^{\flat}(\theta; \YLL) + L^{\flat}(\theta + \widehat{\theta}_{12}; \YRR)\},
+\end{align*}
+\[
+\widehat{\theta}_{12} = \argmax_{\theta} L(\theta; \YRR) - \argmax_{\theta} L(\theta; \YLL)
+\]
+
+
+\begin{figure}[htb]
+      \begin{minipage}{.49\linewidth}
+    \begin{algorithm}[H]
+    \label{alg:lrt_online}
+    
+  $Q_h(t) = 0$ -- change point signals\;
+  get z(h) by Algorithm 3\; 
+
+  \ForEach{window position $t$}{
+    \ForEach{$h$}{
+      add $\dL_h(t)$ to $\dLhSeq$\;
+      $\dLhConv = \langle \dLhSeq(t-h), P \rangle$\;
+      \If{$\dLhConv > z(h)$ and $Q_{i \leq h}(t-2h:t) = 0$}{
+         $Q_{h}(t) = 1$\; 
+      }
+    }
+    \If{$\max_h Q_h(t) = 1$}{
+      $t$ is change point\;
+    } 
+  }
+  
+  
+\caption{LRTOnline.}
+\end{algorithm}
+ \begin{algorithm}[H]
+ \label{alg:lrt_offline}
+
+$S$ -- change points set; 
+$w_j$ -- window size weights;
+ 
+\textbf{function} FindCP($Y_1,\ldots,Y_M$):
+
+  get z(h) by Algorithm 3\; 
+
+  \ForEach{$h$}{
+  \ForEach{window position $t$}{
+     compute $\dL_h(t)$\; 
+  }
+  
+  \ForEach{$\tau$}{
+    $\dLhConv(\tau) = \langle \dLhSeq(\tau), P \rangle$\;
+  }
+  }
+  
+  $\tau = \argmax_\tau \sum_{h \in H} w_h \dLhConv(\tau)$\;
+  \If{$\exists h: \dLhSeq(\tau) > z(h)$}{
+  add $\tau$ to S\;
+  FindCP($Y_1,\ldots,Y_\tau$); FindCP($Y_\tau,\ldots,Y_M$)\;
+  }
+  
+  
+
+\caption{LRTOffline.}
+\end{algorithm}
+  \end{minipage}%
+    \begin{minipage}{.49\linewidth}  
+\begin{algorithm}[H]
+\label{alg:bootstrap}
+\KwData{ $(Y_1,\ldots, Y_M)$,  $h$,  $P$, $S$ -- weights generation counts}
+\KwResult{ $f^{\flat}_h$ -- bootstrap distribution of maximal convolution inside the window}
+
+\For{$s = 1$ \KwTo $S$}{
+  generate $u = (u_1,\ldots, u_M)$\;
+  
+  \ForEach{window position $t$}{
+    compute $\dL_h^{\flat}(t)$\;
+  }
+  
+  \ForEach{$\tau$}{
+    $\dLhConv^b(\tau) =  \langle \mathbb{T}(\tau), P \rangle$\;
+  }
+  add $\max_\tau\hat{\mathbb{T}}^{\flat}(\tau)$ to $f^b_h$\;
+  
+}
+
+\KwData{$H = (h_1,\ldots,h_N)$, $f^b_h$, $\alpha$ -- confidence}
+\KwResult{critical values $z(h)$}
+
+Multiplicity correction:\\
+
+\For{$s$ = 1 \KwTo S}{
+  generate $u = (u_1,\ldots, u_M)$\;
+  
+  add $\min_{h} \text{p-value}(\max_\tau\dLhConv^b(\tau), f^b_h)$ to   empirical distribution $\P_f$  
+  
+}
+
+find $\alpha'$ from condition $\P_f(x <  \alpha - \alpha') = \alpha$\;
+
+\ForEach{$h$ in $H$}{
+ $z(h) = $ quantile$(f^b_h, \alpha - \alpha')$\;
+}
+
+\caption{Critical values calibration}
+\end{algorithm}  
+      \end{minipage}
+\end{figure}

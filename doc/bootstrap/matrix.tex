@@ -1,0 +1,270 @@
+
+
+\subsection{Matrix inequality in change point statistic}
+A sequence of noise variables produced by different window positions.    
+\[
+\xi(t) = D_h^{-1} (\nabla L(\theta^*) - \nabla \E L(\theta^*))  = D_h^{-1} \sum_{i = t}^{t+h} \nabla l_i(\theta^*),
+\]
+\[
+\xi^b(t) = D_h^{-1} (\nabla L(\mle) - \nabla \E_b L(\mle)) = D_h^{-1} \sum_{i = t}^{t+h} \nabla l_i(\mle)(u_i - 1).
+\]
+Unite all variables involved into LRT statistic.  
+\[
+X = {\dxi(t)}_{t=1}^n, \quad X^b = {\dxi^b(t)}_{t=1}^n,
+\quad 
+\dxi(t) = \frac{1}{\sqrt{2}} (\xi(t+1) - \xi(t))
+\]
+
+Consider difference in variance between $X$ and $X^b$ in case of regression model:
+\[
+Y = \Psi^T_{[n \times p]} \theta + \varepsilon,
+\quad
+\varepsilon \in \ND(0, \Sigma), 
+\quad \Sigma = \diag(\sigma_1^2,\ldots,\sigma_n^2)
+\]
+
+Variables $X$ and $X^b$ cold be presented as linear transformation of a standart Normal vectors $\varepsilon$ and $\varepsilon^b$ correspondingly  
+
+\[
+\nabla l(Y_i) = \Psi_i \varepsilon_i
+\]
+
+\[
+\nabla l^b(Y_i) (u_i - 1) = \Psi_i (Y - \Pi Y)_i (u_i - 1) \Psi_i \varepsilon_i^b,
+\quad
+\Pi =  \Psi^T (\Psi\Psi^T)^{-1} \Psi
+\]
+
+\[
+X =  A H D_h^{-1}  \diagPsi \varepsilon = V \varepsilon, 
+\quad X^b = A H D_h^{-1}  \diagPsi \varepsilon^b  = V \varepsilon^b.
+\]
+
+\[
+\diagPsi = \diag(\Psi_1,\ldots,\Psi_n),
+\]
+
+\[
+H_{np,np} =
+ \begin{pmatrix}
+  I_p & I_p & \cdots & I_p & 0 & 0 \cdots & 0  \\
+  0 & I_p & \cdots & I_p & I_p & 0 \cdots & 0 \\
+  0 & 0 & \cdots & I_p & I_p & I_p  \cdots & 0 \\
+  \vdots  & \vdots  & \ddots  & \ddots & \vdots  \\
+  0 & 0 & \cdots \cdots  \cdots & 0 & 0
+ \end{pmatrix}
+ \quad
+A_{np, np} =
+ \begin{pmatrix}
+  I_p & -I_p & \cdots & 0  \\
+  0 & I_p  & -I_p & \cdots & 0 \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  0  \cdots & 0 & I_p & -I_p
+ \end{pmatrix}
+\]
+
+We are to compare $S$ and $S^{\flat}$ by 
+\[
+\Vert S \Vert \Vert S^{-1/2} (S^{\flat} - S) S^{-1/2} \Vert
+\]
+\[
+S = \Var (X) = V \Sigma V^T, 
+\quad
+S^{\flat} = \Varb (X^{\flat}) = V \diag((Y - \Pi Y)  (Y - \Pi Y)^T ) V^T
+\]
+Involving variable $\UV$ the goal estimation $(S^{\flat} - S)$ becomes
+\[
+\UV = S^{-1/2} V \Sigma^{1/2},
+\quad
+\UV\UV^{\T} = \Id_{pn}
+\]
+\[
+S^{-1/2} (S^{\flat} - S) S^{-1/2} =  \UV \Sigma^{-1/2} \diag((Y - \Pi Y)  (Y - \Pi Y)^T ) \Sigma^{-1/2} \UV^{\T} - I_{np}
+\]
+Variable $Y - \Pi Y$ has decomposition to bias and noise part 
+\[
+\Sigma^{-1/2}(Y - \Pi Y) = \Sigma^{-1/2}(f - \Pi f) + \Sigma^{-1/2}(\varepsilon - \Pi \varepsilon) = B + \tilde{\varepsilon}   
+\] 
+\begin{align*}
+S^{-1/2} (S^{\flat} - S) S^{-1/2} &=\\
+ &=\UV \diag(BB^{\T})\UV^{\T} + 2\UV \diag(\tilde{\varepsilon}B^{\T})\UV^{\T} +\\
+ &\quad+ \UV \diag(\tilde{\varepsilon}\tilde{\varepsilon}^{\T}  -  \E \tilde{\varepsilon}\tilde{\varepsilon}^{\T}) \UV^{\T} + \UV \diag(\E \tilde{\varepsilon}\tilde{\varepsilon}^{\T}) \UV^{\T}  - I_{np}.
+\end{align*}
+The last component in this equation is a part of the non-random component, which becomes high in very large model, while  $B$ is small in large model.
+
+Let $\Var (\tilde{\varepsilon}) = R$ and $\Vert (S^{-1/2} V)_i \Vert \leq \delta$, then from the consequence for theorem \ref{CUvepsUv} with probability $1 - e^x$
+\[
+\Vert \UV \diag(\tilde{\varepsilon}\tilde{\varepsilon}^{\T}  -  \E \tilde{\varepsilon}\tilde{\varepsilon}^{\T}) \UV^{\T} \Vert_{\oper}
+\leq  \lambda_{\max}(R) (  2 \td \sqrt{\xxnp} + 2 \td^{2} \xxnp ),
+\] 
+where $\xxnp = x + \log(np)$, 
+\[
+\Vert \UV \diag(\tilde{\varepsilon}B^{\T}) \UV^{\T} \Vert_{\oper} 
+\leq \sqrt{\lambda_{\max}(R)} \td^{2} \| B \| \sqrt{2 \xx}.
+\]
+
+The other two components are restricted by means of 
+\begin{lemma}
+\[
+\Vert \UV A \UV^{\T} \Vert_{\oper} \leq 
+\min ( \Vert A \Vert_{\oper}, \td^{2} \tr\{A\} )
+\]
+\end{lemma}
+\begin{proof}
+\[
+\normop{ \UV A \UV^{\T} } 
+=
+\sup_{\normp{\gamma} = 1} \gamma^{\T} \UV A \UVt \gamma
+ \leq 
+\sup_{\normp{\gamma} = 1, \max \gamma \leq \td} \gamma^{\T}  A  \gamma
+ \leq 
+ \min ( \normop{A}, \td^{2} \tr\{A\} )
+\] 
+\end{proof}
+Applying the lemma one get
+\[
+\normop{\UV \diag(BB^{\T})\UV^{\T}} \leq \min ( \normop{B}^2, \td^{2} \normp{B}^2 )
+\]
+and
+\[
+\normop{\UV \diag(\E \tilde{\varepsilon}\tilde{\varepsilon}^{\T}) \UV^{\T}  - I_{np}
+} 
+= \normop{\UV (I_{n} - \Pi)^2  - I_{n} \UVt} = \normop{\UV\Pi\UVt} \leq 1.
+\]
+Finally the upper bound for variance difference is  
+\[
+\lambda_{\max}(R) (  2 \td \sqrt{\xxnp} + 2 \td^{2} \xxnp ) + 
+\sqrt{\lambda_{\max}(R)} \td^{2} \| B \| \sqrt{2 \xx}  + \min ( \normop{B}^2, \td^{2} \normp{B}^2 ) + 1.
+\]
+The last step is bound estimation for $\normop{S}$ which is
+\[
+\normop{A}^2 \normop{H}^2  \normop{D_h^{-1}}^2  \normop{\diagPsi \diagPsi^{\T}}
+\]
+\[
+\normop{\diagPsi \diagPsi^{\T}} \leq \max_{i} \normop{\Psi_i \Psi^{\T}_i} 
+\]
+\begin{lemma}
+Spectrum of an upper triangular matrix $A$ is its diagonal. 
+\end{lemma}
+
+\begin{proof}
+Res($A$) set is equal to  Res($\diag(A)$), because of
+$\rank(A - \lambda I) = \rank(\diag(A) - \lambda I)$. 
+\end{proof}
+Correspondingly, $\normop{A}^2 = \normop{H}^2 = 1$. Bound for   $ \normop{D_h^{-1}}^2$ is $O(h^{-1})$.
+
+\subsection{Generalization to i.i.d model}
+
+Retreat regression model with an i.i.d model. In this case comparing variables would be   
+\[
+X = A H D^{-1}_{h} 
+ \begin{pmatrix}
+  \nabla l_1 (\theta^*_1) \\
+  \vdots  \\
+  \nabla l_n (\theta^*_n) 
+ \end{pmatrix} = 
+ A H D^{-1}_{h} \nabla,
+ \quad
+ X = A H D^{-1}_{h} 
+ \begin{pmatrix}
+  \nabla l_1 (\opttheta_1) (u_1 - 1) \\
+  \vdots  \\
+  \nabla l_n (\opttheta_n) (u_n - 1)
+ \end{pmatrix} = 
+ A H D^{-1}_{h} \nabla^{\flat}.
+\]
+Here instead of noise variance one get block-diagonal one 
+\[
+\Sigma = \begin{pmatrix}
+ \Var  \nabla l_1 (\theta^*_1)  & \cdots & 0  \\
+  \ddots &  \ddots  \\
+ 0 & \cdots & \Var \nabla l_n (\theta^*_n) 
+ \end{pmatrix} 
+\] 
+Analogically divide $\widehat{\nabla} = \nabla(\opttheta)$ into mean and stochastic parts
+\[
+\Sigma^{-1/2} \widehat{\nabla} = \Sigma^{-1/2} \E \widehat{\nabla} + \Sigma^{-1/2} ( \widehat{\nabla} -  \E \widehat{\nabla} )  = 
+B + \zeta.
+\]
+Normalized variance difference term is 
+\begin{align*}
+\label{SmatrixDiff}
+S^{-1/2} (S^{\flat} - S) S^{-1/2} &=\\
+ &=\UV \bldiag(BB^{\T})\UV^{\T} + 2\UV \bldiag(\zeta B^{\T})\UV^{\T} +\\
+ &\quad+ \UV \bldiag(\zeta \zeta^{T}   -  \E \zeta \zeta^{T}) \UV^{\T} + \UV \bldiag(\E \zeta \zeta^{T}) \UV^{\T}  - I_{np}.
+\end{align*}  
+Where $\bldiag$ determines block diagonal matrix with block shape $[p\times p]$, corresponded to each component in  sequence $\nabla l_1,\ldots,\nabla l_n$. 
+Start consideration with term $\UV \bldiag(\zeta \zeta^{T}   -  \E \zeta \zeta^{T}) \UV^{\T} $. 
+\begin{lemma}
+Let $\{U_i\}$ be submatrices of matrix $\UV$ corresponded to each block, such that $\UV = (U_1,\ldots, U_n)$. Assume that 
+\[
+\normop{U_i^T U_i } \leq \delta^2. 
+\]
+Than
+\[
+\normop{ 
+(U_i^{T} U_i)^{-1}
+\log \E \exp \{ (U_i^{T} U_i)^{1/2}  (\zeta_i \zeta_i^{T}   -  \E \zeta_i \zeta_i^{T}) (U_i^{T} U_i)^{1/2}  
+\} } \leq \frac{\nu_l^2}{2}  \delta^2.
+\]
+\end{lemma} 
+
+\begin{proof}
+
+
+Denote $\zeta_i \zeta_i^{T}   -  \E \zeta_i \zeta_i^{T}$ as $A$ and $(U_i^{T} U_i)^{1/2}$ as $U$. 
+With condition $\E A = 0$:
+\[
+\normop{ \log \E e^{U A U}  } = \normop{  \left(\frac{1}{2} U \E[ AU^2A ] U + O((UA)^3) \right) }.
+\]
+With condition $\normop{ U A } < 1/2 $ (with high probability):
+\begin{equation}
+\label{EUAU}
+\normop{ U^{-2} \log \E e^{U A U}  }  \leq  \normop{U^2} \normop{\E A^2}.
+\end{equation}
+\[
+\normop{\E (\zeta_i \zeta_i^{T}   -  \E \zeta_i \zeta_i^{T})^2} = 
+\normop{\E \Vert \zeta_i \Vert^2  \zeta_i \zeta_i^{T}   -  (\E \zeta_i \zeta_i^{T})^2 },  
+\]
+where 
+\[
+\Vert \zeta_i \Vert^2 \sim p,
+\quad
+\normop{\E  \zeta_i \zeta_i^{T} } = \normop{
+\Sigma_i^{-1/2} \Sigma_i(\opttheta_i)  \Sigma_i^{-1/2} - I_p + I_p  
+}
+\leq 1 + \delta_{\Sigma}(r).
+\]
+Finally, $\nu_l^2  \sim 2 p (1 + \delta_{\Sigma}(r))$.
+\end{proof}
+
+
+From proof for theorem \ref{CUvepsUv} 
+\[
+\P \left( \normop{\UV \diag(\zeta \zeta^{T}   -  \E \zeta \zeta^{T}) \UV^{\T}} >t \right) \leq
+2 np \inf_{\theta} \exp \left \{ -\theta t + \frac{\delta^2 \theta^2  \nu_l^2}{2} \right\},
+\]
+Subsequently, with $t = \sqrt{2x_{np}} \delta  \nu_l$, $x_{np}  = x + \log (2np)$:
+\[
+\P \left( \normop{\UV \diag(\zeta \zeta^{T}   -  \E \zeta \zeta^{T}) \UV^{\T}} >t \right) \leq e^{x}.
+\]
+For the other term $\UV \bldiag(\zeta B^{\T})\UV^{\T}$ by means of \ref{EUAU} one get with $\normp{\zeta_i}^2 \sim p$
+\[
+\normop{ 
+U^{-2}
+\log \E \exp \{ U  \zeta_i B_i^{T}  U 
+\} } \leq p \normp{B_i}^2 \delta^2 .
+\]
+Correspondingly, from proof for theorem \ref{CUvepsUv} 
+\[
+\P \left( \normop{\UV \diag(\zeta B^{T} ) \UV^{\T}} >t \right) \leq
+2 np \inf_{\theta} \exp \left \{ -\theta t + p \max_i \normp{B_i}^2 \delta^2 \right\},
+\]
+Finally, with $t =  2 \sqrt{x_{np} p} \delta  \max_i \normp{B_i}  $, $x_{np}  = x + \log (2np)$:
+\[
+\P \left( \normop{\UV \diag(\zeta B^{T} ) \UV^{\T}} >t \right) \leq e^{x}.
+\]
+
+
+
+

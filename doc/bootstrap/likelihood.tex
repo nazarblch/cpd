@@ -1,0 +1,49 @@
+This section explicates main restrictions of the likelihood function. They are essential for the proposed algorithm of change point detection. Further assume that log-likelihood function $L(\theta) = L(Y,\theta)$,  $Y = (Y_1,\ldots,Y_n)$, has rather precise approximation by its quadratic part in local region $\localr$  of $\theta^*$, $\localr \subseteq \R^p$, where
+\[
+\theta^* = \argmax_{\theta} \E L(\theta),
+\quad
+\widehat{\theta} = \argmax_{\theta} L(\theta)
+\]
+and $\localr = \{\Vert D (\theta - \theta^*) \Vert < r \}$. \cite{wilks2013} provides required conditions for justified quadratic approximation and parameter concentration in the local region.
+Approximation error involves the next variables for its estimation:
+\[
+  \alpha(\theta, \theta_0) = L(\theta) - L(\theta_0)   - (\theta - \theta_0)^T \gradL( \theta_0) +  \frac{1}{2} \Vert D (\theta - \theta_0) \Vert^2, 
+\]
+\[
+\chi(\theta, \theta_0) = D^{-1} \nabla \alpha(\theta, \theta_0) 
+= D^{-1} (\gradL(\theta) - \gradL( \theta_0) ) +  D (\theta - \theta_0). 
+\]
+Let  in region $\Theta_0(r)$ with probability $1 - e^{-x}$:
+\begin{equation}\label{cond_A}\tag{A}
+\frac{| \alpha(\theta, \theta^*)  |}{\Vert D(\theta - \theta^*) \Vert} \leq \diamondsuit (r, x),  
+\quad
+  \Vert \chi(\theta, \theta^*) \Vert \leq  \diamondsuit (r, x),
+\end{equation}
+where $\diamondsuit (r, x) = (\delta (r) + 6 v_0 z_H(x) \omega ) r,$
+\[\tag{D}
+D^2(\theta) = - \nabla^2 \E L (\theta),
+\quad
+D = D(\theta^*),
+\]
+\begin{equation}\label{cond_dD}\tag{dD}
+\Vert D^{-1} D^2(\theta) D^{-1} - I_p\Vert \leq \delta(r),
+\end{equation}
+\begin{equation}\label{cond_ED2}\tag{ED2}
+\forall \lambda \leq g, \; \gamma_1 \gamma_2 \in \R^p: \quad
+\log \E \exp \left\{
+\frac{\lambda}{\omega} \frac{\gamma_1^T \nabla^2 \zeta(\theta) \gamma_2}{\Vert D \gamma_2 \Vert \Vert D \gamma_2 \Vert}
+\right\} \leq 
+\frac{\nu_0^2 \lambda^2}{2},
+\end{equation}
+\[
+z_H(x) = \sqrt{H} + \sqrt{2x} + \frac{g^{-2} x + 1}{g} H, 
+\quad H = 6p,
+\]
+\[
+\omega = \omega(n) \sim \frac{1}{\sqrt{n}}, 
+\quad
+\delta(r) \sim \frac{r}{\sqrt{n}},
+\quad
+r \sim \sqrt{p}.
+\]
+Condition (\ref{cond_dD}) ensures quadratic approximation of $\E L(\theta)$ and (\ref{cond_ED2}) ensures linear approximation of centered likelihood $\zeta(\theta) = L(\theta) - \E L(\theta)$.  

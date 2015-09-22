@@ -1,0 +1,110 @@
+Likelihood function in bootstrap case is a zipped sum with i.i.d weights $(u_1,\ldots,u_n)$:
+\[
+\Lbf = \sum_{i=1}^n u_i l_i(\theta). 
+\]  
+Each weight element has $\Varb u_i = 1$ and $\Eb u_i = 1$, that results in ($\{l_i(\theta)\}$ assumed to be independent)
+\[
+\Eb \Lbf = \Lf,
+\quad
+\Varb \nabla \Lbf  =  \sum_{i=1}^n \nabla l_i(\theta) \nabla l_i(\theta)^{T} \approx \Var \nabla \Lf +  \sum_{i=1}^n \E \nabla l_i(\theta) \E \nabla l_i(\theta)^{T} . 
+\]
+Variable $\zeta = \sum_i \zeta_i$ denotes stochastic part of the likelihood ($\zeta_i(\theta) = l_i(\theta) - \E l_i(\theta)$). 
+
+\begin{lemma}[Deviations of empirical process norm] 
+Given exponential moment restriction with  $\Vert \gamma_1 \Vert = \Vert \gamma_2 \Vert = 1$ 
+\begin{equation*}\label{EDi}\tag{EDi}
+\log \E \text{exp} \left\{
+\frac{\lambda}{\omega} \gamma_1 D^{-1}  \nabla^2 \zeta_i (\theta) D^{-1} \gamma_2 
+\right\}
+\leq \frac{\lambda^2 \nu_i^2}{2}, 
+\quad \sum_i  \nu_i^2  = \nu_0^2,
+\end{equation*} 
+in local region $\Theta_0(r)$ of radius $r$ with probability $1- e^{-x}$ the next statement is fulfilled  for all $\theta$,~$\theta_0$ 
+\[
+\Vert D_0^{-1} (\nabla \zeta (\theta) -  \nabla \zeta (\theta_0))  \Vert
+\leq 12 \nu_0 z(x) \omega(n) r.
+\]
+\end{lemma}
+Paper \citep{wilks2013} contains proof for this lemma. 
+
+Function $\alphab12$ determines quadratic approximation error for the weighted likelihood function.
+\[
+\alphab12 = \Lbf - \Lb0 - (\theta - \theta_0)^{T} \nabla \Lb0 + \frac{1}{2} \Vert  D(\theta - \theta_0) \Vert^2
+\]
+Mean and deviation of the approximation error are 
+$$
+\Vert D^{-1} \nabla \Eb \alphab12 \Vert =   \Vert D^{-1} \nabla  \alpha(\theta, \theta_0) \Vert 
+\leq 2 \diamondsuit(r,x).
+$$
+\begin{equation*}
+\label{S}\tag{Sb}
+S^{\flat}(\theta, \theta_0) = D^{-1} \{\nabla \alphab12 -  \Eb \nabla \alphab12 \}
+= \sum_{i=1}^{n} D^{-1} \{\nabla l_i(\theta) - \nabla l_i(\theta_0) \}  (u_i-1).
+\end{equation*}
+Centered function $ {\overset{o}{S}}_{\flat}= S^{\flat}(\theta, \theta_0) - \E_{Y} S^{\flat}(\theta, \theta_0)$ with probability $1- e^{-x}$ fulfills 
+\[
+\Vert {\overset{o}{S}}_{\flat} \Vert \leq 
+12 \nu_0  z(x) \omega r \sqrt{\sum_{i=1}^{n} (\nu_i^2 / \nu_0^2) (u_i - 1)^2 } .
+\] 
+Let $u_i$ has restricted exponential moment:
+\begin{equation*}
+\label{Eu1}\tag{Eu}
+\log \Eb e^{(u_i - 1)^2} \leq 1,
+\end{equation*} 
+then with probability $1 - e^{-t}$ 
+\[
+\sqrt{\sum_{i=1}^{n} (\nu_i^2 / \nu_0^2) (u_i - 1)^2 } \leq  \sqrt{1+t} 
+\]
+Consequently 
+\[
+\Vert {\overset{o}{S}}_{\flat} \Vert \leq 
+12 \nu_0  z(x) \omega r  \sqrt{1+x}. 
+\]
+One could get restriction for  $\E S(\theta_2, \theta_1)$ from Hoeffding inequality \ref{vec_hoeff} restricting its components norms:
+\begin{equation*}\label{Li}
+\tag{dDi}
+\Vert D^{-1} \nabla^2 \E l_i (\theta)  D^{-1} \Vert \leq
+\frac{C_i(r)}{n},
+\end{equation*}
+\[
+\Vert \E S^{\flat}(\theta, \theta_0) \Vert \leq 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u,
+\] 
+where $C(r) = \sqrt{\sum_i C_i^2 (r)}$, $c_u = \max (u_i - 1)$. 
+
+\begin{theorem}[Boot, Wilks]
+\label{wilks_boot}
+Under conditions (\ref{EDi}), (\ref{Li}), (\ref{cond_A}) and restrictions for weights (\ref{Eu1}), in local $r$-region it holds with probability $1 - 4 e^{-x}$
+\[\tag{Ab}
+| \alphab12 |
+\leq 
+\Vert D (\theta - \theta_0)  \Vert
+\left(
+2 \diamondsuit(r,x) + 12 \nu_0  z(x) \omega r  \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right)  = 
+\]
+\[
+ = \Vert D (\theta - \theta_0)  \Vert \; 2 \diamondsuit^{\flat}(r,x). 
+\] 
+\end{theorem}
+Fisher theorem could be proved from condition
+\[
+\chib12 =  D^{-1} ( \nabla L^{\flat}(\theta) -   \nabla L^{\flat}(\theta_0) ) + D (\theta -  \theta_0),
+\] 
+\[
+\chib12 = D^{-1} \nabla \alphab12. 
+\]
+With analog steps to \ref{wilks_boot} theorem proof one get an upper bound for $\chib12$.
+\begin{theorem}[Boot, Fisher]
+\label{fisher_boot}
+Under conditions (\ref{EDi}), (\ref{Li}), (\ref{cond_A}) and restrictions for weights (\ref{Eu1}), in local $r$-region it holds with probability $1 - 4 e^{-x}$
+\[
+\Vert \chb(\widehat{\theta}^{\flat}, \widehat{\theta}) \Vert
+= 
+\Vert  D (\widehat{\theta}^{\flat} -  \widehat{\theta}) -  D^{-1} \nabla L^{\flat}(\widehat{\theta}) \Vert
+\leq 
+ 2 \diamondsuit^{\flat}(r,x), 
+\] 
+where $\widehat{\theta}^{\flat}$, $\widehat{\theta}$ -- MLE of weighted and non-weighted likelihood functions.
+\end{theorem}

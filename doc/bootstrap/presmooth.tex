@@ -1,0 +1,64 @@
+	\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+
+
+\begin{document}
+
+The aim of presmoothing procedure is to decrease $B$ value in following equation for variance matrices difference \ref{SmatrixDiff}: 
+
+\begin{align*}
+S^{-1/2} (S^{\flat} - S) S^{-1/2} &=\\
+ &=\UV \bldiag(BB^{\T})\UV^{\T} + 2\UV \bldiag(\zeta B^{\T})\UV^{\T} +\\
+ &\quad+ \UV \bldiag(\zeta \zeta^{T}   -  \E \zeta \zeta^{T}) \UV^{\T} + \UV \bldiag(\E \zeta \zeta^{T}) \UV^{\T}  - I_{p}.
+\end{align*}  
+\[
+\zeta =  \Sigma^{-1/2} ( \widehat{\nabla} -  \E \widehat{\nabla} ), 
+\quad
+B = \Sigma^{-1/2} \E \widehat{\nabla}.
+\]
+One may decrease $\widehat{\nabla}$ by enlarging probabilistic model from parameter $\theta$ to joint parameter $(\theta, \eta)$. In this case bootstrap likelihood optimization should be done over $\theta$ parameter only which allows to maintain stochastic part dimension of $\widehat{\nabla}$. Variable $\eta$ during bootstrap calibration should be finally defined as $(\opttheta, \opteta) = \argmax L(\theta, \eta)$.   Two following examples clarify the essence of presmoothing. Assume that data is composed from subranges $\mathbb{Y}_1,\ldots,\mathbb{Y}_K$, for which $\mathbb{Y}_k \sim L(\theta_k)$. For this example one may construct weighted likelihood as follows:
+\[
+\Lbf  = L^{\flat}(\theta + \opteta_1, \mathbb{Y}_1) + \ldots + L^{\flat}(\theta + \opteta_K, \mathbb{Y}_K), 
+\]   
+or it could be distributions mixture
+\[
+\Lbf  = \sum_{i} \widehat{p}_i l^{\flat}  (\theta + \opteta_i, Y_i). 
+\] 
+
+\imgh{100mm}{../img/jumps.pdf}{Composition of distribution samples with different parameter and single parameter model for estimation.}
+As for the other tips of model extending it could be also related to basis extension:  
+\[
+\Lbf  = L^{\flat}( \Psi_1^T \theta +  \Psi_2^T \opteta, \mathbb{Y}). 
+\]
+Since presmoothing operates with $\widehat{\nabla}$, attempting to decrease it, which leads fore decrease of $\UV \bldiag(BB^{\T})\UV^{\T}$ and undesirable increase of $ I_{p} -  \UV \bldiag(\E \zeta \zeta^{T}) \UV^{\T} $.  So the border for effective model extension may be defined through inequality.
+\[
+\normop{I_{p} -  \UV \bldiag(\E \zeta \zeta^{T}) \UV^{\T} } = \max_{i} \normop{ I_p - \E \zeta_i \zeta_i^{T}  } \leq  \delta_{sm}.
+\]   
+For Gaussian model $\zeta_i = \frac{1}{\sigma_i }  ( Y_i -  \E Y_i - \Psi_i^T (\widehat{v} - \E \widehat{v}) ) = \frac{1}{\sigma_i} (\varepsilon_i - (\Pi \varepsilon)_i)$, where $\widehat{v} = (\opttheta, \opteta)$, $\Pi = \Psi^T (\Psi\Psi^T)^{-1} \Psi $, and 
+\[
+\normop{ I_p - \E \zeta_i \zeta_i^{T}  } = \frac{1}{\sigma^2_i}  \E  (\Pi_i^T \varepsilon)^2.
+\]
+For GLM  $\zeta_i = \frac{1}{\sigma_i }  ( \varepsilon_i -  ( g'(\Psi_i^T \widehat{v} ) - \E g' ( \Psi_i^T\widehat{v}) ) ) $, and 
+\[
+\normop{ I_p - \E \zeta_i \zeta_i^{T}  } = \frac{1}{\sigma^2_i}  \E  \left \{ g'(\Psi_i^T \widehat{v} ) - \E g' ( \Psi_i^T\widehat{v})   \right \}^2.
+\]
+Let 
+\[
+ g' ( \Psi_i^T\widehat{v})  = g'_*  +  g'' ( \Psi_i^T v_1) \Psi_i^T (\widehat{v} - v^*) ,
+\quad 
+g'(\Psi_i^T \widehat{v} ) - \E g' ( \Psi_i^T\widehat{v}) \leq  \delta_{\psi} \normp{\xi} ( g''(\Psi_i^T v_1) - \E g'' ( \Psi_i^T v_1)  ), 
+\]
+then 
+\[
+\normop{ I_p - \E \zeta_i \zeta_i^{T}  } \leq \frac{1}{\sigma^2_i}  \delta_{\psi}^2 \normp{\xi}^2  \Var  g''(\Psi_i^T v_1 ).
+\]
+
+\end{document}

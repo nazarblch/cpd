@@ -1,0 +1,265 @@
+\label{sec:theory}
+\subsection{LRT statistic}
+%We are to derive essential properties of the Generalised Likelihood Ratio (GLR) statistic that form base of the CP detection algorithm. %Statements in this section rely on assumption 
+This section presents main results that describe theoretical properties of the likelihood-ratio statistics (LRT). They are essential for the proposed algorithm of change point detection. Further assume that log-likelihood function $L(\theta) = L(Y,\theta)$ has rather precise approximation by its quadratic part in local region $\localr$  of $\theta^*$, $\localr \subseteq \R^p$, where
+\[
+\theta^* = \argmax_{\theta} \E L(\theta),
+\quad
+\widehat{\theta} = \argmax_{\theta} L(\theta)
+\]
+and $\localr = \{\Vert D (\theta - \theta^*) \Vert < r \}$. \cite{wilks2013} provides required conditions for justified quadratic approximation and parameter concentration in the local region.
+Approximation error involves the next variables for its estimation:
+\[
+  \alpha(\theta, \theta_0) = L(\theta) - L(\theta_0)   - (\theta - \theta_0)^T \gradL( \theta_0) +  \frac{1}{2} \Vert D (\theta - \theta_0) \Vert^2, 
+\]
+\[
+\chi(\theta, \theta_0) = D^{-1} \nabla \alpha(\theta, \theta_0) 
+= D^{-1} (\gradL(\theta) - \gradL( \theta_0) ) +  D (\theta - \theta_0). 
+\]
+Let  in region $\Theta_0(r)$ with probability $1 - e^{-x}$:
+\begin{equation}\label{cond_A}\tag{A}
+\frac{| \alpha(\theta, \theta^*)  |}{\Vert D(\theta - \theta^*) \Vert} \leq \diamondsuit (r, x),  
+\quad
+  \Vert \chi(\theta, \theta^*) \Vert \leq  \diamondsuit (r, x),
+\end{equation}
+where $\diamondsuit (r, x) = (\delta (r) + 6 v_0 z_H(x) \omega ) r,$
+\[\tag{D}
+D^2(\theta) = - \nabla^2 \E L (\theta),
+\quad
+D = D(\theta^*),
+\]
+\begin{equation}\label{cond_dD}\tag{dD}
+\Vert D^{-1} D^2(\theta) D^{-1} - I_p\Vert \leq \delta(r),
+\end{equation}
+\begin{equation}\label{cond_ED2}\tag{ED2}
+\forall \lambda \leq g, \; \gamma_1 \gamma_2 \in \R^p: \quad
+\log \E \exp \left\{
+\frac{\lambda}{\omega} \frac{\gamma_1^T \nabla^2 \overset{o}{L}(\theta) \gamma_2}{\Vert D \gamma_2 \Vert \Vert D \gamma_2 \Vert}
+\right\} \leq 
+\frac{\nu_0^2 \lambda^2}{2},
+\end{equation}
+\[
+z_H(x) = \sqrt{H} + \sqrt{2x} + \frac{g^{-2} x + 1}{g} H, 
+\quad H = 6p.
+\]
+Condition (\ref{cond_dD}) ensures quadratic approximation of $\E L(\theta)$ and (\ref{cond_ED2}) ensures linear approximation of centered likelihood $\overset{o}{L}(\theta) = L(\theta) - \E L(\theta)$.  
+
+Firstly, to provide a simple non-strict explanation of what kind of distribution the main statistic  $\dLh$ is supposed to have, review  $\dLh$ as
+\[
+\dLh = L(\widehat{\theta}) -  L(\widehat{\theta}_{H_0}), 
+\quad L(\theta) = L_1(\theta_1) + L_2(\theta_2), 
+\]
+\[
+\quad L_1 = L(Y_1,\ldots,Y_h), \; L_2 = L(Y_h,\ldots,Y_{2h}), 
+\]
+where $\widehat{\theta}_{H_0}$ is argmax of $L$ under condition $H_0: \theta_1^* = \theta_2^*$. Then due to quadratic approximation $\dLh$  corresponds to Tailor equation with point $\widehat{\theta}$:
+\[
+\dLh \approx \frac{1}{2} \Vert D(\widehat{\theta} - \widehat{\theta}_{H_0})  \Vert^2.
+\]   
+If $\widehat{\theta}$ and $\widehat{\theta}_{H_0}$ tend to be Normal and $H_0$ is true then their difference are close to a centered Normal variable. If $H_0$ is false -- the Normal variable will have mean that  is equal to $D(\theta^* - \theta_{H_0}^*)$. 
+
+The next equations describes strict equation for LRT statistic distribution in  quadratic model case. 
+\begin{align*}
+L(\theta) &= L_1(\theta) + L_2(\theta) \\
+&=  
+L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) -  \frac{1}{2} (\theta - \widehat{\theta}_1)^T D_1^2  (\theta - \widehat{\theta}_1)
+- 
+\frac{1}{2} (\theta - \widehat{\theta}_2)^T D_2^2  (\theta - \widehat{\theta}_2)  \\
+ &=
+ L(\widehat{\theta}) - \frac{1}{2} (\theta - \widehat{\theta})^T D^2  (\theta - \widehat{\theta}),
+\end{align*}
+\[
+\widehat{\theta} = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ),
+\quad D^2 = D_1^2 + D_2^2.
+\]    
+\begin{align*}
+\dLh &=
+L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) -  L(\widehat{\theta}) \\
+&=   \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_1)^T D_1^2  (\widehat{\theta} - \widehat{\theta}_1)
++ \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_2)^T D_2^2  (\widehat{\theta} - \widehat{\theta}_2).
+\end{align*}
+\[
+\widehat{\theta} - \widehat{\theta}_1 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_1 = D^{-2} D_2^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1),
+\]
+\[
+\widehat{\theta} - \widehat{\theta}_2 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_2 = D^{-2} D_1^2 ( \widehat{\theta}_1 -  \widehat{\theta}_2).
+\]
+\[
+2 \dLh =  ( \widehat{\theta}_2 -  \widehat{\theta}_1)^T \Sigma^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1),
+\]
+where
+\[\tag{S}
+\Sigma^2 = D_2^2 D^{-2} D_1^2 D^{-2} D_2^2 + D_1^2 D^{-2} D_2^2 D^{-2} D_1^2
+ = D_1^2 D^{-2}D_2^2 \approx \frac{1}{4} D^2. 
+\]
+In quadratic model  following equations enables replacement of $\widehat{\theta}_2$,  $\widehat{\theta}_1$ in the equation for $\dLh$ with regard to condition $\chi(\theta, \theta^*) = 0$:
+\[
+ D_1(\widehat{\theta}_1 - \theta_1^*) = \xi_1 = D_1^{-1} \nabla L(\theta_1^*), \quad
+D_2(\widehat{\theta}_2 - \theta_2^*) = 
+\xi_2 = D_2^{-1} \nabla L(\theta_2^*).
+\]
+The next theorem concludes these considerations to  generalized result for non-quadratic model. 
+\begin{theorem}
+\label{dl_theorem}
+Assume condition (\ref{cond_L_star}) and quadratic Laplace approximation (\ref{cond_A}) of $L_1$ and $L_2$   are fulfilled with probability $1 - 2 e^{-x}$, additionally with probability $1 - 2 e^{-x}$
+\[
+\Vert \xi_i \Vert \leq z(x), 
+\quad z^2(x) = \max_i p_{B_i} + 6 \lambda_{B_i} x,
+\] 
+\[\tag{B}
+B_i = D_i^{-1} \Var (\nabla L_i(\theta^*))D_i^{-1},
+\quad p_B = \tr(B), 
+\quad \lambda_B  = \lambda_{\max} (B).
+\]
+Then in the local region with probability $1 - 8 e^{-x}$ 
+\[
+2 \dLh = \Vert  \dxi + \dtheta \Vert^2  + O(\{r + z(x)\} \diamondsuit (r, x)),
+\]
+where
+\[
+\dxi  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\dtheta  = \Sigma (\theta_2^* - \theta_1^*).
+\]
+\end{theorem}    
+
+\begin{remark} 
+\label{dxi_limit}
+In increasing sample size $n \to \infty$ the stochastic component tends to Normal distribution: 
+\[
+\dxi \to \mathcal{N}(0, B_1 + B_2).
+\]
+\end{remark}
+
+\begin{remark}
+For the condition $\widehat{\theta} \in \Theta_1(r) \cap \Theta_2(r)$ the restriction of the parameter  $\theta^*$  variability is required
+\begin{equation}\label{cond_L_star}
+\tag{L*}
+\Vert D(\theta_1^* - \theta_2^*) \Vert \leq r.
+\end{equation}
+\end{remark}
+
+Proof of  a similar statement (theorem \ref{dl_theorem}) for statistic $\sqrt{2 \dLh}$ one could get from condition (\ref{cond_A}). With probability $1 - 2e^{-x}$
+\begin{align*}
+\left| \dLh (\widehat{\theta}_1, \widehat{\theta}_2) - \frac{1}{2} \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert^2 \right|  
+&\leq
+2 \Vert D_1(\widehat{\theta}_1 - \widehat{\theta}) \Vert \diamondsuit (r, x) + 2 \Vert D_2(\widehat{\theta}_2 - \widehat{\theta}) \Vert \diamondsuit (r, x) \\ 
+&\leq  4  \Vert  \Sigma(\widehat{\theta}_2 - \widehat{\theta}_1)  \Vert  \diamondsuit (r, x).
+\end{align*}
+Inequality $|a - b| \leq |a^2 - b^2| / b, \; b >0$ converts the previous term to
+\[
+\left| \sqrt{ 2  \dLh (\widehat{\theta}_1, \widehat{\theta}_2) } -  \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert \right| \leq 
+8   \diamondsuit (r, x).
+\]
+Replacement $(\widehat{\theta}_1, \widehat{\theta}_2)$ with $(D_1^{-1}\xi_1 + \theta_1^*, \; D_2^{-1}\xi_2 + \theta_2^*)$ results in
+\[
+\left| \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert  - 
+\Vert  \dxi +  \dtheta \Vert 
+\right | 
+\]
+\[
+\leq  \Vert \Sigma(\widehat{\theta}_1 - \theta_1^*) - \Sigma D_1^{-1} \xi_1 \Vert
++ \Vert \Sigma(\widehat{\theta}_2 - \theta_2^*) - \Sigma D_2^{-1} \xi_2 \Vert
+\leq  2 \diamondsuit (r, x).
+\]
+The next theorem summarizes the statements above.  
+\begin{theorem}
+\label{dl_sq_theorem}
+Assume condition (\ref{cond_L_star}) and quadratic Laplace approximation (\ref{cond_A}) with probability $1 - 2 e^{-x}$ are fulfilled. Then  with probability $1 - 4 e^{-x}$ in the local region  $\Theta_1(r) \cap \Theta_2(r)$ took place
+\[
+\left| 
+\sqrt{ 2\dLh} - 
+\Vert \dxi + \dtheta \Vert 
+\right| \leq 
+10  \diamondsuit (r, x).
+\]
+where $\dxi$ and $\dtheta$ are defined in theorem \ref{dl_theorem}.
+\end{theorem}
+
+\begin{remark}
+ The constant near  $\diamondsuit (r, x)$ could be decreased,  expanding  series of $L_1(\theta)$, $L_2(\theta)$ and $L(\theta)$ in the local regions around $\theta_1^*$, $\theta_2^*$ and $\theta^*$ instead of MLE values:
+\begin{align*}
+2 \dLh &= - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2  
+-2 \xi_1^T D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^*) 
++ 2 \xi_2^T D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*) \\
+&\quad+ \Vert  D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^* )\Vert^2 + \Vert  D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*) \Vert^2 
+\pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2) \\
+&= - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2   
++2(D_2^{-1} \xi_2 - D_1^{-1} \xi_1)^T \Sigma^2 (\theta_2^* - \theta_1^*) + \Vert \Sigma (\theta_2^* - \theta_1^*) \Vert^2 \\
+&\quad\pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\end{align*}
+Referring to condition~\ref{cond_A}, $\Vert D^{-1}(D_1 \xi_1 + D_2 \xi_2) \Vert^2 \pm  2\diamondsuit (r, x) z(x) $ replaces $\Vert \xi \Vert^2$. 
+\[
+- \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2  
+=\Vert \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1) \Vert^2 \pm  2\diamondsuit (r, x) z(x).
+\]
+That leads to result
+\[
+\bigg |
+2 \dLh  -  \Vert  \dxi +  \dtheta \Vert^2 
+\bigg | 
+\leq (4 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+\end{remark}
+
+\begin{remark}
+Weighted LRT statistic (\ref{Tb}) has  similar approximation:
+\[
+2 \dLh^{\flat} \approx  \Vert D(\widehat{\theta}^b - \widehat{\theta}_{H_0}^b)  \Vert^2 =  \Vert \dxi^{\flat}  \Vert^2.
+\] 
+where $\widehat{\theta}^{\flat}_{H_0}$ is argmax of $L^{\flat}$ under condition $H_0: \widehat{\theta}_2 - \widehat{\theta}_1 = \widehat{\theta}_{12}$, which is true. That's why the mean of difference $(\widehat{\theta}^b - \widehat{\theta}_{H_0}^b)$  is zero.
+\end{remark}
+
+\subsection{Optimal window size}
+\label{subsec:win_size}
+The change point detection algorithm described above has rather meaningful parameter window size ($h$) that determines sample sizes on which MLE ($\widehat{\theta}_1$, $\widehat{\theta}_2$) will be compared. It is possible to  find out the minimal required sample size from condition 
+\[
+h\KL (\theta_1^*, \theta_2^*) > h\KL (\widehat{\theta}_1, \theta_1^*) +
+h\KL (\widehat{\theta}_2, \theta_2^*).
+\]
+Wilks theorem (reg. \cite{wilks2013}) gives upper approximation with probability $1-10e^{-x}$ 
+\[
+h \KL (\widehat{\theta}_1, \theta_1^*) +
+h \KL (\widehat{\theta}_2, \theta_2^*) \leq 
+2 r \diamondsuit(r,x) + \frac{\Vert \xi_1 \Vert^2}{2} + \frac{\Vert \xi_2 \Vert^2}{2},
+\]
+where with probability $1-4e^{-x}$
+\[
+\frac{\Vert \xi_1 \Vert^2}{2} + \frac{\Vert \xi_2 \Vert^2}{2} \leq z^2(x)  = p_B + 6 \lambda_B x,
+\]
+In case with 
+\[
+r \diamondsuit(r,x) = \sqrt{\frac{C(p_B + x)^3}{h}},
+\quad h > C(p_B+x),
+\]
+lower bound for parameter change results in estimation
+\[
+h \KL (\theta_1^*, \theta_2^*) > 3 p_B + (6 \lambda_B + 2) x.
+\]
+
+
+Optimal $h$ is finite. Increasing a sample size one decreases an impact of stochastic part of $\Vert  \dxi +  \dtheta \Vert$, since  $\Vert  \dtheta \Vert$ grows. But at the same time $\Vert  \dtheta \Vert$ will not be changed by window replacement when $h \to \infty$. Note also that angle of $\Vert  \dtheta \Vert$ growth decreases with $h$, so the optimal window size is the smallest one that is sufficient to overcome random fluctuations in convolution of $\Vert \dxi(i) + \dtheta(i) \Vert$ with linear function $f(i) = i$.   
+Define new variables
+\[
+b = \Vert  \dtheta \Vert = \sqrt{h} b_0,
+\quad 
+b_i = \frac{i}{h} b, \; i > 0,
+\quad
+\xi_i =  \dxi(i).
+\]
+Optimal window size for online change point detection is to be derived from the following inequality.
+\[
+\sum_{i = 1}^{h} i \Vert \xi_i + b_i \Vert \geq \sum_{i = 1}^{h} i \bigg(\Vert \xi_i \Vert + 10 \diamondsuit(r,x) \bigg). 
+\]
+Theorem 4.1 from paper \cite{paqf2013} ensures following inequality with probability $1 - 2 e^{-x}$ 
+\[
+\Vert \xi_i + b_i \Vert \geq \sqrt{ \Vert \xi_i \Vert^2 + \Vert b_i \Vert^2  - 2 \Vert b_i \Vert - 2 \delta_1(x) } 
+\geq 
+\]
+\[
+\geq \Vert b_i \Vert - 2  - \sqrt{4 + 2 \delta_1(x)}.
+\]
+ With probability $1 - 4 e^{-x}$ under condition that statement from theorem \ref{dl_sq_theorem} is true one  comes to a final estimation of the minimal sufficient window size: 
+\[
+h \geq \frac{9 (2 + \sqrt{4 + 2 \delta_1(x)} + z(x) +  10 \diamondsuit(r,x) )^2 }{4 b_0^2} \sim \frac{c_1 + c_2 p}{b_0^2}. 
+\]

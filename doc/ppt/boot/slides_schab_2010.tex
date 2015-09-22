@@ -1,0 +1,192 @@
+%%% See xmpl_beamer.tex for a more detailed example.
+\documentclass[9pt,english]{beamer}   %% ngerman, german, english
+\usepackage[utf8]{inputenc}           %% Umlautkodierung UTF-8
+%\usepackage[latin1]{inputenc}         %% Umlautkodierung Latin-1
+\usetheme{weierstrass}
+
+
+
+\input{/Users/nazar/change_point/bootstrap/mydef.tex}
+
+
+\begin{document}
+
+\title{Multiplier bootstrap with misspecified models}
+\author{Nazar Buzun}
+\date{}
+%\logos{\mbox{}\hfill\includegraphics[height=2cm]{tiger}}
+
+\titlepage     % Create title page from data entered above.
+%\tocatbegin    % Print table of contents at begin of talk.
+%\tocatsection  % Print table of contents at begin of each section.
+
+\section[Short]{Long}
+\begin{frame}{Objects of interest}
+
+Quadratic likelihood approximation:
+\[
+\Lf \approx L(\theta^*) + \nabla L(\theta^*)^T (\theta - \theta^*) + \frac{1}{2} \normp{D(\theta - \theta^*)}^2
+\]
+Fisher and Wilks  theorems \footnote{V. Spokoiny. Penalized maximum likelihood estimation and effective dimension. 10 Aug 2015. 	arXiv:1205.0498}
+\[
+\normp{ D (\opttheta - \theta^*) - \xi } \leq  C \frac{p}{\sqrt{n}},
+\]
+\[
+\left | \sqrt{ 2 L(\opttheta) - 2 L(\theta^*) }  - \normp{\xi}  \right | \leq  3 C \frac{p}{\sqrt{n}}
+\]
+\[
+\xi = D^{-1} \nabla L(\theta^*) 
+\]
+\[
+\P(\normp{\xi} > t) = ?
+\quad
+\P(\max_i{\xi(i)} > t) = ?
+\]
+\end{frame}
+
+\begin{frame}{Bootstrap simulation for vector $\xi$}
+
+Let model consists of independent components:
+\[
+\Lf = \sum_{i=1}^n  l(\theta, Y_i),
+\quad
+\xi = \sum_{i=1}^n \xi_i(\theta^*)
+\]
+In bootstrap case $Y_i$ 	are fixed and $w_i$ variates income from $Y_i$, $\theta^* \to \opttheta$
+\[
+\Lbf = \sum_{i=1}^n  l(\theta, Y_i) w_i, 
+\quad w_i \sim \mathcal{N}(1,1)
+\]
+\[
+\xib = \sum_{i=1}^n  \xi_i(\opttheta) w_i = \sum_{i=1}^n  \xi_i(\opttheta) \varepsilon_i^{\flat}  ,  
+\quad \varepsilon_i^{\flat} =  w_i - 1 
+\]
+\end{frame}
+
+\begin{frame}{Large variance problem}
+If model is misspecified $\xi_i(\opttheta)$ could be extra large
+$ \E \xi_i(\opttheta) > 0 $ $\Rightarrow$ $ \xi_i(\opttheta) \xi_i(\opttheta)^T \Var w_i > \Var \xi_i(\opttheta) $
+
+\begin{center}
+\includegraphics[scale=0.4]{1722.jpg}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Presmoothing procedure}
+Extend model from $L(\theta)$ to $L(\theta, \eta)$, aiming on $\xi_i(\opttheta)$ decrement
+\[
+(\opttheta, \opteta) = \argmax L(\theta, \eta),
+\quad
+\Lbf = \sum_{i=1}^n  l(\theta, \opteta, Y_i) w_i
+\]
+Extended model examples:
+\[
+\Lbf  = L^{\flat}(\theta + \opteta_1, \mathbb{Y}_1) + \ldots + L^{\flat}(\theta + \opteta_K, \mathbb{Y}_K), 
+\]   
+\[
+\Lbf  = L^{\flat}( \Psi_1^T \theta +  \Psi_2^T \opteta, \mathbb{Y})
+\]
+\begin{center}
+\includegraphics[scale=0.3]{/Users/nazar/change_point/img/jumps.pdf}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Comparison of $\xi$ and $\xib$ distributions}
+
+$\xi \to \ND(0, S)$, $n \to \infty$, and $\xib \in \ND(0, S^{\flat})$ 
+
+Sufficient to estimate 
+\[
+S^{-1/2} S^{\flat}  S^{-1/2} - I, 
+\quad
+S \sim I
+\] 
+Let 
+\[
+\xi = \sum_i \xi_i  = V \varepsilon, 
+\quad S = V \Var \varepsilon V^{T}
+\]
+$\Sigma = \Var \varepsilon$ is diagonal.
+\[
+S^{\flat} = V \bldiag(\varepsilon \varepsilon^{T}) V^{T}
+\] 
+\[
+S^{-1/2} S^{\flat}  S^{-1/2} =  \UV \bldiag( \Sigma^{-1/2} \varepsilon \varepsilon^{T} \Sigma^{-1/2} ) \UV^T
+\]
+\[
+\UV \UV^T = I, 
+\quad \normp{ u_i } \leq \delta  
+\]
+
+\end{frame}
+
+\begin{frame}{Bias noise decomposition}
+\[
+\Sigma^{-1/2} \varepsilon = \Sigma^{-1/2} (\E\varepsilon  + (\varepsilon  - \E\varepsilon) )   = B + \zeta
+\]
+\[
+S^{-1/2} S^{\flat}  S^{-1/2} - I = 
+\]
+\[
+\UV \bldiag( B B^T ) \UV^T + 2 \UV \bldiag( B \zeta^T ) \UV^T +
+\]\[
+\UV \bldiag(  \zeta \zeta^T  - \E \zeta \zeta^T) \UV^T  +
+\]\[
+\UV \diag(\E \zeta \zeta^T - I) \UV^T 
+\]
+Restriction for presmoothing dimension:
+\[
+\normop{
+\UV \diag(\E \zeta \zeta^T - I) \UV^T  
+} \leq \delta_{sm}
+\] 
+\end{frame}
+
+\begin{frame}{Restriction for presmoothing}
+
+\[
+\normop{
+\UV \diag(A) \UV^T  
+} = \sup_{\normp{\gamma} = 1} \gamma^{T} \UV \diag(A) \UV^T  \gamma  \leq \delta^2 \tr\{A\}
+\]
+since $\normp{u_i} \leq \delta$,  $\max \gamma^T \UV \leq \delta$
+
+$ $ \\
+
+Gaussian model example $Y = \Psi^T \theta + \varepsilon$ :
+\[
+\zeta = \varepsilon - \Pi \varepsilon,
+\quad
+\Pi = \Psi^T (\Psi\Psi^T)^{-1} \Psi
+\]
+\[
+ | \E \zeta_i \zeta_i^{T} - 1 | = A_{ii}   = \frac{1}{\sigma^2_i}  \E  (\Pi_i^T \varepsilon)^2
+\]
+
+GLM example  $l_i (\theta) = Y_i \Psi_i^T\theta + g(\Psi_i^T\theta)$ :
+\[
+| \E \zeta_i \zeta_i^{T} - 1 | = A_{ii} \sim \frac{\dim(\theta, \eta)}{\sqrt{n}}  \Var  g''
+\]
+
+\end{frame}
+
+%\begin{frame}{Thank you!}
+
+%\begin{center}
+%\includegraphics[scale=0.3]{/Users/nazar/Downloads/sport_nov14_4.jpg}
+%\end{center}
+
+%\end{frame}
+
+
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

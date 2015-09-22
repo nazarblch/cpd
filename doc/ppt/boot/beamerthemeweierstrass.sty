@@ -1,0 +1,287 @@
+%%
+%% This is file `beamerthemeweierstrass.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% weierstrass.dtx  (with options: `beamer')
+%% 2009/2010 da vinci design GmbH
+%% 2010-2015 WIAS (H. Pletat; with parts by J. Fuhrmann and K. Tabelow)
+
+\def\fileversion{1.12}
+\def\filedate{2013/02/12}
+\def\filename{beamerthemeweierstrass}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{\filename}[\filedate\space v\fileversion\space
+                           WIAS Beamer Theme]
+
+\newif\if@WIASCD@beamer@totalframes\@WIASCD@beamer@totalframestrue
+\DeclareOptionBeamer{totalframes}{\@WIASCD@beamer@totalframestrue}
+\DeclareOptionBeamer{nototalframes}{\@WIASCD@beamer@totalframesfalse}
+\DeclareOptionBeamer{nomathpazo}{\PassOptionsToPackage{nomathpazo}{wiascd}}
+\DeclareOptionBeamer{mathpazo}{\PassOptionsToPackage{mathpazo}{wiascd}}
+\DeclareOptionBeamer{nomathptmx}{\PassOptionsToPackage{nomathptmx}{wiascd}}
+\DeclareOptionBeamer{mathptmx}{\PassOptionsToPackage{mathptmx}{wiascd}}
+\ProcessOptionsBeamer
+
+
+\RequirePackage{wiascd}
+\RequirePackage{eurosym}
+
+
+\renewcommand*{\baselinestretch}{1.1}
+\small\normalsize
+\mode<article>{\setlength{\parindent}{\z@}}
+\mode<article>{\setlength{\parskip}{2ex}}
+\setlength{\abovecaptionskip}{3mm}
+\setlength{\belowcaptionskip}{5mm}
+\setlength{\intextsep}{\z@}
+
+
+
+
+
+
+
+
+\usefonttheme{structurebold}
+\usefonttheme{professionalfonts}
+\mode<presentation>{\setbeamertemplate{sections/subsections in toc}[square]}
+\definecolor{red}          {cmyk}{0, 1.0, 1, 0.0}
+\definecolor{wiasdarkblue} {cmyk}{1, 0.6, 0, 0.4}
+\definecolor{wiaslightblue}{cmyk}{1, 0.1, 0, 0.0}
+\AtBeginDocument{%
+  \WIASCD@set@logo@filename[wias]{plain}\relax
+  \pgfdeclareimage[height=.5cm]{WIASLOGOFOOT}{\WIASCD@logo@filename}%
+  \pgfdeclareimage[height=.2\textheight]{WIASLOGOTITLE}{\WIASCD@logo@filename}%
+  \WIASCD@set@logo@filename[wgl]{}\relax
+  \pgfdeclareimage[height=.5cm]{WGLLOGOHEAD}{\WIASCD@logo@filename}%
+}
+\newcommand{\logos}[1]{%
+  \renewcommand{\WIASCD@beamer@logos}{#1}%
+}
+\newcommand{\WIASCD@beamer@logos}{}
+\logos{%
+  \mbox{}%
+  \hfill
+  \bgroup
+    % font size of institute's name below WIAS logo to get same \baselineskip
+    \fontsize{8}{9.5}\selectfont
+    \raisebox{-.3\baselineskip}{\wgllogo[width=3.3cm]}%
+  \egroup
+}
+\newcommand*{\tocname}[1]{%
+  \renewcommand*{\WIASCD@beamer@tocname}{#1}%
+}
+\newcommand*{\WIASCD@beamer@tocname}{}
+\newcommand*{\tocatbegin}{%
+  \frame[allowframebreaks,t]{%
+    \frametitle{\WIASCD@beamer@tocname}%
+    \tableofcontents[sectionstyle=show/show,subsectionstyle=hide/hide/hide]%
+  }%
+}
+\newcommand*{\tocatsection}{%
+  \AtBeginSection[]{%
+    \frame[allowframebreaks,t]{%
+      \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/show/hide]%
+    }%
+  }%
+}
+\tocname{%
+  \iflanguage{german}{Inhalt}{}%
+  \iflanguage{ngerman}{Inhalt}{}%
+  \iflanguage{english}{Content}{}%
+}
+\mode<presentation>
+\newlength{\WIASCD@beamer@pagemargin}
+\newlength{\WIASCD@beamer@pagerulethickness}
+\newlength{\WIASCD@beamer@headrulewidth}
+\setlength{\WIASCD@beamer@pagemargin}{7.5mm}
+\setlength{\WIASCD@beamer@pagerulethickness}{.45\p@}
+\setlength{\WIASCD@beamer@headrulewidth}{\paperwidth}
+\addtolength{\WIASCD@beamer@headrulewidth}{.5mm}
+\addtolength{\WIASCD@beamer@headrulewidth}{-\WIASCD@beamer@pagemargin}
+\beamer@centeredfalse
+\setbeamersize{text margin left=\WIASCD@beamer@pagemargin, text margin right=\WIASCD@beamer@pagemargin}
+\setbeamercolor{structure}{fg=wiasblue}
+
+\setbeamercolor{palette primary}   {fg=wiasblue,    bg=wiasblue!15}
+\setbeamercolor{palette secondary} {fg=wiasblue!10, bg=wiasblue!70}
+\setbeamercolor{palette tertiary}  {fg=wiasblue,    bg=wiasblue!10}
+\setbeamercolor{palette quaternary}{fg=wiasblue,    bg=wiasblue!5}
+
+\setbeamercolor{titlelike}{parent=palette quaternary}
+
+\setbeamercolor{block title}{fg=white, bg=wiasdarkblue}
+\setbeamercolor{block title alerted}{use=alerted text, fg=white, bg=red}
+\setbeamercolor{block title example}{use=example text, fg=white, bg=wiaslightblue}
+
+\setbeamercolor{block body}{parent=normal text, use=block title, bg=wiasblue!15}
+\setbeamercolor{block body alerted}{parent=normal text, use=block title alerted, bg=block title alerted.bg!10!bg}
+\setbeamercolor{block body example}{parent=normal text, use=block title example, bg=block title example.bg!15!bg}
+
+\setbeamercolor*{author in head/foot}{parent=palette quaternary}
+\setbeamercolor*{title in head/foot}{parent=palette secondary}
+\setbeamercolor*{date in head/foot}{parent=palette primary}
+\setbeamerfont{item projected}{size=\tiny,parent={item,projected text}}
+\setbeamerfont{subitem projected}{parent=item projected}
+\setbeamerfont{subsubitem projected}{parent=subitem projected}
+
+\setbeamerfont{itemize item}{size=\normalsize,parent=item}
+\setbeamerfont{itemize subitem}{size=\normalsize,parent=subitem}
+\setbeamerfont{itemize subsubitem}{size=\normalsize,parent=subsubitem}
+
+\setbeamerfont{enumerate item}{size=\normalsize,parent=item}
+\setbeamerfont{enumerate subitem}{size=\normalsize,parent=subitem}
+\setbeamerfont{enumerate subsubitem}{size=\normalsize,parent=subsubitem}
+
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{frametitle continuation}[from second][]
+\defbeamertemplate{itemize item}{weierstrass}{\footnotesize$\blacksquare$}
+\defbeamertemplate{itemize subitem}{weierstrass}{\footnotesize$\blacksquare$}
+\defbeamertemplate{itemize subsubitem}{weierstrass}{\footnotesize$\blacksquare$}
+\setbeamertemplate{items}[weierstrass]
+
+\defbeamertemplate*{frametitle}{weierstrass}{%
+  \nointerlineskip
+  \vspace*{-.5cm}%
+  \begin{beamercolorbox}[wd=\paperwidth,dp=4.2mm,left]{white}%
+    \hspace*{\WIASCD@beamer@pagemargin}%
+    \parbox[t][\baselineskip][t]{.85\linewidth}{%
+      \color{wiasblue}%
+      \fontsize{9}{10}\selectfont
+      \insertframetitle
+    }%
+    \par
+    \nointerlineskip
+  \end{beamercolorbox}%
+}
+\defbeamertemplate*{headline}{weierstrass}{%
+  \leavevmode
+  \vskip .2cm%
+  \null\hfill\parbox[c]{1.2cm}{\pgfuseimage{WGLLOGOHEAD}}%
+  \vskip .1cm%
+  \null\hfill
+  \color{wiasblue!50}%
+  \fontsize{9}{10}\selectfont
+  \rule{\WIASCD@beamer@headrulewidth}{\WIASCD@beamer@pagerulethickness}%
+  \par
+  \nointerlineskip
+  \vskip 1mm%
+}
+
+\defbeamertemplate*{footline}{weierstrass}{%
+  \leavevmode
+  \color{wiasblue}%
+  \rule{\paperwidth}{3\WIASCD@beamer@pagerulethickness}%
+  \vskip .92mm%
+  \hspace*{\WIASCD@beamer@pagemargin}%
+  \parbox[c]{10cm}{%
+    \fontsize{7}{8.5}\selectfont
+    \insertshorttitle\ $\cdot$\ \insertdate\ $\cdot$\ %
+    \pagename\ \insertframenumber%
+    \if@WIASCD@beamer@totalframes
+      \ (\inserttotalframenumber)%
+    \fi
+  }%
+  \hfill
+  \parbox[c]{1.1cm}{\pgfuseimage{WIASLOGOFOOT}}%
+  \vskip .58mm%
+}
+
+\defbeamertemplate*{title page}{weierstrass}{%
+  \raggedright
+  \nointerlineskip
+  \vspace*{.667cm}%
+  \parbox[t][.250\textheight]{.9\paperwidth}{%
+    \parbox[b]{.45\linewidth}{%
+      \hspace*{-.0275\textwidth}%
+      \pgfuseimage{WIASLOGOTITLE}%
+      \par
+      \nointerlineskip
+      \vspace{.15cm}%
+      \fontsize{8}{9.5}\selectfont
+      {\bfseries\WIASCD@institutename@twoline}%
+    }%
+    \hfill
+    \parbox[b][.250\textheight][b]{.55\linewidth}{%
+      \WIASCD@beamer@logos
+    }%
+  }%
+  \par
+  \nointerlineskip
+  \begin{minipage}[t][.416\textheight][b]{.9\paperwidth}%
+    \parbox[b]{\linewidth}{%
+      \color{wiasblue}%
+      \bfseries
+      \fontsize{16}{19.5}\selectfont
+      \raggedright
+      \inserttitle
+    }%
+    \par
+    \nointerlineskip
+    \vspace{.7cm}%
+    \parbox[t][2.115cm][t]{\linewidth}{%
+      \raggedright
+      \fontsize{10}{12.5}\selectfont
+      \insertauthor
+    }%
+  \end{minipage}%
+  \vfill
+  \vspace*{-.25\baselineskip}%
+  \color{wiasblue}%
+  \hspace*{-.5\paperwidth}%
+  \makebox[\z@][l]{\rule{1.5\paperwidth}{3\WIASCD@beamer@pagerulethickness}}%
+  \\[.25\baselineskip]%
+  \nointerlineskip
+  \begin{picture}(0,0)%
+    \parbox[t]{\linewidth}{%
+      \vspace*{\z@}%
+      \fontsize{7}{8.5}\selectfont
+      \WIASCD@address@oneline\ $\cdot$
+      Tel. \WIASCD@phoneprefix\ 0 $\cdot$ www.\WIASCD@domain\\
+      \insertdate\ %
+    }%
+  \end{picture}%
+  \par
+  \nointerlineskip
+}
+\newcommand*{\WIASCD@beamer@maketitle@orig}{}
+\let\WIASCD@beamer@maketitle@orig\maketitle
+\renewcommand*{\maketitle}{%
+  \ifbeamer@inframe
+    \WIASCD@beamer@maketitle@orig
+  \else
+    \frame[plain]{\WIASCD@beamer@maketitle@orig}%
+  \fi
+}
+\newcommand*{\WIASCD@beamer@titlepage@orig}{}
+\let\WIASCD@beamer@titlepage@orig\titlepage
+\renewcommand*{\titlepage}{%
+  \ifbeamer@inframe
+    \WIASCD@beamer@titlepage@orig
+  \else
+    \frame[plain]{\WIASCD@beamer@titlepage@orig}%
+  \fi
+}
+\newcommand{\WIASCD@beamer@columns@orig}{}
+\newcommand{\WIASCD@beamer@endcolumns@orig}{}
+\let\WIASCD@beamer@columns@orig\columns
+\let\WIASCD@beamer@endcolumns@orig\endcolumns
+\renewcommand*{\columns}{%
+  \begingroup
+    \beamer@centeredtrue
+    \WIASCD@beamer@columns@orig
+}
+\renewcommand*{\endcolumns}{%
+    \WIASCD@beamer@endcolumns@orig
+  \endgroup
+}
+\mode<all>
+\endinput
+%%
+%% End of file `beamerthemeweierstrass.sty'.

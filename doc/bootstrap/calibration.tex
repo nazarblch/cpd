@@ -1,0 +1,246 @@
+Scheme of $\P$ measure and variable $f(X)$ ($f$ is non random) approximation by corresponded bootstrap (empirical) measure $\Pb$ and variable $f(X^{\flat})$ could be done in three steps: approximate $X, X^{\flat}$ by Normal distributions, approximate $f(\cdot)$ by smooth function, present measures distance as product of $f$ properties and its arguments distribution parameters distance.       
+
+\input{boot_scheme}
+
+
+Weighted LRT statistic $\dLhb$ from multiplier bootstrap has analog of theorem \ref{dl_sq_theorem} due to \ref{fisher_boot} and~\ref{wilks_boot}.
+
+\begin{theorem}
+\label{dl_sq_boot_theorem}
+
+Let (\ref{L_cond}) and (\ref{A_cond}) are true. Then with probability $1 - 16 e^{-x}$ in local region $\Theta_1(r) \cap \Theta_2(r)$ 
+\[
+\left| 
+\sqrt{ 2 \dLb12 } - 
+\Vert  \dxib +  \dthetahat \Vert 
+\right| \leq 
+10  \rombb,
+\]
+where
+\[
+\dxib  = \Sigma (D_2^{-1} \xi_2^{\flat} - D_1^{-1} \xi_1^{\flat}),
+\quad
+\dthetahat  = \Sigma (\widehat{\theta}_2 - \widehat{\theta}_1),
+\quad
+ \thetab  = \argmax_{\theta} \Lbf.
+\]
+
+
+\end{theorem}
+
+\begin{remark}
+Generator of $\dxib$ use statistic $\dLhb = \sqrt{ 2\dLh (\thetab_1, \thetab_1 + \dthetahat) }$, for which \ref{dl_sq_boot_theorem} theorem is also applicable
+with $\dthetahat = 0$, 
+\[
+\left| 
+\dLhb - \Vert  \dxib  \Vert 
+\right| \leq 
+10  \rombb.
+\]
+\end{remark}
+
+Precision of distribution estimation    $\dxi + m$ using bootstrap (it's analog $\dxib + m^{\flat}$,  $m$, $m^{\flat}$ non random) cold be obtained by normal approximation for both variables. The sequence of comparison is
+\begin{enumerate}
+\item $\dxib(\opttheta_1, \opttheta_2) \approx \dxib(\theta_1^*, \theta_2^*)$;
+\item  $\Vert \dxib(\theta_1^*, \theta_2^*) + m^{\flat} \Vert  \approx  \Vert \txib \Vert$, $\txib \sim \ND(m^{\flat}, \Sigma^{\flat}) $;
+\item  $\Vert  \dxi(\theta_1^*, \theta_2^*) + m \Vert  \approx  \Vert \txi \Vert$, $\txi \sim \ND(m, \Sigma) $;
+\item  $\Vert \txi  \Vert  \approx  \Vert \txib \Vert$.
+\end{enumerate}
+
+
+\noindent\textbf{1)} Compare $\dxib(\opttheta_1, \opttheta_2)$ and $ \dxib(\theta_1^*, \theta_2^*)$.  
+Due to  
+\[
+\xib_i(\theta) = D^{-1}  \sum_{i=1}^{n} \nabla l_i(\theta) (u_i - 1),
+\]
+and estimation for (\ref{S}), the next inequality holds with probability $1- 3e^{x}$, $i = \{1,2\}$
+\[
+\Vert \xib_i(\theta_2) - \xib_i(\theta_1) \Vert \leq 
+\left(
+12 \nu_0  z(x) \omega r  \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right)  
+ =   \diamondsuit_{\xi}^{\flat}(r,x). 
+\]
+By definition   
+\[
+\dxib = A \left( \begin{array}{c}
+\xib_1 \\
+\xib_2
+\end{array}
+\right),
+\quad 
+A = \Sigma \left( - D_1^{-1}, D_2^{-1}
+\right),
+\]
+which leads to statement 
+\begin{lemma}
+\[
+\Vert \dxib(\opttheta_1, \opttheta_2) - \dxib(\theta_1^*, \theta_2^*) \Vert \leq 
+  2 \diamondsuit_{\xi,F}^{\flat}(r,x), 
+\]
+where $F = A^T A$, $H_2 = H_2(F) + 4p$,
+\[
+\diamondsuit_{\xi,F}^{\flat}(r,x) = \left(
+12 \nu_0  z_F(x) \omega r  \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right),
+\]
+\[
+z_F(x) = \ldots.
+\]
+\end{lemma}
+
+\noindent\textbf{2),3)} This step is weak approximation for $\Vert  \dxi(\theta_1^*, \theta_2^*) + m \Vert  \approx  \Vert \txi \Vert$, $\txi \sim \ND(m, \Sigma) $. Namely, one need to compare functions of these norms (pointwise argument comparison for each $\Vert  \dxi(\theta_1^*, \theta_2^*) + m \Vert(t)$  has worse  precision for its aggregations):
+\begin{equation}
+\label{maxPnorm}
+\max_{\tau} \sum_{t \in \tau} P(t)  \Vert  \dxi(\theta_1^*, \theta_2^*) + m \Vert(t).
+\end{equation} 
+For non-limiting simplification assume that $m^{\flat} = m = 0$.
+Norm of a vector $\xi$ could be presented as $\max_{\Vert\gamma \Vert = 1} \gamma^T \xi$, and max as smooth max function:
+\[
+h_\beta (x) = \beta^{-1} \log\left( \sum_{i} e^{\beta x_i} \right),
+\quad
+x = \{ x_i \}.
+\]
+After smoothing the considered expression (\ref{maxPnorm}) is 
+\[
+h_\beta \left(\sum_{t \in \tau} P(t)  \gamma_t^{T} \dxi(t) \right) = 
+h_\beta \left(\sum_{t \in \tau} P(t)  \gamma_t^{T} \sum_{i=1}^{n} w_i(t) \varepsilon_i \right) = 
+h_\beta \left(\sum_{i = 1}^{n} c(\tau)^T \varepsilon_i \right),   
+\] 
+where $w_i(t)$ are kernel weights for window position $t$, $P(t)$ pattern values, $\varepsilon_i$ -- components of $\dxi$. Function $h_\beta$ corresponds to $\max$ over iterable arguments  $(\tau, \gamma_\tau)$.
+
+Following property $h_\beta (x)$, $x \in \mathbb{R}^M$ characterise the error of smooth max approximation
+\[
+ \max_i(x_i)  \leq  h_\beta (x) \leq \max_i(x_i)  +  \frac{\log(M)}{\beta}.
+\] 
+Dimension includes $\gamma_t \in G_\varepsilon$, $t \in \{1,\ldots,n\}$ and $\tau$, which results in $M < n |G_\varepsilon|$. 
+The next lemma apply indicator for  both  parts of the above inequality. 
+\begin{lemma}
+For function $g_{\delta}$ which is smooth indicator ($g_{\delta}$ grows from 0 to 1 inside interval of size ${\delta}$) took place following inequality with $\delta = \beta^{-1} \log(M)$
+\[
+g_{\delta} h_\beta (x - \delta) \leq \Ind \left[\max_{0\leq i \leq M} x_i > 0 \right]  \leq g_{\delta} h_\beta (x + \delta).
+\]
+Consequently, under condition $\vert \E g_{\delta} h_\beta(x)  -  \E g_{\delta} h_\beta(\widetilde{x}) \vert \leq C(\beta, M) \mu_n$,
+\begin{equation}
+\label{max_norm_approx}
+\left| \P \left(\max_{0\leq i \leq M} x_i > 0 \right)  -  \P  \left(\max_{0\leq i \leq M} \widetilde{x}_i > \pm 2\delta \right) \right| \leq 
+C(\delta, M) \mu_n.
+\end{equation}
+\end{lemma}
+
+The shift of length $\pm 2\delta$ could be moved outside applying anti-concentration lemma for distribution density $\max_{i} \widetilde{x}_i$ .
+ 
+\begin{lemma}
+Let $x \in \ND (m, \Sigma) \in \mathbb{R}^M $,  $\sigma_1 \leq  \sqrt{\Sigma_{ii}} \leq  \sigma_2$, $a_M = \max_i (\widetilde{x}_i - m_i) /\sqrt{ \Sigma_{ii}}$, then $\forall c$
+ \[
+ \P(\vert \max_{i} \widetilde{x}_i - c \vert \leq  \varepsilon)
+ \leq  C_{\text{ak}}(M, \Sigma),
+ \]
+ \[
+ C_{\text{ak}}(M, \Sigma) =  \frac{4 \varepsilon}{\sigma_1} \left( \frac{\sigma_2}{\sigma_1} a_M +  \left(\frac{\sigma_2}{\sigma_1} - 1\right) \sqrt{2 \log \left(\frac{\sigma_1}{\varepsilon} \right)}+2  - \frac{\sigma_1}{\sigma_2}\right) \approx 4 \varepsilon \frac{\sigma_2}{\sigma_1^2} \sqrt{2 \log \left(  \frac{ \sigma_1 M}{\varepsilon} \right)}.
+ \]
+\end{lemma}
+Combining this lemma and \ref{max_norm_approx} one get result for measure difference of max of vector $x$ and  normal vector $\tilde{x}$.  
+\begin{equation}
+\label{max_norm_approx_1}
+\left| \P \left(\max_{0\leq i \leq M} x_i > 0 \right)  -  \P  \left(\max_{0\leq i \leq M} \widetilde{x}_i > 0 \right) \right| \leq 
+C(\delta, M) \mu_n +  \delta C_{\text{ak}}(M, \Sigma).
+\end{equation}
+The next required step is involved upper bound of obtaining
+\[
+\vert \E g_{\delta} h_\beta(x)  -  \E g_{\delta} h_\beta(\widetilde{x}) \vert \leq C(\beta, M) \mu_n.
+\] 
+
+\begin{lemma}
+Function $f = g_{\delta} h_{\beta}$, where $g_{\delta}$ has bounded third order derivations, $\delta = \beta^{-1} \log(M)$, has representation in Tailor form
+\[
+\left| f(x + d) - f(x) - d^{T}f'(x) - d^{T}f''(x)d /2 \right |  
+\leq C(\delta, M) \Vert d \Vert_{\infty}^{3},
+\]
+\end{lemma} 
+where
+\[
+C(\delta, M) =  \frac{1}{6 \delta^3 } (|g'''| + \log(M) |g''| + \log^2(M) |g'|).
+\]
+Basing on this lemma  use that
+\[
+x_{\tau,\gamma} = \sum_{i=1}^{n} c_i(\tau)^{T} \varepsilon_i,
+\]
+where $\Var \sum_{i} c_i(\tau)^{T} \varepsilon_i = \sum_{i} c_i(\tau)^{T} V_i^2 c_i(\tau)$. 
+
+The final statement for approximation of $\varepsilon_i$ by normal variables $\widetilde{\varepsilon}$ with the same mean and variance is
+\begin{equation}
+\left \vert \E g_{\delta} h_\beta  \left(\sum_{i = 1}^{n} c(\tau)^T \varepsilon_i \right)  -  \E g_{\delta} h_\beta \left(\sum_{i = 1}^{n} c(\tau)^T \widetilde{\varepsilon_i} \right) \right \vert \leq C(\delta, M) \mu_n,
+\end{equation}  
+where
+\[
+\mu_n = \max_{\tau} \sum_{i=1}^{n} ( \Vert \varepsilon_i \Vert_{\infty}^3 + C \log^{3/2} (M) \sigma_i^3  ) \Vert c_i(\tau) \Vert^3,
+\]
+\[
+\Vert c_i(\tau) \Vert \leq \sum_{t \in \tau} P(t) w_i(t) \Vert \gamma_t^{T} \Vert \sim \Ind (\tau - 2h \leq  i \leq \tau + 2h),
+\quad
+\mu_n \sim \frac{1}{\sqrt{h}}.
+\]
+
+\noindent\textbf{2'),3')}
+Consider the other type of smoothing for (\ref{maxPnorm}):
+\[
+h_{\beta} \left(
+\sum_{i \in \tau} P(i) \normp{\dxi}(i)
+\right).
+\] 
+One have to estimate derivative 
+\[
+(g_\delta h_\beta \{\dxi + t d \} )'''_t = g'_\delta h'''_\beta  + 3 g''_\delta h'_\beta h''_\beta + g'''_\delta (h'_\beta)^{3}.
+\]
+Assume that approximately
+\[
+ \normp{\nabla_P h_\beta (P_1, \ldots, P_n) }_1 \leq 1, 
+ \quad  
+ \normp{\nabla^2_P h_\beta (P_1, \ldots, P_n) }_1 \leq \beta, 
+ \quad
+ \normp{\nabla^3_P h_\beta (P_1, \ldots, P_n) }_1 \leq \beta^2,  
+\]
+\[
+|g'_\delta|_{\infty} \leq \frac{1}{\delta},
+\quad
+|g''_\delta|_{\infty} \leq \frac{1}{\delta^2}, 
+\quad
+|g'''_\delta|_{\infty} \leq \frac{1}{\delta^3}. 
+\]
+Also the estimation for $\max_{\tau}  P'_\tau(t) $ is required, where $P_\tau(t) = \sum_{i \in \tau} P(i) \normp{\dxi + td}(i)$:
+\[
+\max_{\tau}  P'_\tau(t)  \leq  \normp{d} \max_{\tau} \sum_{i \in \tau} P(i). 
+\]
+Consider pattern weights with sum equal to 1, which leads to
+\[
+(g_\delta h_\beta \{\dxi + t d \} )'''_t \leq 
+\left(
+ \frac{\beta^2}{\delta} + 3 \frac{\beta}{\delta^2} +  \frac{1}{\delta^3}
+\right)
+ \normp{d}^3.  
+\]
+
+\noindent\textbf{4)}  Compare the same functions $\E g_\delta h_\beta$ from two normal vectors $X = \txi$ and $Y  = \txib$ with different mean and variance.
+
+\begin{lemma}
+For $X$, $Y$ independent normal vectors with $m_X$, $m_Y$, $\Sigma_X$, $\Sigma_Y$,
+\[
+\triangle m = m_2 - m_1,
+\quad
+\triangle \Sigma = \Sigma_2 - \Sigma_1.
+\] 
+it holds
+\[
+| \E g(\delta^{-1} h(X)) - \E g(\delta^{-1} h(Y)) | 
+\leq 
+\left( 
+\frac{\beta \Vert g' \Vert_\infty}{\delta} + \frac{\Vert g'' \Vert_\infty }{2 \delta^2}
+\right) \Vert \triangle \Sigma \Vert_{\oper} + 
+\frac{ \Vert g' \Vert_\infty}{2 \delta} \Vert \triangle m \Vert_{\oper} .
+\]
+\end{lemma}   
+
+Following Section deals with estimation of $\Vert \triangle \Sigma \Vert_{\oper}$.

@@ -1,0 +1,114 @@
+\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+
+
+\begin{document}
+
+\[
+A(x) = \left\{
+u: \bigcup_m \{ \normp{T_m u} \leq z_m(x) \}
+\right\},
+\]    
+\[
+I_A = \Ind \left\{
+\max_m \left\{ \frac{\normp{T_m u}}{z_m}  \right\} < 1
+\right\}.
+\]
+Let $T_m := T_m / z_m$. 
+Replace $\normp{T_m u}$ with approximation $\max_{\gamma \in G_{\varepsilon}} \gamma^{T} T_m u$ by means of following lemma.    
+\begin{lemma}
+\[
+ \max_{\gamma \in G_{\varepsilon}} \gamma^T S   \leq  \Vert S \Vert \leq \frac{1}{1 - \varepsilon} \max_{\gamma \in G_{\varepsilon}} \gamma^T S, 
+\]
+\[
+\P \left(\max_{\gamma \in G_{\varepsilon}} \gamma^T S < q (1- \varepsilon) \right) \leq \P \left( \Vert S \Vert < q \right) \leq \P \left(\max_{\gamma \in G_{\varepsilon}} \gamma^T S  < q \right)  
+\]
+\end{lemma}
+where $|G_{\varepsilon}| \leq  (2/\varepsilon)^{p-1}$, $S_m \in \R^{p}$, $ 1\leq m \leq M$.
+By anti-concentration lemma for normal vectors $S_m$ one could obtain inequality for measures
+\[
+\bigg| \P \left(\max_{m} \max_{\gamma \in G_{\varepsilon}} \gamma^T S_m  < q (1 - \varepsilon) \right) - 
+\P \left( \max_{m} \max_{\gamma \in G_{\varepsilon}} \gamma^T S_m < q \right) \bigg| 
+\leq 
+8 \sqrt{p} \varepsilon q \frac{\sigma_2}{\sigma_1^2}\sqrt{\log \left( \frac{2M}{\varepsilon} \right)},
+\] 
+where $\sigma_1 = \min_{\gamma, m} \Var \gamma^{T} S_m $, $\sigma_2 = \max_{\gamma, m} \Var \gamma^{T} S_m $.
+    
+Replace  $I_A \circ \max$  with smooth approximation $ f = g_{\delta} \circ h_{\beta}$.  Following property $h_\beta (x)$, $x \in \mathbb{R}^M$ characterise the error of smooth max approximation
+\[
+ \max_i(x_i)  \leq  h_\beta (x) \leq \max_i(x_i)  +  \beta^{-1}\log(M).
+\] 
+The next lemma applies indicator for both parts of the above inequality. 
+\begin{lemma}
+For function $g_{\delta}$ which is smooth indicator ($g_{\delta}$ grows from 0 to 1 inside interval of size~${\delta}$) took place following inequality with $\delta = \beta^{-1} \log(M)$
+\[
+g_{\delta} h_\beta (x - \delta) \leq \Ind \left[\max_{0\leq i \leq M} x_i > q \right]  \leq g_{\delta} h_\beta (x + \delta).
+\]
+\[
+\E g_{\delta} h_\beta (x - \delta)  \leq   \P \left(\max_{0\leq i \leq M} x_i > q \right)  \leq  \E  g_{\delta} h_\beta (x + \delta).
+\]
+\end{lemma}
+
+By anti-concentration lemma for normal vector $x$ one could  eliminate $2\delta$ shift
+\[
+\bigg| \P \left(\max_{0\leq i \leq M} x_i > q \right) - 
+\P \left( \max_{0\leq i \leq M} x_i > q \pm 2\delta \right) \bigg| 
+\leq 
+8 \delta \frac{\sigma_2}{\sigma_1^2} \sqrt{2 \log \left(  M \right)},
+\] 
+
+From GAR following inequality take place with $\widetilde{u} \in \ND(\E u, \Var u)$
+
+ \[
+ \bigg\vert \E g_\delta h_\beta \left(  \gamma^{T} T_m u \right)  -  \E g_{\delta} h_\beta(  \gamma^{T} T_m \widetilde{u} ) \bigg\vert 
+ \leq 
+ \normp{ \nabla_u^{3} (g_\delta h_\beta (\gamma^{T} T_m) }_1 \sum_i 
+( \E \normp{u_i}^3_\infty + \E \normp{\widetilde{u}_i}^3_\infty ).
+\]
+
+\begin{lemma}
+\[
+\normp{\nabla_u^{k} h_\beta (  \gamma^{T} T_m u ) }_1 \leq 
+\normp{\nabla^{k}_P h_\beta (P_1, \ldots, P_n) }_1 \max_{\gamma, m} \normp{\gamma^{T} T_m}^k_1.
+\]
+\end{lemma}
+
+Estimate derivative 
+\[
+ \normp{ \nabla_u^{3} (g_\delta h_\beta (\gamma^{T} T_m) }_1 \leq |g'_\delta |_\infty  \normp{\nabla^3_u h_\beta}_1   + 3 | g''_\delta |_\infty \normp{\nabla_u h_\beta}_1 \normp{\nabla^2_u h_\beta}_1 + |g'''_\delta |_\infty (\normp{\nabla_u h_\beta}_1)^{3}.
+\]
+Assume that approximately
+\[
+ \normp{\nabla_P h_\beta (P_1, \ldots, P_n) }_1 \leq 1, 
+ \quad  
+ \normp{\nabla^2_P h_\beta (P_1, \ldots, P_n) }_1 \leq \beta, 
+ \quad
+ \normp{\nabla^3_P h_\beta (P_1, \ldots, P_n) }_1 \leq \beta^2,  
+\]
+\[
+|g'_\delta|_{\infty} \leq \frac{1}{\delta},
+\quad
+|g''_\delta|_{\infty} \leq \frac{1}{\delta^2}, 
+\quad
+|g'''_\delta|_{\infty} \leq \frac{1}{\delta^3}. 
+\]
+Finally,
+\[
+\normp{ \nabla_u^{3} (g_\delta h_\beta (\gamma^{T} T_m) }_1 \leq 
+\left(
+\frac{\beta^2}{\delta} +
+ 3\frac{\beta}{\delta^2} +
+\frac{1}{\delta^3}
+\right) \max_{\gamma, m} \normp{\gamma^{T} T_m}^3_1.
+\]
+
+
+\end{document}

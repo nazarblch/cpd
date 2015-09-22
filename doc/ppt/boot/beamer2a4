@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# J. Fuhrmann
+
+if test $# == 0  ; then
+    echo beamer2a4  pdffile
+    echo '       ' Converts LaTeX beamer slides to a4 format,
+    echo '       ' putting two slides on a page.
+    echo '       ' Created using LaTeX pdfpages package.
+    exit
+fi
+
+if test ! -f "$1" ; then 
+    echo file "$1" not found
+    exit
+fi
+
+fbase ()
+{
+  echo "$1" | sed -e 's/\.[^.]*$//'
+}
+
+a4name="`fbase \"$1\"`-a4"
+
+
+
+cat <<EOF  > "$a4name.tex"
+\documentclass{article}
+\usepackage[a4paper,margin=0.5cm]{geometry}
+\usepackage{pdfpages}
+\begin{document}
+\includepdf[frame,pages=1-,nup=1x2, width=0.9\textwidth, delta=3ex 3ex]{$1}
+\end{document}
+EOF
+
+pdflatex "$a4name.tex"
+pdflatex "$a4name.tex"
+rm "$a4name.tex"
+rm "$a4name.log"
+rm "$a4name.aux"
+
+echo
+
+if test -f "$a4name.pdf" ; then
+    echo pdf file \`"$a4name.pdf"\' created.
+    echo '   ' For removing multiple slides created with \\uncover, please 
+    echo '   ' refer to beamer handout mode!
+else
+    echo error during creation fo "$a4name.pdf"
+fi
+

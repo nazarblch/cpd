@@ -1,0 +1,80 @@
+Algorithm~\ref{alg:alg_cp} summarises these ideas for sequential case. Here the current moment is supposed to be ${\tau + 2h_N - 2}$ and a candidate for the change point is $\tau$.
+
+Algorithm~\ref{alg:bootstrap} presents the procedure of calculation of a critical value $z_h$ for a fixed window size $2h$. Let $\mathbb{Y} = (Y_1,..., Y_M)$ be a training set. Let weighted likelihood function be a convolution of i.i.d likelihood elements and a weight vector $(u_1,\ldots,u_M)$: 
+\[
+L^{\flat}(\theta; Y_1,\ldots, Y_M) = \sum_{m = 1}^{M} u_m l(\theta, Y_m),
+\]
+where $\{u_m\}_{m = 1}^M$ are i.i.d. and $\E u_m = \Var u_m = 1$. Then bootstrapped generalised likelihood ratio test is
+\[
+T_{h}^{\flat}(t) = \sup_{\theta \in \Theta}L^{\flat}(\theta; Y_{t-h},..., Y_{t-1}) + \sup_{\theta \in \Theta}L^{\flat}(\theta; Y_{t},..., Y_{t + h-1})
+\]
+\[
+-\sup_{\theta \in \Theta}\{L^{\flat}(\theta; Y_{t-h},..., Y_{t-1}) + L^{\flat}(\theta; Y_{t},..., Y_{t+h-1})\},
+\]
+
+\begin{algorithm}[!th]
+\label{alg:alg_cp}
+\KwData{ $(Y_{\tau - 2h_N},...,Y_{\tau + 2h_N - 2})$, $\{h_1,..., h_N |h_1 < ... < h_N \}$, $\{z_{h_1},..., z_{h_N}\}$,  $\{P_{h_1},..., P_{h_N}\}$}
+\KwResult{$\{I_1,..., I_N\}$. For all $k \leq N$, $I_k \in \{0, 1\}$ }
+
+\For{$k \leftarrow 1$ \KwTo $N$}{
+    Form $\mathbb{T}_{h_k}(\tau)$:
+    \For{$l \leftarrow 1$ \KwTo $N$}{
+        compute $T_{h_l}(\tau)$ using $(Y_{\tau - h_k},..., Y_{\tau + h_k - 1})$ \;
+    }
+ $\mathbb{T}_{h_k}(\tau) \leftarrow (T_{h_k}(\tau - h_k),..., T_{h_k}(\tau + h_k - 1))$\\
+ $\hat{\mathbb{T}}_{h_k}(\tau) \leftarrow \sqrt{2\left<\mathbb{T}_{h_k}(\tau), P_{h_k}\right>}$\\
+ 
+ \eIf{$\hat{\mathbb{T}}_{h_k}(\tau) > z_{h_k}$}{
+        $I_k \leftarrow 1$ \;
+     }{
+        $I_k \leftarrow 0$\;
+    }
+}
+
+\caption{Change point detection. $\tau$ is supposed to be a change point if exists at least one $I_k = 1$.}
+\end{algorithm}
+
+
+\begin{algorithm}[!th]
+\label{alg:bootstrap}
+\KwData{ $(Y_1,\ldots, Y_M)$,  $h$,  $P$, $S$ -- weights generation counts}
+\KwResult{ $f^{\flat}_h$ -- bootstrap distribution of maximal convolution inside the window}
+
+\For{$s = 1$ \KwTo $S$}{
+  generate $u = (u_1,\ldots, u_M)$\;
+  
+  \For{each window position $t$}{
+    compute $\dL_h^{\flat}(t)$\;
+  }
+  
+  \For{each $\tau$}{
+    $\hat{\mathbb{T}}^{\flat}(\tau) = \sqrt{2 \langle \mathbb{T}(\tau), P \rangle}$\;
+  }
+  add $\max_\tau\hat{\mathbb{T}}^{\flat}(\tau)$ to empirical distribution $f^b_h$\;
+  
+}
+
+\KwData{$H = (h_1,\ldots,h_N)$, $f^b_h$ for each $h$, $\alpha$ -- confidence}
+\KwResult{critical values $z_h$ for each $h$}
+
+Multiplicity correction:\\
+
+\For{$s$ = 1 \KwTo S}{
+  generate $u = (u_1,\ldots, u_M)$\;
+  
+  add $\min_{h} \text{p-value}(\max_\tau\PT^b(\tau), f^b_h)$ to   empirical distribution $\P_f$  
+  
+}
+
+find $\alpha'$ from condition $\P_f(x <  \alpha - \alpha') = \alpha$\;
+
+\For{each $h$ in $H$}{
+ $z(h) = $ quantile $(f^b_h, \alpha - \alpha')$\;
+}
+
+\caption{Critical values calibration}
+\end{algorithm}
+
+
+

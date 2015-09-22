@@ -1,0 +1,49 @@
+where $L(\cdot)$ is a log-likelihood function. %built under the chosen parametric family.
+These approaches are rather popular [\textcolor{red}{TODO: standard methods of cp detection with GLR}], but fail if parametric family $\mathbb{P}(\theta), \theta \in \Theta \subseteq \mathbb{R}^p$ was specified incorrectly. In this paper it is shown, that under some assumptions GLR statistics behaves like $\chi^2_p$ (see Section \ref{sec:theory}), where $p$ is a size of parameter space. To prove that \textit{finite sample non-parametric Wilk's phenomenon} was used \cite{wilks2013} (????).
+Moreover, type of a change point directly defines a graphical pattern of GLR behaviour. For example, if a change point is instant (i.e. is a step), then in its neighbourhood, GLR behaves triangle-like (see Fig.\ref{fig:triangle}). At the picture an application of GLR statistics in sliding window is shown. The upper box contains observed Poisson data $Po(\lambda)$. Two time moments, when $\lambda$ was changed, are marked with vertical red lines. Two lower boxes represent GLR statistics $T(t,h)$ calculated in sliding windows of different lengths ($h = 40$ and $h =  60$ respectively). 
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.4\textwidth, height=0.38\textwidth]{po3.pdf}
+    %\caption{Awesome Image}
+    \label{fig:triangle}
+\end{figure}
+
+To build a rejection region for hypothesis of homogeneity, we use bootstrap technique described in \cite{Bootstrap}. If for some scale $h'$ at the moment $t'$, statistics $T(h', t')$ overcomes this critical level, than $t'$ is marked as a candidate for change point. Then a change point is detected, if this happens for several scales $\{h_1',..., h_k'\} \in H$. So that the method will be more robust to outliers, instead of statistics $T(t, h)$, its convolution with graphical pattern is used. The formal algorithm description is presented in the next paragraph. Demo version of the method cab be find on https://localcpdetector.shinyapps.io/localCP .
+
+
+\subsection{Description}
+
+\subsubsection{Non-asymptotic likelihood ratio test}
+
+
+
+The observed data is $\mathbb{Y} = (Y_1,..., Y_N)$. Denote the change point as $k^*$, $1 < k^* < N$. 
+For each $h$ the procedure is following.  For each $k$, s.t. $1 + h/2 \leq k \leq N - h/2$ the statistics 
+\[
+T(h, k) = \sup_{\theta \in \Theta}L(Y_{k - h/2},..., Y_{k - 1}; \theta) + 
+\]
+\[
++ \sup_{\theta \in \Theta}L(Y_{k},..., Y_{k + h/2}; \theta) 
+\]
+\[
+- \sup_{\theta \in \Theta}L(Y_{k - h/2},..., Y_{k + h/2}; \theta)
+\]
+ is calculated. The next step ensures the robustness of the method for outliers. At each point $k$, s.t. $1 + h \leq k \leq N - h$ a scalar product with desirable pattern $P$ is calculated.
+ \[
+ T_{P}(h, k) = <(T(h, k-h/2), ..., T(h, k)), P>.
+\]
+
+For example, in case of step-like change point, pattern $P \in \mathbb{R}^{h/2}$ is a right triangle with base equal to $h/2$ and height equal to 1: $P = 2(1,..., h/2)/h$. 
+Statistics $T_p(h, \cdot)$ achieves its maximum at $k = k^*$. Thus, a candidate for change point $k'$ is chosen as 
+\[
+k' = \argmax_{1 + h \leq k \leq N - h}T_P(h, k) if
+\]
+\[
+T_P(h, k') > \delta(h)
+\]
+where $\delta(h)$ is a critical value for statistics $T_P(h, \cdot)$ calculated using bootstrap technique \cite{Bootstrap}.
+This procedure is running for all $h \in H$ simultaneously. This allows to detect changes at the least possible scale $h$.
+%This statistics achieves its maximum at $k = k^*$ (see Section \ref{sec:theory}).
+
+

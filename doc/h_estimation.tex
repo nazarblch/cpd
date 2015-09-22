@@ -1,0 +1,104 @@
+\input{header}
+
+\setcounter{tocdepth}{2}
+
+  \begin{document}
+    
+    \selectlanguage{russian} 
+ 
+ 
+ \section{Погрешность обнаружения разладки} 
+  
+Будем выбирать последовательно из всей выборки отрезки $[t nh, (t+1) nh]$, которые назовем \textit{окнами}.  Параметр $h$ определяет ширину окна, а $t$ -- порядковый номер.
+Пусть $\Vert \theta_2^* - \theta_1^* \Vert$ увеличивается линейно при приближении середины окна к точке разладки.   Тогда  $2 \triangle L$ c увеличением 
+$\Vert \theta_2^* - \theta_1^* \Vert$ возрастает квадратично. Будем искать выступ  в виде двух парабол на графике $2 \triangle L(t)$ методом наименьших квадратов.
+График $(2 \triangle L(t) - p)$ в точках $t$ где окно содержит точку разладки,  имеет вид
+\[
+f(x) =  b^2 (|x - s| - nh/2)^2,
+\]
+где $s$ -- координата точки разладки, $b^2 = 4 \Vert\Sigma (\theta_2^* - \theta_1^*) \Vert^2 / (nh)^2$. Хотим минимизировать функционал 
+\[
+\sum_{i} \big[
+ b^2 (|x_i - s| - nh/2)^2 - d_i
+\big]^2 \to \min_s.
+\] 
+Приравняем производную по $s$ к нулю
+\[
+\sum_{i} \big[
+ b^2 (|x_i - s| - nh/2)^2 - d_i
+\big] (|x_i - s| - nh/2) \tau_i = 0,
+\] 
+\[
+\tau_i = \begin{cases}
+ -1, & s < x_i \\
+ 1, & s > x_i  \\
+ [-1, 1], & s = x_i, 
+ \end{cases}
+\]
+\[
+d_i = 2 \triangle L(i) - p.
+\]
+\[
+\sum_{i} \big[
+b^2 (s - x_i)^3 + 3 b^2 (x_i - s) |x_i - s| (nh/2) + 3 b^2 (nh/2)^2 (s - x_i) - d_i (s - x_i) - 
+\tau_i b^2 (nh/2)^3 + d_i (nh/2) \tau_i
+\big]  = 0,
+\] 
+Выберем начало координат так, чтобы выполнялись равенства $\sum_i x_i^{2k+1} = 0, \; \forall k \geq 0$. Пусть $x_i \in \{-nh/2, \ldots, nh/2\}$, $s \ll nh$, тогда 
+\[
+2 s b^2 (nh/2)^3 - 3 s b^2 (nh/2)^3 + 6 s b^2 (nh/2)^3 - s  \sum_{i} d_i - s b^2 (nh/2)^3 
+=  - \sum_{i} d_i (x_i + (nh/2) \tau_i).  
+\] 
+Заменим $\sum_{i} d_i$ на $2/3 b^2 (nh/2)^3$
+\[
+s \approx \frac{- \sum_{i} d_i (x_i + (nh/2) \tau_i)}{ 3.3 b^2 (nh/2)^3 }
+\approx \frac{ \sum_{i} d_i x_i }{ 3.3 b^2 (nh/2)^3 } = \frac{ \sum_{i} d_i x_i }{ 3.3 \Vert\Sigma (\theta_2^* - \theta_1^*) \Vert^2 (nh/2) }  .
+\]
+Оценим экспериментально дисперсию $\sum_{i} d_i x_i$, состоящую из дисперсии $\sum_{i} 2  \triangle \xi_{12}^T \triangle \theta_{12}^{*} x_i$ и дисперсии $\sum_{i} 2  \triangle \xi_{12}^T \triangle \theta_{12}^{*} x_i$ и дисперсии
+$\sum_{i}  \triangle \xi_{12}^2 x_i$.
+
+\[
+\Var \left\{ \sum_{i} 2  \triangle \xi_{12}^T \triangle \theta_{12}^{*} x_i \right\} = 
+c_1(p) \Vert \theta_{12}^{*}  \Vert^2 (nh)^4, 
+\quad  c_1(p) \sim (\log p)^2 / e^5.
+\]
+\[
+\Var \left\{ \sum_{i}  \triangle \xi_{12}^2 x_i \right\} = 
+c_2(p)  (nh)^4, 
+\quad  c_2(p) \sim  p/ 30.
+\]
+
+\imgh{100mm}{xi2_dot_trange_var.pdf}{Дисперсия $\sum_{i}  \triangle \xi_{12}^2 x_i$ в зависимости от $(nh)$ в логарифмических  осях.}
+\imgh{100mm}{xi_theta_dot_trange_var.pdf}{Дисперсия $\sum_{i} 2  \triangle \xi_{12}^T \triangle \theta_{12}^{*} x_i$ в зависимости от $(nh)$ в логарифмических  осях.}
+
+
+Аналогичный результат может быть получен из теоретических соображений, исходя из вида корреляционной функции для процесса $ \triangle \xi_{12}(t)$.
+
+\imgh{100mm}{xi_sq_cov.pdf}{Корреляция $ \triangle\xi_{12}(t)^2$ и $ \triangle \xi_{12}(t)(1)$.}
+\imgh{100mm}{xi_bias_cov.pdf}{Корреляция $2  \triangle \xi_{12}(t)^{T}   \triangle \theta_{12}^{*}$.}
+
+
+\begin{remark}
+Начиная с некоторого $h_0$, обеспечивающем хорошую точность приближения Лапласа для функции правдоподобия, погрешность определения $s$ (точка разладки) начинает возрастать как $\sqrt{nh}$.  
+\end{remark} 
+
+
+\newpage
+
+\section{Пример}
+\[
+Y_i = X\theta + \varepsilon_i.
+\]
+
+Приведены графики статистик при различных величинах разности параметра $\theta$, взятых до и после разладки 
+
+\imgh{100mm}{sep_plot_05.pdf}{Вид статистик $2 \triangle L (t)$, $ \triangle\xi_{12}(t)^2 $, $ 2  \triangle \xi_{12}(t)^{T}   \triangle \theta_{12}^{*} (t)$ и $\triangle \theta_{12}^{*2}(t) $ .}
+
+\imgh{100mm}{sep_plot_075.pdf}{Вид статистик $2 \triangle L (t)$, $ \triangle\xi_{12}(t)^2 $, $ 2  \triangle \xi_{12}(t)^{T}   \triangle \theta_{12}^{*} (t)$ и $\triangle \theta_{12}^{*2}(t) $ .}
+
+\imgh{100mm}{sep_plot_1.pdf}{Вид статистик $2 \triangle L (t)$, $ \triangle\xi_{12}(t)^2 $, $ 2  \triangle \xi_{12}(t)^{T}   \triangle \theta_{12}^{*} (t)$ и $\triangle \theta_{12}^{*2}(t) $ .}
+
+\imgh{100mm}{sep_plot_2.pdf}{Вид статистик $2 \triangle L (t)$, $ \triangle\xi_{12}(t)^2 $, $ 2  \triangle \xi_{12}(t)^{T}   \triangle \theta_{12}^{*} (t)$ и $\triangle \theta_{12}^{*2}(t) $ .}
+
+
+\end{document}

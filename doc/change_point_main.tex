@@ -1,0 +1,537 @@
+\input{header}
+
+\setcounter{tocdepth}{2}
+
+  \begin{document}
+    
+    \selectlanguage{russian}
+
+\begin{center}
+\begin{huge}
+\textbf{Обнаружение точки разладки при помощи обобщенного отношения правдоподобия \\}
+\end{huge}
+$ $ \\  
+{\Large Бузун Назар postrealist@gmail.com }
+\end{center}
+   
+    \tableofcontents 
+    
+  \section{График отношения правдоподобия}
+  
+  \subsection{Точка максимума правдоподобия}
+  
+  \[
+  \alpha(\theta, \theta_0) = L(\theta) - L(\theta_0)   - (\theta - \theta_0)^T \nabla L_G( \theta_0) + \frac{1}{2} \Vert D (\theta - \theta_0) \Vert^2 
+  \]
+  
+ Пусть в локальной области $\Theta_0(r) = \{\Vert D (\theta - \theta^*) \Vert < r \}$, где $\theta, \theta_0 \in \Theta_0(r)$, справедливо неравенство с вероятностью $1 - e^{-x}$ 
+  
+ \[\tag{a}
+\frac{| \alpha(\theta, \theta_0)  |}{\Vert D(\theta - \theta_0) \Vert} \leq 2 \diamondsuit (r, x),  
+  \]
+ где $\diamondsuit (r, x) = (\delta (r) + 6 v_0 z_H(x) \omega ) r.$
+    
+Разделим выборку на два отрезка по индексу, правдоподобие и параметр части выборки слева будем индексировать  как $*_{1}$, справа  -- $*_{2}$. Выразим ОМП оценку на всей выборке через ОМП оценки слева ($\widehat{\theta}_1$) и справа ($\widehat{\theta}_2$):
+
+\[
+L(\theta) = L_1(\theta) + L_2(\theta) = L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) - 
+\]
+\[ -  \frac{1}{2} (\theta - \widehat{\theta}_1)^T D_1^2  (\theta - \widehat{\theta}_1)
+-  \frac{1}{2} (\theta - \widehat{\theta}_2)^T D_2^2  (\theta - \widehat{\theta}_2) + O(r \diamondsuit (r, x)), 
+\]     
+\[
+\frac{1}{2} (\theta - \widehat{\theta}_1)^T D_1^2  (\theta - \widehat{\theta}_1)
+-  \frac{1}{2} (\theta - \widehat{\theta}_2)^T D_2^2  (\theta - \widehat{\theta}_2) 
+ = 
+\]
+\[
+ = \frac{1}{2} (\theta - \widehat{\theta})^T D^2  (\theta - \widehat{\theta}) + \text{const}(\theta),
+\]
+\[
+\widehat{\theta} = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ),
+\quad D^2 = D_1^2 + D_2^2.
+\]    
+
+\begin{lemma}
+Пусть $\tilde{\theta} = \arg\max L(\theta)$, $\widehat{\theta} \in \Theta_1(r) \cap \Theta_2(r)$, тогда с вероятностью $1 - 2 e^{-x}$
+\[
+\Vert D (\tilde{\theta} -  \widehat{\theta}) \Vert^2 \leq O (r \diamondsuit (r, x)).
+\]
+\end{lemma}
+
+\begin{remark}
+Для выполнения условия $\widehat{\theta} \in \Theta_1(r) \cap \Theta_2(r)$ требуется ограничение на изменение параметра $\theta^*$ вида
+\[\tag{L*}
+\Vert D(\theta_1^* - \theta_2^*) \Vert \leq r.
+\]  
+\end{remark}
+
+\subsection{Отношение правдоподобия} 
+
+\[
+\triangle L =
+L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) -  L(\widehat{\theta}) = 
+\]
+\[
+=   \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_1)^T D_1^2  (\widehat{\theta} - \widehat{\theta}_1)
++ \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_2)^T D_2^2  (\widehat{\theta} - \widehat{\theta}_2) + O(r \diamondsuit (r, x)).
+\]
+\[
+\widehat{\theta} - \widehat{\theta}_1 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_1 = D^{-2} D_2^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1),
+\]
+\[
+\widehat{\theta} - \widehat{\theta}_2 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_2 = D^{-2} D_1^2 ( \widehat{\theta}_1 -  \widehat{\theta}_2).
+\]
+\[
+2 \triangle L =  ( \widehat{\theta}_2 -  \widehat{\theta}_1)^T \Sigma^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1) + O(r \diamondsuit (r, x)),
+\]
+где 
+\[\tag{Sigma}
+\Sigma^2 = D_2^2 D^{-2} D_1^2 D^{-2} D_2^2 + D_1^2 D^{-2} D_2^2 D^{-2} D_1^2
+ = D_1^2 D^{-2}D_2^2 \approx \frac{1}{4} D^2. 
+\]
+
+Предположим, что выполнены неравенства с вероятностью $1 - 2 e^{-x}$
+\[
+\Vert D_1(\widehat{\theta}_1 - \theta_1^*) - \xi_1 \Vert \leq \diamondsuit (r, x),
+\]
+\[
+\Vert D_2(\widehat{\theta}_2 - \theta_2^*) - \xi_2 \Vert \leq \diamondsuit (r, x).
+\]
+
+Выполнив замены $\widehat{\theta}_2,  \widehat{\theta}_1$ в выражении для $\triangle L$ при помощи неравенства
+\[
+\vert \Vert a \Vert^2  - \Vert b \Vert^2 \vert \leq 2 \Vert a \Vert \Vert a - b \Vert + \Vert a - b \Vert^2,
+\] 
+приходим к следующему результату.
+
+\begin{theorem}
+\label{dl_theorem}
+Пусть выполнено условие ($L^*$), а также условия квадратичной аппроксимации  Лапласа и с вероятностью $1 - 2 e^{-x}$ выполнено условие
+\[
+\Vert \xi_i \Vert \leq z(x), 
+\quad z^2(x) = p + 6 \lambda_{\max} x.
+\] 
+Тогда в локальной области с вероятностью $1 - 8 e^{-x}$ справедливо равенство
+\[
+2 \triangle L = \Vert \triangle \xi_{12} + \triangle \theta_{12}^*\Vert^2  + O(\{r + z(x)\} f_{D} \diamondsuit (r, x)),
+\]
+где
+\[
+\triangle \xi_{12}  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\triangle \theta_{12}^*  = \Sigma (\theta_2^* - \theta_1^*), 
+\]
+\[
+\left\Vert  \Sigma D^{-1}_i  \right\Vert_{\infty} \leq f_D, 
+\quad i = \{1,2\}.
+\]
+\end{theorem}    
+
+\begin{remark} При увеличении размера выборки $n \to \infty$ имеет место сходимость по распределению 
+\[
+\xi_{12} \to \mathcal{N}(0, I_p).
+\]
+\end{remark}
+
+\begin{remark} 
+Так как $\Vert \triangle \xi_{12} \Vert^2 \sim p$, то должно выполнятся
+\[
+r \diamondsuit (r, x) \sim \frac{r^2}{\sqrt{n}}  = o(p),
+\] 
+где $n$ -- длина выборки. Иначе Теорема \ref{dl_theorem} теряет смысл. Таким образом, из условия  ($L^*$) получаем, что разность параметра $\Vert \theta_2^* - \theta_1^* \Vert$ не должна превышать величины
+\[
+\frac{\sqrt{p}} {n^{1/4}},
+\] 
+так как $\Vert D \Vert  = O(\sqrt{n})$. Если же пренебречь членом $\Vert \triangle \xi_{12} \Vert^2 \sim p$, то приходим к условию
+\[
+\frac{r}{\sqrt{n}}  = o(\sqrt{p})
+\Rightarrow 
+\Vert \theta_2^* - \theta_1^* \Vert = o(\sqrt{p}).
+\]
+\end{remark}
+
+Установим аналогичный результат (теорема \ref{dl_theorem}) для статистики $\sqrt{2 \triangle L}$. Из условия ($a$) получаем c вероятностью не менее $1 - 2e^{-x}$
+\[
+\left| \triangle L (\widehat{\theta}_1, \widehat{\theta}_2) - \frac{1}{2} \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert^2 \right| \leq 
+2 \Vert D_1(\widehat{\theta}_1 - \widehat{\theta}) \Vert \diamondsuit (r, x) + 2 \Vert D_2(\widehat{\theta}_2 - \widehat{\theta}) \Vert \diamondsuit (r, x) 
+\leq 
+\] 
+\[
+\leq  4  \Vert  \Sigma(\widehat{\theta}_2 - \widehat{\theta}_1)  \Vert  \diamondsuit (r, x).
+\]
+Воспользуемся неравенством $|a - b| \leq |a^2 - b^2| / b, \; b >0$.
+\[
+\left| \sqrt{ 2\triangle L (\widehat{\theta}_1, \widehat{\theta}_2) } -  \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert \right| \leq 
+8   \diamondsuit (r, x).
+\]
+Заменим $(\widehat{\theta}_1, \widehat{\theta}_2)$ на $(D_1^{-1}\xi_1 + \theta_1^*, \; D_2^{-1}\xi_2 + \theta_2^*)$
+\[
+\left| \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert  - 
+\Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert 
+\right |
+\leq  \Vert \Sigma(\widehat{\theta}_1 - \theta_1^*) - \Sigma D_1^{-1} \xi_1 \Vert
++ \Vert \Sigma(\widehat{\theta}_2 - \theta_2^*) - \Sigma D_2^{-1} \xi_2 \Vert
+\leq  2 f_D \diamondsuit (r, x).
+\]
+Резюмируем результат 
+\begin{theorem}
+\label{dl_sq_theorem}
+
+Пусть выполнено условие ($L^*$), а также условия квадратичной аппроксимации  Лапласа (a). Тогда с вероятностью не менее $1 - 4 e^{-x}$ в локальной области $\Theta_1(r) \cap \Theta_2(r)$ выполнено неравенство
+\[
+\left| 
+\sqrt{ 2\triangle L (\widehat{\theta}_1, \widehat{\theta}_2) } - 
+\Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert 
+\right| \leq 
+(8 + 2 f_D)  \diamondsuit (r, x).
+\]
+где
+\[
+\triangle \xi_{12}  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\triangle \theta_{12}^*  = \Sigma (\theta_2^* - \theta_1^*), 
+\]
+\[
+\left\Vert  \Sigma D^{-1}_i  \right\Vert_{\infty} \leq f_D, 
+\quad i = \{1,2\}.
+\]
+
+\end{theorem}
+
+\begin{remark}
+Величина $f_D < 1$ на погрешность погрешность в теоремах \ref{dl_theorem},
+\ref{dl_sq_theorem} не оказывает большого влияния. Однако, константу при $\diamondsuit (r, x)$ можно уменьшить,  раскладывая $L_1(\theta)$, $L_2(\theta)$ и $L(\theta)$ в окрестности точек  $\theta_1^*$, $\theta_2^*$ и $\theta^*$ вместо точек ОМП:
+
+\[
+2 \triangle L = - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2   - 
+2 \xi_1^T D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^*) + 2 \xi_2^T D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*)+
+\]
+\[ + \Vert  D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^* )\Vert^2 + \Vert  D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*) \Vert^2 \pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2) =
+\]
+\[
+= - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2   + 
+2(D_2^{-1} \xi_2 - D_1^{-1} \xi_1)^T \Sigma^2 (\theta_2^* - \theta_1^*) + 
+\Vert \Sigma (\theta_2^* - \theta_1^*) \Vert^2 \pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+Заменим $\Vert \xi \Vert^2$ на $\Vert D^{-1}(D_1 \xi_1 + D_2 \xi_2) \Vert^2 \pm  2\diamondsuit (r, x) z(x) $. 
+\[
+- \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2  = \Vert \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1) \Vert^2 \pm  2\diamondsuit (r, x) z(x).
+\]
+Приходим к конечному выражению
+\[
+\bigg |
+2 \triangle L  -  \Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert^2 
+\bigg | 
+\leq (4 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+\end{remark}
+    
+ 
+
+\section{Бутстреп}
+
+\begin{lemma}[Неравенство Хефдинга для векторов]
+Пусть $\Exp X_i = 0$, $\Vert X_i \Vert < c_i$, тогда 
+\[
+\PR\left(\left\Vert \sum_{i=1}^{n} X_i \right\Vert > t \right) \leq \text{exp} \left( - \frac{(t - v)^2}{2v^2} \right), 
+\quad t \geq v,
+\]
+\[
+v^2 = \frac{1}{4} \sum_{i=1}^{n} c_i^2.
+\]
+\end{lemma}
+
+
+\begin{suite}
+\[
+\PR\left(\left\Vert \sum_{i=1}^{n} X_i \right\Vert > v (1 + \sqrt{2x}) \right) \leq e^{-x}.
+\]
+\end{suite}
+
+
+\begin{lemma}[Неравенство для отклонений нормы эмпирического процесса]
+Пусть выполнены ограничения при $\Vert \gamma_1 \Vert = \Vert \gamma_2 \Vert = 1$
+\[\tag{ED}
+\log \Exp \text{exp} \left\{
+\frac{\lambda}{\omega} \gamma_1 D_0^{-1}  \nabla^2 \zeta_i (\theta) D_0^{-1} \gamma_2 
+\right\}
+\leq \frac{\lambda^2 \nu_i^2}{2}, 
+\quad \sum_i  \nu_i^2  = \nu_0^2.
+\] 
+Тогда при $\zeta = \sum_i \zeta_i$ в локальной области радиуса $r$ с вероятностью $1- e^{-x}$
+\[
+\Vert D_0^{-1} (\nabla \zeta (\theta_2) -  \nabla \zeta (\theta_1))  \Vert
+\leq 12 \nu_0 z(x) \omega r.
+\]
+\end{lemma}
+Рассмотрим функционал 
+\[
+\alpha^o(\theta_2, \theta_1) = L^{o}(\theta_2) - L^{o}(\theta_1) - (\theta_2 - \theta_1)^{T} \nabla  L^{o}(\theta_1) + \frac{1}{2} \Vert  D_0(\theta_2 - \theta_1) \Vert^2
+\]
+Будем подразумевать что дифференцирование производится по $\theta_2$ для функций типа $(\theta_2, \theta_1) \to \mathbb{R}$.
+Оценим величину его среднего значения и отклонения от среднего 
+\[
+\Vert D_0^{-1} \nabla \Exp^{0} \alpha^o(\theta_2, \theta_1) \Vert =   \Vert D_0^{-1} \nabla  \alpha(\theta_2, \theta_1) \Vert 
+\leq
+2 \diamondsuit(r,x)
+\]
+c вероятностью $1 - e^{-x}$. 
+\[
+S(\theta_2, \theta_1) = D_0^{-1} \{\nabla \alpha^o(\theta_2, \theta_1) -  \Exp^{o} \nabla \alpha^o(\theta_2, \theta_1) \}
+= \sum_{i=1}^{n} D_0^{-1} (\nabla l_i(\theta_2) - \nabla l_i(\theta_1))  (u_i-1),
+\]
+где $\Var u_i = 1$, $\Exp u_i = 1$. 
+Обозначим за $ \overset{o}{S} = S(\theta_2, \theta_1) - \Exp S(\theta_2, \theta_1)$, тогда с вероятностью $1- e^{-x}$
+\[
+\Vert \overset{o}{S}  \Vert \leq 
+12 \nu_0  z(x) \omega r \sqrt{\sum_{i=1}^{n} (\nu_i^2 / \nu_0^2) (u_i - 1)^2 } .
+\] 
+Ограничим $u_i$:
+\[
+\Exp e^{(u_i - 1)^2 / \sigma_u^2} \leq e,
+\] 
+тогда вероятностью $1 - e^{-t}$ 
+\[
+\sqrt{\sum_{i=1}^{n} (\nu_i^2 / \nu_0^2) (u_i - 1)^2 } \leq \sigma_u \sqrt{1+t} 
+\]
+Таким образом, с  вероятностью $1- 2e^{-x}$
+\[
+\Vert \overset{o}{S}  \Vert \leq 
+12 \nu_0  z(x) \omega r \sigma_u \sqrt{1+x}. 
+\]
+Наложим ограничение на  $\Exp S(\theta_2, \theta_1)$ в виде
+\[\tag{Lm}
+\Vert D_0^{-1} \nabla^2 \Exp l_i (\theta)  D_0^{-1} \Vert \leq
+\frac{C_i(r)}{n},
+\]
+в результате чего при помощи векторного неравенства Хефдинга получим с вероятностью $1 - e^{-x}$
+\[
+\Vert \Exp S(\theta_2, \theta_1) \Vert \leq 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u,
+\] 
+где $C(r) = \sqrt{\sum_i C_i^2 (r)}$, $c_u = \max (u_i - 1)$. В итоге приходим к следующему результату 
+
+\begin{theorem}[Бутстреп, Вилкс]
+\label{wilks_boot}
+При выполнении условий $(ED)$ и $(Lm)$, $(a)$, а также ограничений для весов $u_i$, в локальной области радиуса $r$ имеет место неравенство с вероятностью $1 - 4 e^{-x}$
+\[\tag{a'}
+| \alpha^o(\theta_2, \theta_1) |
+\leq 
+\Vert D_0 (\theta_2 - \theta_1)  \Vert
+\left(
+2 \diamondsuit(r,x) + 12 \nu_0  z(x) \omega r \sigma_u \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right)  = 
+\]
+\[
+ = \Vert D_0 (\theta_2 - \theta_1)  \Vert \; 2 \diamondsuit^{o}(r,x). 
+\] 
+\end{theorem}
+
+Для вывода теоремы Фишера для взвешенной функции правдоподобия в мире бутстрепа введем переменную
+\[
+\chi^{o}(\theta_2, \theta_1) =  D_0^{-1} ( \nabla L^{o}(\theta_2) -   \nabla L^{o}(\theta_1) ) + D_0 (\theta_2-  \theta_1),
+\] 
+из верхней оценки которой легко получить теорему Фишера. Заметим, что
+\[
+\chi^{o}(\theta_2, \theta_1) = D_0^{-1} \nabla \alpha^{o}(\theta_2, \theta_1). 
+\]
+Тогда, проводя рассуждения аналогичные доказательству теоремы Вилкса, получаем верхнюю оценку $\chi^{o}(\theta_2, \theta_1)$.
+
+\begin{theorem}[Бутстреп, Фишер]
+\label{fisher_boot}
+При выполнении условий $(ED)$ и $(Lm)$, $(a)$, а также ограничений для весов $u_i$, в локальной области радиуса $r$ имеет место неравенство с вероятностью $1 - 4 e^{-x}$
+\[
+\Vert \chi^{o}(\widehat{\theta}^{o}, \widehat{\theta}) \Vert
+= 
+\Vert  D_0 (\widehat{\theta}^{o} -  \widehat{\theta}) -  D_0^{-1} \nabla L^{o}(\widehat{\theta}) \Vert
+\leq 
+ 2 \diamondsuit^{o}(r,x), 
+\] 
+где $\widehat{\theta}^{o}$, $\widehat{\theta}$ -- ОМП для взвешенной и невзвешенной функций правдоподобия.  
+\end{theorem}
+
+Из теорем \ref{fisher_boot} и \ref{wilks_boot} можем получить аналог теоремы \ref{dl_sq_theorem} только для взвешенной функции правдоподобия.
+
+\begin{theorem}
+\label{dl_sq_boot_theorem}
+
+Пусть выполнено условие ($L^*$), а также условия квадратичной аппроксимации  Лапласа $(a')$. Тогда с вероятностью не менее $1 - 16 e^{-x}$ в локальной области $\Theta_1(r) \cap \Theta_2(r)$ выполнено неравенство
+\[
+\left| 
+\sqrt{ 2\triangle L (\widehat{\theta}_1^{o}, \widehat{\theta}_2^{o}) } - 
+\Vert \triangle \xi_{12}^{o} + \triangle \widehat{\theta}_{12} \Vert 
+\right| \leq 
+(8 + 4 f_D)  \diamondsuit^{o} (r, x).
+\]
+где
+\[
+\triangle \xi_{12}^{o}  = \Sigma (D_2^{-1} \xi_2^{o} - D_1^{-1} \xi_1^{o}),
+\quad
+\triangle \widehat{\theta}_{12}  = \Sigma (\widehat{\theta}_2 - \widehat{\theta}_1), 
+\]
+\[
+\left\Vert  \Sigma D^{-1}_i  \right\Vert_{\infty} \leq f_D, 
+\quad i = \{1,2\}.
+\]
+
+\end{theorem}
+
+\begin{remark}
+Для генерации нормы вектора $\xi_{12}^{o}$ можно воспользоваться статистикой $T^{o} = \sqrt{ 2\triangle L (\widehat{\theta}_1^{o}, \widehat{\theta}_1^{o} + \triangle \widehat{\theta}_{12})} $, для которой также применима теорема 
+\ref{dl_sq_boot_theorem}, причем переменная $\triangle \widehat{\theta}_{12}  = 0$ для данной статистики, т.е.
+\[
+\left| 
+T^{o} - 
+\Vert \triangle \xi_{12}^{o}  \Vert 
+\right| \leq 
+(8 + 4 f_D)  \diamondsuit^{o} (r, x).
+\]
+\end{remark}
+
+Найдем точность оценки распределения нормы вектора  $\triangle \xi_{12} + b$ при помощи бутстрепа (аналога $\triangle \xi_{12}^{o} + b^{o}$,  $b$, $b^{o}$ неслучайные), приближая их распределения к нормальному. Последовательность сравнения распределений:
+\begin{enumerate}
+\item $\triangle \xi_{12}^{o}(\widehat{\theta}_1, \widehat{\theta}_2) \approx \triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*)$;
+\item  $\Vert \triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*) + b^o \Vert  \approx  \Vert \xi_{12}^{o} \Vert$, $\xi_{12}^{o} \sim \mathcal{N}(b^o, \Sigma^o) $;
+\item  $\Vert \triangle \xi_{12}(\theta_1^*, \theta_2^*) + b \Vert  \approx  \Vert \xi_{12} \Vert$.
+\item  $\Vert \xi_{12}^{o}  \Vert  \approx  \Vert \xi_{12} \Vert$, $\xi_{12} \sim \mathcal{N}(b, \Sigma) $;
+\end{enumerate}
+
+
+\noindent\textbf{1)} Рассчитаем отклонение $\triangle \xi_{12}^{o}(\widehat{\theta}_1, \widehat{\theta}_2)$ от $\triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*)$.  Поскольку 
+\[
+\xi_i^{o}(\theta) = D_0^{-1}  \sum_{i=1}^{n} \nabla l_i(\theta) (u_i - 1),
+\]
+то, используя оценку для $S(\theta_2, \theta_1)$, получим  неравенство в локальной области, с вероятностью $1- 3e^{x}$, $i = \{1,2\}$
+\[
+\Vert \xi_i^{o}(\theta_2) - \xi_i^{o}(\theta_1) \Vert \leq 
+\left(
+12 \nu_0  z(x) \omega r \sigma_u \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right)  
+ =  2 \diamondsuit_{\xi}^{o}(r,x). 
+\]
+Запишем  $\triangle \xi_{12}^{o}(\theta_1, \theta_2)$ в виде 
+\[
+\triangle \xi_{12}^{o}(\theta_1, \theta_2) = A \left( \begin{array}{c}
+\xi_1^{o}(\theta_1) \\
+\xi_2^{o}(\theta_2)
+\end{array}
+\right),
+\quad 
+A = \Sigma \left( - D_1^{-1}, D_2^{-1}
+\right).
+\]
+Тогда справедливо утверждение 
+\begin{lemma}
+\[
+\Vert \triangle \xi_{12}^{o}(\widehat{\theta}_1, \widehat{\theta}_2) - \triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*) \Vert \leq 
+  4 \diamondsuit_{\xi,F}^{o}(r,x), 
+\]
+где $F = A^T A$, $H_2 = H_2(F) + 4p$,
+\[
+\diamondsuit_{\xi,F}^{o}(r,x) = \left(
+12 \nu_0  z_F(x) \omega r \sigma_u \sqrt{1+x} + 
+\frac{1 + \sqrt{2x}}{2n}  C(r) r c_u
+\right).
+\]
+\end{lemma}
+
+\noindent\textbf{2),3)} Найдем точность слабой аппроксимации $\Vert \triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*) + b^o \Vert  \approx  \Vert \xi_{12}^{o} \Vert$, $\xi_{12}^{o} \sim \mathcal{N}(b^o, \Sigma^o) $. 
+
+Будем дополнительно считать, что $\triangle \xi_{12}$, $\triangle \xi_{12}^{o}$  зависят от координаты $t$. Выявим насколько хорошо распределение  $\max_{t}\Vert \triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*)(t) + b^o(t) \Vert $ приближается распределением нормы нормального вектора $\max_{t}\Vert  \xi_{12}^{o}(t)\Vert $. Норму вектора $S$ будем выражать через $\max_{\Vert\gamma \Vert = 1} \gamma^T S$, а максимум через smooth max функцию:
+\[
+h_\beta (x) = \beta^{-1} \log\left( \sum_{i} e^{\beta x_i} \right) .
+\]
+Функция $h_\beta (x)$ обладает свойством при $x \in \mathbb{R}^M$
+\[
+ \max_i(x_i)  \leq  h_\beta (x) \leq \max_i(x_i)  +  \frac{\log(M)}{\beta}.
+\] 
+\begin{lemma}
+Для функции $g_{\delta}$, аппроксимирующей индикатор ($g_{\delta}$ возрастает от 0 до одного на отрезке ${\delta}$),   имеет место неравенство при $\delta = \beta^{-1} \log(M)$
+\[
+g_{\delta} h_\beta (x - \delta) \leq \left[\max_{0\leq i \leq M} x_i > 0 \right]  \leq g_{\delta} h_\beta (x + \delta).
+\]
+Следовательно, при условии $\vert \Exp g_{\delta} h_\beta(x)  -  \Exp g_{\delta} h_\beta(\widetilde{x}) \vert \leq C(\beta, M) \mu_n$
+\begin{equation}
+\label{max_norm_approx}
+\left| \PR \left(\max_{0\leq i \leq M} x_i > 0 \right)  -  \PR  \left(\max_{0\leq i \leq M} \widetilde{x}_i > \pm 2\delta \right) \right| \leq 
+C(\delta, M) \mu_n.
+\end{equation}
+\end{lemma}
+
+Вынесем сдвиг $\pm 2\delta$ наружу при помощи леммы об анти-концентрации  плотности распределения $\max_{i} \widetilde{x}_i$ .
+ 
+\begin{lemma}
+Пусть $x \in \N (m, \Sigma) \in \mathbb{R}^M $,  $\sigma_1 \leq  \sqrt{\Sigma_{ii}} \leq  \sigma_2$, $a_M = \max_i (\widetilde{x}_i - m_i) /\sqrt{ \Sigma_{ii}}$, тогда $\forall c$
+ \[
+ \PR(\vert \max_{i} \widetilde{x}_i - c \vert \leq  \varepsilon)
+ \leq \frac{4 \varepsilon}{\sigma_1} \left( \frac{\sigma_2}{\sigma_1} a_M +  \left(\frac{\sigma_2}{\sigma_1} - 1\right) \sqrt{2 \log \left(\frac{\sigma_1}{\varepsilon} \right)}+2  - \frac{\sigma_1}{\sigma_2}\right) \approx 4 \varepsilon \frac{\sigma_2}{\sigma_1^2} \sqrt{2 \log \left(  \frac{ \sigma_1 M}{\varepsilon} \right)}.
+ \]
+\end{lemma}
+Используя предыдущую лемму и выражение \ref{max_norm_approx}, получаем соотношение для разности вероятностных мер максимумов случайных векторов, один из которых имеет нормальное распределение 
+\begin{equation}
+\label{max_norm_approx_1}
+\left| \PR \left(\max_{0\leq i \leq M} x_i > 0 \right)  -  \PR  \left(\max_{0\leq i \leq M} \widetilde{x}_i > 0 \right) \right| \leq 
+C(\delta, M) \mu_n +  \delta C_{\text{ak}}(M, \Sigma).
+\end{equation}
+
+Проведем теперь расчет верхней границы в выражении
+\[
+\vert \Exp g_{\delta} h_\beta(x)  -  \Exp g_{\delta} h_\beta(\widetilde{x}) \vert \leq C(\beta, M) \mu_n.
+\] 
+
+\begin{lemma}
+Для функции $f = g_{\delta} h_{\beta}$, где $g_{\delta}$ имеет ограниченные производные до третьего порядка, имеет место соотношение при $\delta = \beta^{-1} \log(M)$
+\[
+\left| f(x + d) - f(x) - d^{T}f'(x) - d^{T}f''(x)d /2 \right |  
+\leq C(\delta, M) \Vert d \Vert_{\infty}^{3},
+\]
+\end{lemma} 
+где 
+\[
+C(\delta, M) =  \frac{1}{6 \delta^3 } (|g'''| + \log(M) |g''| + \log^2(M) |g''|).
+\]
+
+
+Пусть 
+\[
+\triangle \xi_{12}^{o}(\theta_1^*, \theta_2^*)(t) + b^o(t)  = \xi(t)=
+\sum_{i=1}^{n} c_i(t) \varepsilon_i,
+\]
+где $\Var \sum_{i} c_i(t) \varepsilon_i = \sum_{i} c_i^2(t) V_i^2$. 
+
+При помощи приближения $\varepsilon_i$ нормальными с.в. с такими же математическими ожиданиями и корреляционными матрицами получаем неравенство
+\begin{equation}
+\vert \Exp g_{\delta} h_\beta(\xi)  -  \Exp g_{\delta} h_\beta(\widetilde{\xi}) \vert \leq C(\delta, M) \mu_n,
+\end{equation}  
+где
+\[
+\mu_n = \sum_{i} ( \Vert \varepsilon_i \Vert_{\infty}^3 + C \log^{3/2} (M) \sigma_i^3  ) \Vert c_i \Vert_{\infty}^3 
+\]
+
+
+\begin{lemma}
+Пусть $X$, $Y$ независимые нормальные вектора с параметрами $m_X$, $m_Y$, $\Sigma_X$, $\Sigma_Y$. 
+Определим вспомогательные переменные 
+\[
+\triangle m = m_2 - m_1,
+\quad
+\triangle \Sigma = \Sigma_2 - \Sigma_1.
+\] 
+Справедливо неравенство
+\[
+| \Exp g(\delta^{-1} h(X)) - \Exp g(\delta^{-1} h(Y)) | 
+\leq 
+\left( 
+\frac{\beta \Vert g' \Vert_\infty}{\delta} + \frac{\Vert g'' \Vert_\infty }{2 \delta^2}
+\right) \Vert \triangle \Sigma \Vert_\infty + 
+\frac{ \Vert g' \Vert_\infty}{2 \delta} \Vert \triangle m \Vert_\infty .
+\]
+\end{lemma}   
+
+
+
+    
+  \end{document}  

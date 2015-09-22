@@ -1,0 +1,11 @@
+\BOOKMARK [1][-]{section.0.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.0.2}{Related work}{}% 2
+\BOOKMARK [1][-]{section.0.3}{Algorithm}{}% 3
+\BOOKMARK [1][-]{section.0.4}{Theoretical results}{}% 4
+\BOOKMARK [2][-]{subsection.0.4.1}{LRT statistic}{section.0.4}% 5
+\BOOKMARK [2][-]{subsection.0.4.2}{Optimal window size}{section.0.4}% 6
+\BOOKMARK [1][-]{section.0.5}{Experiments}{}% 7
+\BOOKMARK [2][-]{subsection.0.5.1}{Experiments with synthetic data}{section.0.5}% 8
+\BOOKMARK [2][-]{subsection.0.5.2}{Experiments with real data}{section.0.5}% 9
+\BOOKMARK [2][-]{subsection.0.5.3}{Sources}{section.0.5}% 10
+\BOOKMARK [1][-]{section.0.6}{Conclusion}{}% 11

@@ -1,0 +1,66 @@
+\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+
+
+\begin{document}
+
+\[
+h(x) = \beta^{-1} \log u(x),
+\quad
+u(x) = \sum_i e^{\beta x_i}
+\]
+\begin{lemma}
+\[
+\| \nabla^{(m)} h(x) \|_1  \leq \beta^{m-1}, 
+\quad m = \{1,2,3\}. 
+\]
+\end{lemma}
+
+\begin{proof}
+Denote basis elements in $\R^m$ as $e_i \otimes e_j \otimes e_k$.
+\begin{EQA}
+\nabla h(x) &=&   \beta^{-1}  \frac{\nabla u}{u} \\
+\nabla^2 h(x) &=&   \beta^{-1}  \left( 
+\frac{\nabla \otimes \nabla u}{u}  -  \frac{\nabla u \otimes \nabla u}{u^2} 
+\right)\\
+\nabla^3 h(x) &=&   \beta^{-1} \left(
+\frac{\nabla \otimes \nabla \otimes \nabla u}{u}
+ - \frac{\nabla \otimes \nabla u \otimes \nabla u}{u^2}
+ - \frac{\nabla \otimes (\nabla u \otimes \nabla u)}{u^2} 
+ + 2 \frac{\nabla u \otimes \nabla u \otimes \nabla u}{u^3} 
+\right).
+\end{EQA}
+Define $p_i = \frac{\nabla u}{u}(i)$, which satisfying condition $\sum_i p_i = 1$. Norm of tensor $T$ with $p$ axes equals to convolution sup with $p$ vectors restricted by norm $\normp{\gamma}_{\infty} = 1$.
+\begin{EQA}
+\alpha^T \nabla^2 h(x) \gamma  &=& \beta \left(
+\sum p_i \alpha_i \gamma_i  - \sum p_i \alpha_i \sum p_j \gamma_j 
+\right) \\
+&=& \beta \left( \E \alpha \gamma - \E \alpha \E \beta \gamma \right) = \beta \E \overset{o}{\alpha}  \overset{o}{\gamma}, \\
+ \nabla^3_{ijk} h(x) \alpha_i \phi_j \gamma_k  &=& 
+ \beta^2 \left(
+\E \alpha  \phi \gamma 
+- \E \alpha  \E \phi \gamma
+- \E \alpha  \phi \E \gamma
+- \E \alpha \gamma \E \phi
++ 2 \E \alpha \E  \phi \E \gamma 
+\right)\\
+&=&
+\beta^2 \left( \E \overset{o}{\alpha} \overset{o}{\phi} \overset{o}{\gamma}
+\right).
+\end{EQA}
+Using property $
+ \E \overset{o}{\alpha} \overset{o}{\phi} \overset{o}{\gamma} \leq 
+  \sqrt{ \E \alpha^2 \E \phi^2 \E \gamma^2 }.
+$ the restriction for L1 norm follows.
+
+\end{proof}
+
+\end{document}

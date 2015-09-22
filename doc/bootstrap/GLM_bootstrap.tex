@@ -1,0 +1,154 @@
+	\input{../header}
+\input{mydef}
+
+
+\usepackage{flowchart}
+\usetikzlibrary{arrows}
+
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+
+
+\begin{document}
+
+\subsection{Weighted likelihood quadratic approximation}
+
+
+\[
+S^{\flat}(\theta, \theta_0) = D^{-1} \{\nabla \alphab12 -  \Eb \nabla \alphab12 \}
+= \sum_{i=1}^{n} D^{-1} \{\nabla l_i(\theta) - \nabla l_i(\theta_0) \}  (u_i-1).
+\]
+\[
+S^{\flat}(\theta, \theta_0) = \E_{Y} S^{\flat}(\theta, \theta_0) = \sum_{i = 1}^n D^{-1} (\nabla g(\psi_i^{T} \theta) - \nabla g(\psi_i^{T} \theta_0))
+(u_i-1).
+\] 
+\[
+\nabla g(\psi_i^{T} \theta) - \nabla g(\psi_i^{T} \theta_0) =  g''(\psi_i^{T} \theta_1) \psi_i \psi_i^{T} D^{-1} D (\theta - \theta_0).
+\]
+\[
+S_i = D^{-1} g''(\psi_i^{T} \theta_1) \psi_i \psi_i^{T} D^{-1}(u_i - 1) = d_i d_i^{T} \varepsilon_i, 
+\quad
+d_i = \sqrt{g''(\psi_i^{T} \theta_1)}  D^{-1}  \psi_i.
+\]
+\[
+v^2 = \normop{\sum_i \E S_i^2} \leq  \delta^2_{\psi} \max_i | g''(\psi^T \theta_1) | \sum_i d_i d_i^{T} \leq  \delta^2_{\psi} \max_i | g''(\psi_i^T \theta_1) | (1 + \delta (r)). 
+\]
+\[
+\normop{S_i} \leq c_u \delta^2_{\psi} \max_i | g''(\psi_i^T \theta_1) |
+\]
+\begin{equation}\tag{GSb}
+\label{GSboot}
+\P \left( \normop{S^{\flat}(\theta, \theta_0)} > r z \right) \leq  p \exp \left(- \frac{z^2}{4 v^2} \right). 
+\end{equation}
+For $e^{-x}$ probability $z$ could be set $z = v \sqrt{x + 4 \log p}$.
+
+
+\subsection{Weighted likelihood argmax concentration}
+
+An important property of a GLM likelihood function is convexity $ -\nabla^2 L = -\nabla^2 \E L \geq 0$. Weighted likelihood is convex with high probability  $1 - e^{-x}$ under an additional condition:
+\[
+\sqrt{\gpsiidev} \normp{D^{-1}(\theta) \psi_i } \sqrt{x + \log(p)}  < \frac{1}{\sqrt{2}}.
+\] 
+\begin{proof}
+\[
+ - \nabla^2 \Lbf = \sum_{i=1}^n \gpsiidev \psi_i \psi_i^{T} u_i = D(\theta) \left( I + \sum_i d_i d_i^{T} \varepsilon_i^{\flat} \right) D(\theta).
+\]
+\[
+ - \nabla^2 \Lbf  \geq 0  \Leftrightarrow I - \lambda_{\max} \left( - \sum_i d_i d_i^{T} \varepsilon_i^{\flat} \right) \geq 0,
+\]
+where $d_i = \sqrt{\gpsiidev} D^{-1}(\theta) \psi_i$, $\sum_i d_i d_i^{T} = I$. By means of lemma \ref{abstract_mdev} 
+\[
+\P \left( \lambda_{\max} \left( - \sum_i d_i d_i^{T} \varepsilon_i^{\flat} \right) > z \right) \leq 
+p \inf_{\mu} \exp \left\{ -\mu z + \max_i \frac{1}{\normp{d_i}^2} \log \E e^{ - \mu \normp{d_i}^2 \varepsilon_i^{\flat} } \right\}.
+\]
+Assume that $\log \E e^{ - d^2 \varepsilon_i^{\flat} } \leq d^4 / 2$. Than
+\[
+-\mu z + \max_i \frac{1}{\normp{d_i}^2} \log \E e^{ - \mu \normp{d_i}^2 \varepsilon_i^{\flat} } \leq 
+-\frac{z^2}{2 \normp{d_i}^2},
+\]
+which leads to the stated condition $\sqrt{2} \normp{d_i} \sqrt{x + \log(p)} \leq 1$.
+
+\end{proof}
+
+Detect sufficiently large radius of local region  $\Theta(\rb0)$ for $\Lbf < \Lbopt$ on the border. With $\zeta^{\flat} = L^{\flat} - L$: 
+\[
+\Lbf - \Lbopt = \zeta^{\flat} (\theta) - \zeta^{\flat}(\widehat{\theta}) + \Lf - \Lfopt. 
+\]  
+\[
+\Lf - \Lfopt \leq -  \frac{1 - \delta(\rb0)}{2} (\rb0)^{2}. 
+\]
+\[
+\zeta^{\flat} (\theta) - \zeta^{\flat}(\widehat{\theta}) - \nabla \zeta^{\flat}(\widehat{\theta})^{T} (\theta - \opttheta) \leq \normop{S^{\flat}(\theta, \opttheta)} \rb0    \leq  v \sqrt{x + 4 \log (p)} (\rb0)^{2}.
+\]
+\[
+D^{-1} \nabla \zeta^{\flat}(\widehat{\theta}) = \xib.
+\]
+\[
+\Pb \left(\normp{\xib} > z(x) + 2\delta \right) \leq  c_1 \mu_n^3 \frac{1}{\delta^3} + c_2 \normop{\triangle \Sigma} \frac{1}{\delta^2} + \P(\normp{\xi} > z(x)) .
+\]
+
+
+\subsection{Bootstrap uniform bands}
+
+In GLM models stochastic likelihood part represents linear function in regard to $\theta$ parameter. Correspondingly restriction for quadratic approximation error  $D^{-1} \nabla \alpha$ is deterministic. The other situation in bootstrap case where restriction in (\ref{GSboot}) is probabilistic.
+Consider time dependent equivalent for function $S^{\flat}$:
+\begin{EQA}
+S^{\flat}(\theta, \theta_0)(t) &=& D^{-1} \{\nabla \alphab12(t) -  \Eb \nabla \alphab12(t) \} \\
+&=& \sum_{i=1}^{n} D^{-1} \{\nabla l_i(\theta) - \nabla l_i(\theta_0) \}  (u_i-1) w_i(t).
+\end{EQA}
+Since $\E_t w_i(t) = h/n$, than $ \normop{ \E_t S^{\flat}(\theta, \theta_0)(t) }  \leq \normop{ S^{\flat}(\theta, \theta_0) }$. For GLM model 
+\[
+\normop{S_i} \leq c_u \delta^2_{\psi} \max_i | g''(\psi_i^T \theta_1) | = \frac{C(r)}{h}.
+\]
+From uniform bands for i.i.d result one get 
+\[
+ \normop{ S^{\flat}(\theta, \theta_0)(t) -  \E_t S^{\flat}(\theta, \theta_0)(t) } \leq  2 C(r) r \left( 1 - \frac{h}{n} \right),
+\]
+which is to be compared with $D^{-1} \nabla \alpha \leq c r \delta(r)$. Correspondingly 
+\[
+n - h \sim \frac{ \delta(r)}{ 	c_u \delta^2_{\psi} \max_i | g''(\psi_i^T \theta_1) |  }.
+\]
+
+\subsection{GAR}
+
+Consider the same convolution max as in general case 
+\[
+\max_{\tau} \dLhconv = \max_{\tau} \sum_{t = 1}^{n} P_{\tau}(t)  \Vert  \dxi (t) \Vert = \max_{\tau} \max_{\Upsilon} \sum_{t = 1}^{n} P_{\tau}(t)  \gamma_t^{T}   \dxi (t)  = \max_{\tau} \max_{\Upsilon} X_{\tau \Upsilon}
+\]
+with condition $\sum_{t =1}^{n} P_{\tau}(t) = 1$, $\Upsilon = (\gamma_1,\ldots,\gamma_n)$.
+\[
+\dxi (t)   = \sum_{i = t-h}^{t + h} \overline{\psi}_i \varepsilon_{i}, 
+\quad 
+\normp{ \overline{\psi}_i } \leq \delta_{\psi}(h).	
+\]
+The GAR approximation realises through matrices sequence $ X (-h), X (-h + 1),\ldots, X (h)$ of length~$2h$, where
+\[
+X_{\tau \Upsilon}(i) = \sum_{t = 1}^{n} P_{\tau}(t)  \gamma_t^{T}  \overline{\psi}_{i + t} \varepsilon_{i + t}. 
+\]
+\[
+\normp{X(i)}_{\infty} =  \max_{\tau} \max_{\Upsilon} \left |  \sum_{t = 1}^{n} P_{\tau}(t)  \gamma_t^{T}  \overline{\psi}_{i + t} \varepsilon_{i + t} \right  |.
+\]
+\[
+\E \normp{X(i)}^{3}_{\infty} \leq \delta_{\psi}^3(h) \E \max_{1 \leq i \leq n} | \varepsilon_i |^3. 
+\]
+Estimation for $\E \normp{X}^3_{\infty} \leq \max_{1 \leq m \leq M} |X_m|^3  $ uses concentration inequality 
+\[
+\P \left(\max_{1 \leq m \leq M} |X_m| > t  \right) \leq  \frac{\E e^{\lambda \max |X_m|}}{e^{\lambda t}},
+\] 
+due to $\E e^{\lambda X_m^3}$ may be infinity.
+\[
+\E e^{\lambda \max |X_m|} \leq M \E e^{\lambda |X_m|} \leq M (\E e^{\lambda X_m} + \E e^{-\lambda X_m} ).
+\]
+\[
+\log \E e^{\lambda X_m} = \log \E e^{ - \lambda X_m}    = \log \E e^{ \lambda \sum_t P_{\tau}(t)  \gamma_t^{T}  \overline{\psi}_{i + t} \varepsilon_{i + t}}  \leq
+\frac{\lambda^2}{2} \sum_t P_{\tau}^2(t)  (\gamma_t^{T}  \overline{\psi}_{i + t} )^2 s^2_{i+t} = \frac{\nu^2 \lambda^2}{2}.
+\]
+\[
+\P \left(\max_{1 \leq m \leq M} |X_m| > t  \right) \leq 2 M e^{ - \frac{ t^2}{2 \nu^2}  }.
+\] 
+\[ 
+\E \max_{1 \leq m \leq M} |X_m|^3  = \int \P \left(\max_{1 \leq m \leq M} |X_m|^3 > t^3  \right) dt^3 \leq \nu^3 (c \log M)^{3/2} + 2 M \int_{t^2 > c \nu^2 \log M} e^{ - \frac{ t^2}{2 \nu^2}  } dt^3.
+\]
+
+\end{document}

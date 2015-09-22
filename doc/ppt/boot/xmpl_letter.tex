@@ -1,0 +1,73 @@
+\documentclass[english]{wiaslttr}
+    % language: "ngerman" (default), "english", "german"
+    % "inno2008"   (default for years 2009/2010)
+    % "noinno2008" (default in other years)
+\usepackage[utf8]{inputenc}
+    % input encoding, maybe you want "latin1" or "ansinew"
+
+%\makelabels   % activate to print address labels
+
+% The following settings can be put in an own file (like
+% myletterstuff.tex) and then included via \input{myletterstuff}.
+%
+% optional argument may contain short name for backaddress field
+\name[M. Mustermann]{Max Mustermann}
+
+\department{%
+  \iflanguage{english}{Stochastic Analysis}{Stochastische Analysis}%
+}
+\telephone{000}
+\fax{123}
+\email{max.mustermann}
+\signature{M. Mustermann}
+
+\begin{document}
+\begin{letter}{Maria Musterfrau\\IWAS\\Strassenweg 1\\12345 Stadt-Dorf}
+\writer{Some Writer}{123}
+\subject{A long subject regarding the big great conference at our institute}
+\opening{Dear Mrs. Musterfrau,}
+
+here is an example borrowed from the blindtext package.
+
+Hello, here is some text without a meaning. This text should show, how a
+printed text will look like at this place. If you read this text, you will
+get no information. Really? Is there no information? Is there a difference
+between this text and some nonsense like »Huardest gefburn«? Kjift – Never
+mind! A blind text like this gives you information about the selected font,
+how the letters are written and the impression of the look. This text
+should contain all letters of the alphabet and it should be written in of
+the original language. There is no need for a special contents, but the
+length of words should match to the language.
+
+\begin{itemize}
+  \item First item in a list
+  \item Second item in a list
+  \item Third item in a list
+  \item Fourth item in a list
+  \item Fivth item in a list
+\end{itemize}
+
+Hello, here is some text without a meaning. This text should show, how a
+printed text will look like at this place. If you read this text, you will
+get no information. Really? Is there no information? Is there a difference
+between this text and some nonsense like »Huardest gefburn«? Kjift – Never
+mind! A blind text like this gives you information about the selected font,
+how the letters are written and the impression of the look. This text
+should contain all letters of the alphabet and it should be written in of
+the original language. There is no need for a special contents, but the
+length of words should match to the language.
+
+\begin{enumerate}
+  \item First item in a list
+  \item Second item in a list
+  \item Third item in a list
+  \item Fourth item in a list
+  \item Fivth item in a list
+\end{enumerate}
+
+\closing{Kind regards,}
+%\ps     % Post Scriptum
+%\encl{} % Enclosures
+%\cc{}   % Copies
+\end{letter}
+\end{document}

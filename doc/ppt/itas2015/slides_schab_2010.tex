@@ -1,0 +1,245 @@
+%%% See xmpl_beamer.tex for a more detailed example.
+\documentclass[9pt,english]{beamer}   %% ngerman, german, english
+\usepackage[utf8]{inputenc}           %% Umlautkodierung UTF-8
+%\usepackage[latin1]{inputenc}         %% Umlautkodierung Latin-1
+\usetheme{weierstrass}
+
+
+
+\input{/Users/nazar/change_point/bootstrap/mydef.tex}
+
+
+\begin{document}
+
+\title{Multiscale approach for change point detection}
+\author{Alexandra Suvorikova, \underline{Nazar Buzun}, Vladimir Spokoiny}
+\date{}
+%\logos{\mbox{}\hfill\includegraphics[height=2cm]{tiger}}
+
+\titlepage     % Create title page from data entered above.
+%\tocatbegin    % Print table of contents at begin of talk.
+%\tocatsection  % Print table of contents at begin of each section.
+
+\section[Algorithm]{Algorithm}
+
+\begin{frame}{Algorithm}
+
+\begin{center}
+`` Materia -- this is what is changing ''  \\
+$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$ 
+B. Gita
+\end{center}
+
+\[
+YYYYYYYY
+\overbrace{
+\underbrace{YYYYYYYY}_{L_1(\theta)}\underbrace{YYYYYYYY}_{L_2(\theta)}
+}^{L(\theta)}
+YYYYYYYY
+\]
+
+Statistic foreach window position $t$:
+
+\[
+T^2(t) =  L_1(t)(\opttheta_1) + L_2(t)(\opttheta_2) - L(t)(\opttheta)
+\]
+
+\end{frame}
+
+\begin{frame}{LRT statistic $T(t)$}
+
+Different window sizes: $h = {20, 50, 100}$
+
+\[
+T(t) \approx \normp{\dxi + \theta_2 - \theta_1}
+\]
+
+\begin{center}
+\includegraphics[scale=0.4]{../../img/mlscale_lrt.pdf}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Smoothing with fit linear pattern $P(t)$}
+
+\[
+\dLhconv = \sum_{t = \tau}^{\tau + h} (T(t) -  \widehat{b}) * P(t),
+\quad
+P(t) = \widehat{a} t 
+\]
+
+\begin{center}
+\includegraphics[scale=0.4]{../../img/mlscale_conv.pdf}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Bootstrap quantiles calibration for $\max_{\tau} \dLhconv $}
+
+\[
+\Lf \approx L(\theta^*) + \xi^T D(\theta - \theta^*) + \frac{1}{2} \normp{D(\theta - \theta^*)}^2
+\]
+
+\[
+T(t) \approx \normp{\dxi + D( \theta^*_2 - \theta^*_1 ) }
+\]
+Critical bound
+\[
+\max_\tau \sum_{t = \tau}^{\tau + h} P(t)  \normp{\dxi(t)}
+\]
+
+ Independent data $\{Y_i \}_{i = 1}^n$
+\[
+\dxi(t)  = \sum_{i = t}^{t+h} \xi_i
+\]
+Multiplier bootstrap
+\[
+\dxib(t)  = \sum_{i = t}^{t+h} \xi_i \varepsilon_i^{\flat},
+\quad
+\varepsilon_i^{\flat} \sim \ND(0, 1)
+\]
+
+\end{frame}
+
+\begin{frame}{Bootstrap approximation for $\dxi(t)$}
+
+
+
+\begin{enumerate}
+\item $\max_\tau \sum_t P_\tau(t)  \normp{\dxi(t)} \approx \max_\tau \sum_t P_\tau(t)  \normp{\widetilde{\dxi}(t)}$ 
+\item $\max_\tau \sum_t P_\tau(t)  \normp{\widetilde{\dxi}(t)} \approx \max_\tau \sum_t P_\tau(t)  \normp{{\dxib}(t)}$ 
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Gaussian approximation for $\dxi(t)$}
+
+\[
+\max_\tau \sum_t P_\tau(t)  \normp{\dxi(t)}  =
+\max_\tau \max_{\gamma} \sum_t P_\tau(t) \gamma_t^{T}  \dxi(t) 
+ = \max_{\eta = (\gamma, \tau)} X_{\eta} 
+\]
+\[
+ X_{\eta}  = \sum_{t = \tau}^{\tau + h} P(t) \gamma_t^{T} \sum_{i = 1}^{ h} \xi_{t+i}
+   = \sum_{i = 1}^{2h} X_{\eta}(\xi_{\tau +  i})   
+\]
+\[
+X = \sum_{i = 1}^{2h} X(i)
+\]
+
+\[
+\P (\max_{\eta} X_{\eta} > z) = \E I [ \max_{\eta} X_{\eta} > z ] 
+\approx
+ \E f_{\triangle} (X)
+\]
+
+\[
+| \E f(X) - \E f(\widetilde{X}) | \leq  \| \nabla^3 f \|_1 \sum_i \E \normp{X(i)}^3_{\infty} + \E \normp{\widetilde{X}(i)}^3_{\infty} 
+\leq
+\frac{c}{\triangle^3} \frac{1}{\sqrt{h}} 
+\]
+\[
+\left | \P (\max_{\eta} X_{\eta} > z)   -  \P (\max_{\eta} \widetilde{X}_{\eta} > z \pm 2 \triangle) \right | 
+\leq
+\frac{c}{\triangle^3} \frac{1}{\sqrt{h}} 
+\]
+
+\end{frame}
+
+\begin{frame}{Gaussian approximation for $\dxi(t)$}
+
+\[
+\left | \P (\max_{\eta} X_{\eta} > z)   -  \P (\max_{\eta} \widetilde{X}_{\eta} > z \pm 2 \triangle) \right | 
+\leq
+\frac{c}{\triangle^3} \frac{1}{\sqrt{h}} 
+\]
+
+\[
+\left | \P (\max_{\eta} \widetilde{X}_{\eta} > z)   -  \P (\max_{\eta} \widetilde{X}_{\eta} > z \pm 2 \triangle) \right | 
+\leq c_1 \triangle 
+\]
+\[
+\Downarrow
+\]
+
+\[
+\left | \P (\max_{\eta} X_{\eta} > z)   -  \P (\max_{\eta} \widetilde{X}_{\eta} > z ) \right | 
+\leq
+ \left( \frac{c_2}{h} \right)^{1/8} 
+\]
+
+\end{frame}
+
+
+\begin{frame}{Bootstrap approximation for $\dxi(t)$}
+
+
+
+\begin{enumerate}
+\item $\max_\tau \sum_t P_\tau(t)  \normp{\dxi(t)} \approx \max_\tau \sum_t P_\tau(t)  \normp{\widetilde{\dxi}(t)}$ 
+\item $\max_\tau \sum_t P_\tau(t)  \normp{\widetilde{\dxi}(t)} \approx \max_\tau \sum_t P_\tau(t)  \normp{{\dxib}(t)}$ 
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}{Gaussian comparison $\widetilde{X} \sim \ND (0, S) $, $X^{\flat} \sim \ND (0, S^{\flat}) $ }
+
+\[
+| \E f(\widetilde{X}) - \E f(X^{\flat}) | \leq  \| \nabla^2 f \|_1 
+\normop{ S - S^{\flat} } \leq \frac{1}{\triangle^2}
+\normop{ S - S^{\flat} }
+\] 
+\[
+S^{-1/2} S^{\flat}  S^{-1/2} - I
+\] 
+\[
+ \widetilde{X}_{\eta}  = \sum_{i = \tau}^{\tau + 2h} V_i \widetilde{\xi}_{i} 
+ , \quad
+ S = V \Sigma  V^{T}
+ \]\[
+  X^{\flat}_{\eta}  =\sum_{i = \tau}^{\tau + 2h} V_i \xi_{i} \varepsilon_i^{\flat},
+  \quad
+  S^{\flat} = V \bldiag(\xi \xi^{T}) V^{T}
+\] 
+
+\[
+S^{-1/2} S^{\flat}  S^{-1/2} - I =  \UV \bldiag( \Sigma^{-1/2} \xi \xi^{T} \Sigma^{-1/2} - I ) \UV^T = \sum_i  \UV_i \text{block}_i \UV_i^T
+\]
+
+
+\end{frame}
+
+\begin{frame}{ Bernstein matrix inequality \footnote{V. Koltchinskii. A remark on low rank matrix recovery and noncommutative Bernstein type inequalities.} }
+
+\[
+\forall i: \; \E \psi^2 \left( \frac{\normp{S_i}}{M} \right) \leq 1, 
+\]
+\[
+ R = M \psi^{-1} \left( \frac{2}{\delta} \frac{n M^2}{ \vp^{2}  } \right ),
+ \quad
+ \delta \in (0, 2/\psi(1)).
+\]
+
+\[
+\vp^{2} 
+	=
+	\left\|\sum_{i=1}^{n}\E S_{i}^{2}\right\|_{\oper} 
+	\leq  \max_i  \normop{ \UV_i^T \UV_i } \normop{\text{block}_i  }^2
+\]
+
+Then for $\zq R \leq (e - 1)(1 + \delta) \vp^{2}$ and $Z = S_1 + \ldots + S_n$ 
+\[
+\P\{\| Z \|_{\oper} \geq \zq \} \leq 2p \exp \left \{ - \frac{\zq^2}{ 2(1 + \delta) \vp^2 + 2R \zq/3 } \right \} 
+\]
+
+
+
+\end{frame}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

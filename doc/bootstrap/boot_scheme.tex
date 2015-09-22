@@ -1,0 +1,48 @@
+\begin{figure}[!h]
+\begin{center}
+
+\begin{tikzpicture}[>=stealth, thick]
+
+\node (A) at (0,0) [draw, process, text width=12cm, minimum height=0.5cm, align=flush center] 
+{
+$ |\E f(X) - \Eb f(X^{\flat}) | = |\P \{f(X) < a\} - \Pb \{f(X^{\flat}) < a\} | \leq c, 
+$ \\
+$
+f = \mathrm{I} \circ \max, 
+\quad
+X^{\flat} = g(X, u)
+$ 
+};
+
+\node (B) at (0,-2) [draw, process, text width=5cm, minimum height=0.5cm, align=flush center] 
+{
+$X \overset{w}{\longrightarrow} \tilde{X} \in \ND(0,\;\Sigma\;)$ \\
+$\quad\quad\quad\quad\quad\quad\;\updownarrow$ \\
+$X^{\flat} \overset{w}{\longrightarrow} \tilde{X}^b \in \ND(0,\Sigma^b)$
+};
+
+\node (C) at (0,-4) [draw, process, text width=12cm, minimum height=0.5cm, align=flush center] 
+{
+smooth: $ f(X - \triangle) \leq \tilde{f}(X) \leq f(X + \triangle) $ \\
+anti-concenrt: $| \E f(\tilde{X}) - \E f(\tilde{X} + \triangle) | \leq c_1 (\triangle)$
+};
+
+\node (D) at (0,-6) [draw, process, text width=12cm, minimum height=0.5cm, align=flush center] 
+{
+$| \E \tilde{f}(X) - \E \tilde{f}(\tilde{X}) | \leq c_2(\tilde{f}) c_3(X) $\\
+\smallskip
+$| \E \tilde{f}(\tilde{X}^b) - \E_b \tilde{f}(\tilde{X}^b) | \leq c_4(\tilde{f}) \Vert \Sigma - \Sigma^b \Vert $
+};
+
+
+
+\draw[->] (A) -- (B);
+\draw[->] (B) -- (C);
+\draw[->] (C) -- (D);
+
+
+
+\end{tikzpicture}
+\end{center}
+\end{figure}
+

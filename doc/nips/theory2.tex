@@ -1,0 +1,294 @@
+\label{sec:theory}
+\subsection{GLR statistic}
+%We are to derive essential properties of the Generalised Likelihood Ratio (GLR) statistic that form base of the CP detection algorithm. %Statements in this section rely on assumption 
+This section presents main results, that describe theoretical properties of the likelihood-ratio statistics (LRT). They are essential for proposed algorithm of change point detection. Further we assume that log-likelihood function $L(\theta)$ is well approximated by its quadratic part in local vicinity $\Theta_0(r)$  of $\theta^*$, $ \theta^* \in \Theta_0(r) \subseteq \R^p$, where
+\[
+\theta^* = \argmax_{\theta} \E L(\theta),
+\quad
+\widehat{\theta} = \argmax_{\theta} L(\theta).
+\]
+and $\Theta_0(r) = \{\Vert D (\theta - \theta^*) \Vert < r \}$.
+
+Conditions for justified quadratic approximation and parameter concentration in local area are presented in \cite{wilks2013}.
+Define variables that describe approximation error:
+\[
+  \alpha(\theta, \theta_0) = L(\theta) - L(\theta_0)   - (\theta - \theta_0)^T \nabla L( \theta_0) + 
+\]
+\[
++  \frac{1}{2} \Vert D (\theta - \theta_0) \Vert^2, 
+\]
+\[
+\chi(\theta, \theta_0) = D^{-1} \nabla \alpha(\theta, \theta_0) = 
+\]
+\[
+= D^{-1} (\nabla L(\theta) - \nabla L( \theta_0) ) +  D (\theta - \theta_0). 
+\]
+
+
+%Let in area $\Theta_0(r) = \{\Vert D (\theta - \theta^*) \Vert < r \}$, where $\theta, \theta_0 \in \Theta_0(r)$, the following inequalities fulfilled with probability $1 - e^{-x}$ 
+We assume that two following inequalities are fulfilled with probability $1 - e^{-x}$:
+\[\tag{a}
+\frac{| \alpha(\theta, \theta^*)  |}{\Vert D(\theta - \theta^*) \Vert} \leq \diamondsuit (r, x),  
+\]
+\[
+  \Vert \chi(\theta, \theta^*) \Vert \leq  \diamondsuit (r, x),
+\]
+where $\diamondsuit (r, x) = (\delta (r) + 6 v_0 z_H(x) \omega ) r,$
+\[
+D^2(\theta) = - \nabla^2 \E L (\theta),
+\quad
+D = D(\theta^*),
+\]
+\[
+\Vert D^{-1} D^2(\theta) D^{-1} - I_p\Vert \leq \delta(r),
+\]
+\[
+\forall \lambda \leq g, \; \gamma_1 \gamma_2 \in \R^p:
+\]
+\[
+\log \E \exp \left\{
+\frac{\lambda}{\omega} \frac{\gamma_1^T \nabla^2 \overset{o}{L}(\theta) \gamma_2}{\Vert D \gamma_2 \Vert \Vert D \gamma_2 \Vert}
+\right\} \leq 
+\frac{\nu_0^2 \lambda^2}{2},
+\]
+\[
+z_H(x) = \sqrt{H} + \sqrt{2x} + \frac{g^{-2} x + 1}{g} H, 
+\quad H = 6p.
+\]
+Split observed sample into equal parts by index, design likelihood and parameter of the left part as $*_{1}$, of the right part --  $*_{2}$. 
+Derive relation between MLE estimation on the whole sample and its partitions. Conside$1 - e^{-x}$r quadratic model case. 
+\[
+L(\theta) = L_1(\theta) + L_2(\theta) = L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) - 
+\]
+\[ -  \frac{1}{2} (\theta - \widehat{\theta}_1)^T D_1^2  (\theta - \widehat{\theta}_1)
+- 
+\]
+\[-\frac{1}{2} (\theta - \widehat{\theta}_2)^T D_2^2  (\theta - \widehat{\theta}_2)  =
+\]     
+\[
+ = L(\widehat{\theta}) - \frac{1}{2} (\theta - \widehat{\theta})^T D^2  (\theta - \widehat{\theta}),
+\]
+\[
+\widehat{\theta} = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ),
+\quad D^2 = D_1^2 + D_2^2.
+\]    
+
+
+\[
+\triangle L =
+L_1(\widehat{\theta}_1) + L_2(\widehat{\theta}_2) -  L(\widehat{\theta}) = 
+\]
+\[
+=   \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_1)^T D_1^2  (\widehat{\theta} - \widehat{\theta}_1)
++ \frac{1}{2} (\widehat{\theta} - \widehat{\theta}_2)^T D_2^2  (\widehat{\theta} - \widehat{\theta}_2).
+\]
+\[
+\widehat{\theta} - \widehat{\theta}_1 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_1 = D^{-2} D_2^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1),
+\]
+\[
+\widehat{\theta} - \widehat{\theta}_2 = D^{-2} (D_1^2 \widehat{\theta}_1 + D_2^2 \widehat{\theta}_2 ) - \widehat{\theta}_2 = D^{-2} D_1^2 ( \widehat{\theta}_1 -  \widehat{\theta}_2).
+\]
+\[
+2 \triangle L =  ( \widehat{\theta}_2 -  \widehat{\theta}_1)^T \Sigma^2 ( \widehat{\theta}_2 -  \widehat{\theta}_1),
+\]
+where
+\[
+\Sigma^2 = D_2^2 D^{-2} D_1^2 D^{-2} D_2^2 + D_1^2 D^{-2} D_2^2 D^{-2} D_1^2=
+\]
+\[\tag{S}
+ = D_1^2 D^{-2}D_2^2 \approx \frac{1}{4} D^2. 
+\]
+\[
+ D_1(\widehat{\theta}_1 - \theta_1^*) = \xi_1,
+\quad
+\xi_1 = D_1^{-1} \nabla L(\theta_1^*),
+\]
+\[
+D_2(\widehat{\theta}_2 - \theta_2^*) = \xi_2,
+\quad
+\xi_2 = D_2^{-1} \nabla L(\theta_2^*),
+\]
+Made replacement $\widehat{\theta}_2,  \widehat{\theta}_1$ in the equation for $\triangle L$ and 
+come to result generalised for non quadratic model. 
+
+\begin{theorem}
+\label{dl_theorem}
+Assume condition ($L^*$) and quadratic Laplace approximation ($a$)   are fulfilled with probability $1 - 2 e^{-x}$
+\[
+\Vert \xi_i \Vert \leq z(x), 
+\quad z^2(x) = p + 6 \lambda_{\max} x.
+\] 
+Then in the local area with probability $1 - 8 e^{-x}$ 
+\[
+2 \triangle L = \Vert \triangle \xi_{12} + \triangle \theta_{12}^*\Vert^2  + O(\{r + z(x)\} \diamondsuit (r, x)),
+\]
+where
+\[
+\triangle \xi_{12}  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\triangle \theta_{12}^*  = \Sigma (\theta_2^* - \theta_1^*), 
+\]
+\end{theorem}    
+
+\begin{remark} Increasing a sample size $n \to \infty$ one could obtain following limit result  
+\[
+\triangle \xi_{12} \to \mathcal{N}(0, I_p).
+\]
+\end{remark}
+
+\begin{remark}
+For the condition $\widehat{\theta} \in \Theta_1(r) \cap \Theta_2(r)$ the restriction of the parameter variability $\theta^*$ required
+\[\tag{L*}
+\Vert D(\theta_1^* - \theta_2^*) \Vert \leq r.
+\]  
+\end{remark}
+
+Prove a similar statement (theorem \ref{dl_theorem}) for statistic $\sqrt{2 \triangle L}$. From condition ($a$) one get with probability $1 - 2e^{-x}$
+\[
+\left| \triangle L (\widehat{\theta}_1, \widehat{\theta}_2) - \frac{1}{2} \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert^2 \right| \leq 
+\]
+\[
+\leq
+2 \Vert D_1(\widehat{\theta}_1 - \widehat{\theta}) \Vert \diamondsuit (r, x) + 2 \Vert D_2(\widehat{\theta}_2 - \widehat{\theta}) \Vert \diamondsuit (r, x) 
+\leq 
+\] 
+\[
+\leq  4  \Vert  \Sigma(\widehat{\theta}_2 - \widehat{\theta}_1)  \Vert  \diamondsuit (r, x).
+\]
+Use inequality $|a - b| \leq |a^2 - b^2| / b, \; b >0$.
+\[
+\left| \sqrt{ 2\triangle L (\widehat{\theta}_1, \widehat{\theta}_2) } -  \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert \right| \leq 
+8   \diamondsuit (r, x).
+\]
+Replace $(\widehat{\theta}_1, \widehat{\theta}_2)$ with $(D_1^{-1}\xi_1 + \theta_1^*, \; D_2^{-1}\xi_2 + \theta_2^*)$
+\[
+\left| \Vert \Sigma (\widehat{\theta}_2 -\widehat{\theta}_1) \Vert  - 
+\Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert 
+\right | \leq
+\]
+\[
+\leq  \Vert \Sigma(\widehat{\theta}_1 - \theta_1^*) - \Sigma D_1^{-1} \xi_1 \Vert
++ \Vert \Sigma(\widehat{\theta}_2 - \theta_2^*) - \Sigma D_2^{-1} \xi_2 \Vert
+\]
+\[
+\leq  2 \diamondsuit (r, x).
+\]
+Summarise   
+\begin{theorem}
+\label{dl_sq_theorem}
+
+Assume condition ($L^*$) and quadratic Laplace approximation ($a$) with probability $1 - 2 e^{-x}$ are fulfilled. Then  with probability $1 - 4 e^{-x}$ in the local area  $\Theta_1(r) \cap \Theta_2(r)$ took place
+\[
+\left| 
+\sqrt{ 2\triangle L (\widehat{\theta}_1, \widehat{\theta}_2) } - 
+\Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert 
+\right| \leq 
+10  \diamondsuit (r, x).
+\]
+where
+\[
+\triangle \xi_{12}  = \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1),
+\quad
+\triangle \theta_{12}^*  = \Sigma (\theta_2^* - \theta_1^*), 
+\]
+
+\end{theorem}
+
+\begin{remark}
+ The constant near  $\diamondsuit (r, x)$ could be decreased,  expanding to series $L_1(\theta)$, $L_2(\theta)$ and $L(\theta)$ in the local area  around $\theta_1^*$, $\theta_2^*$ and $\theta^*$ instead of MLE values:
+\[
+2 \triangle L = - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2   - 
+\]
+\[
+-2 \xi_1^T D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^*) + 
+\]
+\[
++ 2 \xi_2^T D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*)+
+\]
+\[ + \Vert  D_1 D^{-2} D_2^2 (\theta_2^* - \theta_1^* )\Vert^2 + \Vert  D_2 D^{-2} D_1^2 (\theta_2^* - \theta_1^*) \Vert^2 
+\]
+\[
+\pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2) =
+\]
+\[
+= - \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2   + 
+\]
+\[
++2(D_2^{-1} \xi_2 - D_1^{-1} \xi_1)^T \Sigma^2 (\theta_2^* - \theta_1^*) + \]
+\[
++\Vert \Sigma (\theta_2^* - \theta_1^*) \Vert^2 \pm (2 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+Replace $\Vert \xi \Vert^2$ with $\Vert D^{-1}(D_1 \xi_1 + D_2 \xi_2) \Vert^2 \pm  2\diamondsuit (r, x) z(x) $, referring to condition $(a)$. 
+\[
+- \Vert \xi \Vert^2 + \Vert \xi_1 \Vert^2 + \Vert \xi_2 \Vert^2  = 
+\]
+\[
+=\Vert \Sigma (D_2^{-1} \xi_2 - D_1^{-1} \xi_1) \Vert^2 \pm  2\diamondsuit (r, x) z(x).
+\]
+That leads to result
+\[
+\bigg |
+2 \triangle L  -  \Vert \triangle \xi_{12} + \triangle \theta_{12}^* \Vert^2 
+\bigg | 
+\leq (4 \diamondsuit (r, x) r + 2 \delta(r) r^2).
+\]
+\end{remark}
+
+\subsection{Optimal window size}
+\label{subsec:win_size}
+CP detection algorithm described above has rather meaningful parameter window size ($h$) that determines sample sizes on which MLE ($\widehat{\theta}_1$, $\widehat{\theta}_2$) would be compared. Let find out the minimal required sample size from the condition 
+\[
+h\KL (\theta_1^*, \theta_2^*) > h\KL (\widehat{\theta}_1, \theta_1^*) +
+h\KL (\widehat{\theta}_2, \theta_2^*).
+\]
+From Wilks theorem (reg. \cite{wilks2013}) one could obtain approximation with probability $1-10e^{-x}$ 
+\[
+h \KL (\widehat{\theta}_1, \theta_1^*) +
+h \KL (\widehat{\theta}_2, \theta_2^*) \leq 
+2 r \diamondsuit(r,x) + \frac{\Vert \xi_1 \Vert^2}{2} + \frac{\Vert \xi_2 \Vert^2}{2},
+\]
+where with probability $1-4e^{-x}$
+\[
+\frac{\Vert \xi_1 \Vert^2}{2} + \frac{\Vert \xi_2 \Vert^2}{2} \leq z^2(x)  = p_B + 6 \lambda_B x,
+\]
+\[
+B = D^{-1} \Var (\nabla L(\theta^*))D^{-1},
+\quad p_B = \tr(B), 
+\quad \lambda_B  = \lambda_{\max} (B).
+\]
+Consider the case with 
+\[
+r \diamondsuit(r,x) = \sqrt{\frac{C(p_B + x)^3}{h}},
+\quad h > C(p_B+x),
+\]
+that leads to lower bound estimation
+\[
+h \KL (\theta_1^*, \theta_2^*) > 3 p_B + (6 \lambda_B + 2) x.
+\]
+
+
+Why there are should be a limited optimal h? Increasing a sample size one decrease an impact of stochastic part of $\Vert  \triangle \xi_{12} + \triangle \theta^*_{12} \Vert$ since  $\Vert \triangle \theta^*_{12} \Vert$ grows. But at the same time $\Vert \triangle \theta^*_{12} \Vert$ will not be changed with window replacement when $h \to \infty$. Note also that angle of $\Vert \triangle \theta^*_{12} \Vert$ growth decrease with $h$, so the optimal window size corresponds to the smallest one that is sufficient to overcome random fluctuations in convolution of $\Vert  \triangle \xi_{12}(i) + \triangle \theta^*_{12}(i) \Vert$ with linear function $f(i) = i$.   
+Define new variables
+\[
+b = \Vert \triangle \theta^*_{12} \Vert = \sqrt{h} b_0,
+\quad 
+b_i = \frac{i}{h} b, \; i > 0,
+\quad
+\xi_i = \triangle \xi_{12}(i).
+\]
+Optimal window size for online CP detection is to be derived from the following inequality.
+\[
+\sum_{i = 1}^{h} i \Vert \xi_i + b_i \Vert \geq \sum_{i = 1}^{h} i \bigg(\Vert \xi_i \Vert + 10 \diamondsuit(r,x) \bigg). 
+\]
+Use equation from paper [pafq2013] that provides following inequality with probability $1 - 2 e^{-x}$ 
+\[
+\Vert \xi_i + b_i \Vert \geq \sqrt{ \Vert \xi_i \Vert^2 + \Vert b_i \Vert^2  - 2 \Vert b_i \Vert - 2 \delta_1(x) } 
+\geq 
+\]
+\[
+\geq \Vert b_i \Vert - 2  - \sqrt{4 + 2 \delta_1(x)}.
+\]
+ With probability $1 - 4 e^{-x}$ under condition that statement from theorem \ref{dl_sq_theorem} is true comes to result 
+\[
+h \geq \frac{9 (2 + \sqrt{4 + 2 \delta_1(x)} + z(x) +  10 \diamondsuit(r,x) )^2 }{4 b_0^2} \sim \frac{c_1 + c_2 p}{b_0^2}. 
+\]

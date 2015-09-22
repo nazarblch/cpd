@@ -1,0 +1,266 @@
+     \documentclass[a4paper,12pt]{report} %размер бумаги устанавливаем А4, шрифт 
+     
+     \usepackage[intlimits]{amsmath}
+\usepackage{amsthm,amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+%\usepackage{graphicx}
+\usepackage[final]{graphicx,epsfig} 
+\usepackage{longtable}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage[usenames]{color}
+
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+
+\usepackage{hyperref}
+
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}.}
+
+%\usepackage[backend=bibtex]{biblatex}
+%\bibliography{vldb}
+
+\graphicspath{{img/}}
+\newcommand{\imgh}[3]{\begin{figure}[!h]\center{\includegraphics[width=#1]{#2}}\caption{#3}\label{Fig:#2}\end{figure}}
+
+
+
+    \usepackage{geometry} % Меняем поля страницы
+    \geometry{left=2cm}% левое поле
+    \geometry{right=1.5cm}% правое поле
+    \geometry{top=1cm}% верхнее поле
+    \geometry{bottom=2cm}% нижнее поле
+
+ %   \renewcommand{\theenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+  %  \renewcommand{\labelenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\theenumii}{.\arabic{enumii}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}% Меняем везде перечисления на цифра.цифра
+  %  \renewcommand{\theenumiii}{.\arabic{enumiii}}% Меняем везде перечисления на цифра.цифра
+   % \renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}% Меняем везде перечисления на цифра.цифра
+    
+    
+
+
+\usepackage{verbatim}
+
+\theoremstyle{definition}
+%\newtheorem{problem}{\noindent\normalsize\bfЗадача \No\!\!}
+\newtheorem{problem}{\noindent\normalsize\bf{}}[section]
+\renewcommand{\theproblem}{\arabic{problem}}
+\newtheorem*{example}{\noindent\normalsize\bf{}Пример}
+\newtheorem*{definition}{\noindent\normalsize\bf{}Определение}
+\newtheorem*{remark}{\noindent\normalsize\bf{}Замечание}
+\newtheorem{theorem}{\noindent\normalsize\bf{}Теорема}
+\newtheorem*{lemma}{\noindent\normalsize\bf{}Лемма}
+\newtheorem*{suite}{\noindent\normalsize\bf{}Следствие}
+
+
+\newtheorem*{ordre}{\noindent\normalsize\bf{}Указание}
+
+\newenvironment{solution}{\begin{proof}\vspace{1em}} {\end{proof} \vspace{2em}}
+
+
+\newcommand{\rg}{\ensuremath{\mathrm{rg}}}
+\newcommand{\grad}{\ensuremath{\mathrm{grad}}}
+\newcommand{\diag}{\ensuremath{\mathrm{diag}}}
+\newcommand{\const}{\ensuremath{\mathop{\mathrm{const}}}\nolimits}
+\newcommand{\Var}{\ensuremath{\mathop{\mathbb{D}}}\nolimits}
+\newcommand{\Exp}{\ensuremath{\mathrm{{\mathbb E}}}}
+\newcommand{\PR}{\ensuremath{\mathrm{{\mathbb P}}}}
+\newcommand{\Be}{\ensuremath{\mathrm{Be}}}
+\newcommand{\Po}{\ensuremath{\mathrm{Po}}}
+\newcommand{\Bi}{\ensuremath{\mathrm{Bi}}}
+\newcommand{\Ker}{\ensuremath{\mathrm{Ker}}}
+\newcommand{\Real}{\ensuremath{\mathrm{Re}}}
+\newcommand{\Lin}{\ensuremath{\mathrm{Lin}}}
+\newcommand{\Gl}{\ensuremath{\mathrm{Gl}}}
+\newcommand{\mes}{\ensuremath{\mathrm{mes}}}
+\newcommand{\cov}{\ensuremath{\mathrm{cov}}}
+\newcommand{\fix}{\noindent\normalsize\frownie{} \color{red}} 
+
+
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+basicstyle=\ttfamily,
+columns=fullflexible,
+showstringspaces=false,
+commentstyle=\color{gray}\upshape
+}
+
+
+\usepackage[]{algorithm2e}
+
+\setcounter{tocdepth}{2}
+
+\newcommand{\thedate}{Date: \textbf{ \today}}
+\newcommand{\thetitle}{{\LARGE\textbf{ Change point detection}}}
+\newcommand{\doctype}{Document: \textbf{functional specification}}
+\newcommand{\auth}{Author: \textbf{Buzun Nazar, postrealist@gmail.com}}
+\newcommand{\version}{Version: \textbf{0.1}}
+\newcommand{\org}{Organization: \textbf{http://premolab.ru/}}
+\newcommand{\rep}{Project repository: \\ \textbf{/Users/<MacUser>/Dropbox/aamo/eklmn/projects/brain/origin/change\_point.git}}
+
+
+\begin{document}
+    
+\selectlanguage{english}
+
+
+\begin{titlepage}
+
+
+\begin{center}
+   \thetitle\\$ $\\
+\end{center}
+  \doctype \\
+   \thedate \\
+   \auth \\
+   \version \\   
+   \org   \\
+  \rep \\
+   
+\end{titlepage}
+   
+    \tableofcontents 
+    
+\section{Data format}
+
+Input data file consists of header and dataset parts. Header contains description for each column in the dataset (column name, type, participation). Type could be integer, real, boolean or categorical. Participation indicates active parameters of projection where change point is considered. Each dataset row allows one type of separators ("," " ", "tab").
+
+Example:\\
+
+\noindent DATASET\_NAME: name;\\
+column1 integer 0;\\
+column2 categorical {cat1, cat2} 1;\\
+column3 real 1;\\
+
+\noindent DATASET\\
+1,cat1,0.32\\
+3,cat1,23.23\\
+3,cat2,21.2\\
+\ldots    \\
+
+\section{Probabilistic model types [PMT]}
+
+\begin{enumerate}
+\item Standart: $X_i \sim P_{\theta}$;
+\item Partially standart: $Y_i \sim P_{f(X_i, \theta)}$, where $P$ is standart and $f$ is user defined, $Y$ and $X$ are columns from dataset;
+\item User specified $X_i \sim P_{\theta}$, $P$ is defined manually;
+\item Diagrams: data without model.
+\end{enumerate}
+
+
+\section{Usage scenarios}
+
+\begin{enumerate}
+\item \textbf{Data generation: }
+\begin{itemize}
+\item user chooses PMT (1,2 or 3); 
+\item dataset length ($n$);
+\item defines CP (change point) locations $0 = t_0 < t_1, \ldots, t_k \leq n$ in file;
+\item for each change point PMT parameter is defined in the same file.  
+\item program returns file with dataset; 
+\end{itemize}
+
+\item \textbf{PMT parameters generation:} using Markov chains user could obtain  CP locations and corresponded parameters.
+\begin{itemize}
+\item user chooses PMT (1,2 or 3);
+\item provides array of parameters for the selected PMT;
+\item sets parameter change probability;
+\item sets probability that next value is equal to previous;
+\item sets whether parameter changes stepwise or continuously;
+\item defines length of continuous parameter change interval.
+\end{itemize}
+
+\item \textbf{Change points search: } 
+
+Given time interval $(t_1, t_2)$ (range in Dataset) system finds the only one CP ($s$), where achieved minimum of 
+\[
+d_h(s,b) = \Vert f_{\triangle}(b) -  \sqrt{2 \triangle L}[s - nh/2, s+nh/2] \Vert  \to  \min_{b,s}
+\quad t_1 \leq  s < t_2,
+\] 
+\[
+f_{\triangle}(b) =  b^2 \left(1 - \frac{2 |t|}{nh} \right), \;  t = [-nh/2, nh/2].
+\]
+\begin{enumerate}
+\item Offline version: 
+\begin{itemize}
+\item user gives the program file with dataset and describe PMT;
+\item sets through command line the other parameters (output file path,  window size of array of window sizes, mistake probability).
+\item in the output file each row has following format: \\
+CP number (sequent CPs have the same number), \\ 
+CP location in the input dataset ($s$), \\
+confidence interval of the location,  \\
+probability of CP absence, \\
+max $\sqrt{2 \triangle L}$ value in CP,  \\
+$\Exp_{boot} \sqrt{2 \triangle L}$  in CP,  \\
+$\sqrt{ \Var_{boot} \sqrt{2 \triangle L}}$  in CP,   \\
+$\Vert \triangle \theta_{12}^{*} \Vert $  in CP;
+\item program also creates file with $\sqrt{2 \triangle L}(t)$, $\Exp_{boot} \sqrt{2 \triangle L}(t)$ with  sd intervals in each point, $\Vert \triangle \xi_{12}^{*} \Vert(t)$, $\Vert \triangle \theta_{12}^{*} \Vert(t)$.
+\end{itemize}
+
+\item Online version:
+\begin{itemize}
+\item user gives the program file with dataset and describe PMT;
+\item user receives answer whether there is a CP a cote to the end of the dataset;
+\item if change point is detected its details should be written to output file in format described in the offline version.   
+\end{itemize} 
+
+\end{enumerate}
+
+\item \textbf{CP removing:}
+For bootstrap application Dataset ranges without change point are required. CP removing carried out by steps:
+\begin{itemize}
+\item system creates $\Exp_{boot} (2 \triangle L)(t) = E(t)$,
+\[
+ 2 \Exp \triangle L \approx \triangle (\theta^*_{12})^2 + \Exp \Vert\triangle \xi_{12} \Vert^2. 
+\]
+\item Dataset is divided into parts, where  $E(t)$ close to $\min_t E(t)$.
+\item $[$Optional$]$ if model has different effective dimensions,  Dataset is divided into parts, where  $E(t)$ close to $\const(t_a, t_b), t_b - t_a > \delta t_{\min}$.
+\end{itemize} 
+
+\item \textbf{CP intervals detection}
+User provides array of window lengths $[h_1, \ldots, h_m]$. For each $h_i$ and each window position $t$ system fits $f_\triangle(b)$. If $b(t) > b_{boot}$, then $t$ is a candidate for CP. 
+  
+System unites CP from different $h_i$ and returns array of time intervals of change points. 
+
+\item \textbf{CP intervals single point verification} 
+
+Given time interval $(t_1, t_2)$, where each internal point is a candidate for CP, system checks whether the interval contains multiple CP. If there are more than one CP system splits $(t_1, t_2)$ and returns subintervals with single CP. 
+
+ Split points could be detected by decreasing $h$ and checking hypothesis $\theta_1^* = \theta_2^*$. 
+
+\item \textbf{Visualization: } 
+System is able to create following graphics:
+
+\begin{itemize}
+\item $\sqrt{2 \triangle L}(t)$, $t \in [a,b]$;
+\item $\Exp_{boot} \sqrt{2 \triangle L}(t)$ with sd interval in each point;
+\item $\sqrt{2 \triangle L}(t)$ with marked CP intervals and fitted $f_{\triangle}(b)$ in each CP interval;
+\item Regression plot $y_t \sim P_{(t,\theta_t)}$, $y_t \in \mathbb{R}$, and its mean 
+$\overline{y}(t) = \Exp y_t$;
+\item Animated regression plot sync with $\sqrt{2 \triangle L}(t)$.  
+\end{itemize}
+
+\item \textbf{Web demo: } 
+
+\begin{itemize}
+\item user loads web page from address like \textit{demo.premolab.ru/cpd};
+\item selects  model  $y_t \sim P_{(t,\theta_t)}$ from the proposed list;
+\item selects PMT parameters ($\theta_t$) generator;
+\item the page displays dynamic plot of $y_t$ and  $\sqrt{2 \triangle L}(t)$;
+\item system executes online CP search, displays triangles on  $\sqrt{2 \triangle L}(t)$ in each CP and draws forecast line ($\overline{y}(t)$) on $y_t$ plot, that has bend in each CP. 
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}
