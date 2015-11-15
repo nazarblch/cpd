@@ -1,7 +1,11 @@
 package models.standart
 
 import breeze.linalg.{inv, DenseMatrix, DenseVector}
+import breeze.optimize.{LBFGS, DiffFunction, FirstOrderMinimizer}
 import datasets.{OneColumnDataset, MultiColumnDataset, WeightedDataset, DataHeader}
+import edu.uci.lasso.{LassoFit, LassoFitGenerator}
+import jml.options.Options
+import jml.regression.LASSO
 import models.ParametricIIDModel
 import breeze.stats.distributions.{Gaussian, Dirichlet}
 
@@ -131,4 +135,107 @@ class NormalModelMean(val v: Double = 2) extends ParametricIIDModel[Double, OneC
   }
 
   override def header: DataHeader = DataHeader(1)
+}
+
+
+class RegressionModel(override val dim: Int, val classIndex: Int, val dataHeader: DataHeader = null) extends ParametricIIDModel[Vector[Double], MultiColumnDataset[Double]] {
+
+  val I = DenseMatrix.eye[Double](dim)
+
+  protected def getX(dataRow: Vector[Double]): DenseVector[Double] = {
+    val x: DenseVector[Double] = DenseVector((dataRow.slice(0, classIndex) ++ dataRow.slice(classIndex + 1, dataRow.length)).toArray)
+    assert(x.length == dim)
+    x
+  }
+
+  protected def getXMatrix(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): Array[Array[Double]] = {
+    val Xdata = dataset.dropCol(classIndex)
+    Array.range(0, dataset.size).map(i => Xdata.getRow(i).toArray)
+  }
+
+  protected def getY(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): Array[Double] = {
+    dataset.toDataset.data(classIndex).data.toArray
+  }
+
+  protected def getXYErr(dataRow: Vector[Double], parameter: DenseVector[Double]): (DenseVector[Double], Double, Double) = {
+    val x: DenseVector[Double] = getX(dataRow)
+    val y = dataRow(classIndex)
+    val err: Double = (x dot parameter) - y
+    (x, y, err)
+  }
+
+  override def likelihood(dataRow: Vector[Double], parameter: DenseVector[Double]): Double = {
+    assert(parameter.length == dim)
+    val err = getXYErr(dataRow, parameter)._3
+    - 0.5 * err * err
+  }
+
+  override def fisherMatrix(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseMatrix[Double] = {
+    dataset.getRowsWithWeightIterator.map({case(row, w) =>
+      val x: DenseVector[Double] = getX(row)
+      x * x.t * w
+    }).reduce(_ + _)
+  }
+
+  override def gradLikelihood(dataRow: Vector[Double], parameter: DenseVector[Double]): DenseVector[Double] = {
+
+    assert(parameter.length == dim)
+
+    val (x, y, err) = getXYErr(dataRow, parameter)
+    val grad_m: DenseVector[Double] =  x * (-err)
+    grad_m
+  }
+
+  override def MLE(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
+    val F = fisherMatrix(dataset)
+    val XY = dataset.convolutionV(row => {
+      val x: DenseVector[Double] = getX(row)
+      val y = row(classIndex)
+      x * y
+    })
+
+    inv(F) * XY
+  }
+
+  override def header: DataHeader = if (dataHeader != null && dataHeader.isInstanceOf[DataHeader]) dataHeader else DataHeader(dim)
+}
+
+class RegressionModelWithL1(override val dim: Int, override val classIndex: Int, override val dataHeader: DataHeader = null) extends RegressionModel(dim, classIndex, dataHeader) {
+
+  def getLambda(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): Double = {
+    math.sqrt(dataset.size * math.log(dim + 1))
+  }
+
+  private def getPenalty(parameter: DenseVector[Double], lambda: Double): Double = {
+    lambda * parameter.toArray.map(math.abs).sum
+  }
+
+  private def getPenaltyGrad(parameter: DenseVector[Double], lambda: Double): DenseVector[Double] = {
+    parameter.map(pi => {
+      math.signum(pi)
+    }) * lambda
+  }
+
+  override def likelihood(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]], parameter: DenseVector[Double]): Double = {
+    super.likelihood(dataset, parameter) // - getPenalty(parameter, getLambda(dataset))
+  }
+
+
+  override def MLE(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
+
+    val options = new Options()
+    options.maxIter = 1500
+    options.lambda = 10
+    options.verbose = false
+    options.epsilon = 1e-5
+
+    val LASSO = new LASSO(options)
+    LASSO.feedData(getXMatrix(dataset))
+    LASSO.feedDependentVariables(getY(dataset).map(y => Array(y)))
+    LASSO.train()
+
+    DenseVector(LASSO.W.getData.flatten)
+  }
+
+
 }

@@ -42,9 +42,20 @@ class PatternStatistic[Row, Self <: Dataset[Row, Self]](val pattern: CurvePatter
     stats.map(_._1).slice(h, stats.length - h)
   }
 
+  def getRightLocations(stats: Array[(Int, Double)]): Array[Int] = {
+    // assert(pattern.getXSize % 2 == 0)
+    val h = pattern.getXSize
+    stats.map(_._1).slice(h, stats.length - h)
+  }
+
   def getValueWithLocations(dataset: Self): Array[(Int, Double)] = {
     val stats = statistic.getValueWithLocations(dataset)
     getLocations(stats).zip(getValue(stats))
+  }
+
+  def getValueWithRightLocations(dataset: Self, scale: Double = 1.0): Array[(Int, Double)] = {
+    val stats = statistic.getValueWithRightLocations(dataset)
+    getRightLocations(stats).zip(getValue(stats).map(_ * scale))
   }
 
   override def getValue(dataset: Self, offset: Int): Array[Double] = getValueWithLocations(dataset).map(_._2)

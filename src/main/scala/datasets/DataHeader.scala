@@ -10,6 +10,8 @@ class DataHeader(val data: IndexedSeq[String]) {
   }
 
   def size = data.size
+
+  def ++ (other: DataHeader): DataHeader = new DataHeader(data ++ other.data)
 }
 
 object DataHeader {

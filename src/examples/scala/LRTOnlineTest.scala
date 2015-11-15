@@ -1,6 +1,6 @@
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Gaussian
-import cp_detectors.{LRTOnlineDetector, D1BayesianOnlineCPDetector}
+import cp_detectors.{LRTOnlineDetector}
 import datasets.{OneColumnDataset, Dataset}
 import models.standart.{NormalModelMean, NormalModel}
 

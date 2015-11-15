@@ -5,9 +5,10 @@ import breeze.linalg.DenseVector
 import breeze.stats.distributions.{Exponential, Poisson, Gaussian}
 import cp_detectors.LRTOfflineDetector
 import datasets._
+import generate.patterns.PatternGenerator
 import likelihood_optimize.AdaptiveGradientDescentOptimizer
 import models.standart.{NormalModelMean, NormalModel}
-import patterns.{StaticTrianglePattern, PatternMatcher, MatcherResult, TrianglePattern}
+import patterns._
 import statistics.{MaxStatistic, PatternWeightedStatistic, PatternStatistic}
 import statistics.likelihood_ratio.{ExtendedLikelihoodRatioStatistic, MeanVarWeightedLikelihoodRatioStatistic, WeightedLikelihoodRatioStatistic, LikelihoodRatioStatistic}
 import viz.utils.PlotXY
@@ -16,57 +17,39 @@ import scala.collection.parallel.immutable.ParVector
 
 object LikelihoodRatioStatistic extends App {
 
-  def header: DataHeader = DataHeader(1)
-
-  val load = io.Source.fromFile("/home/nazar/Downloads/MyData.csv").getLines().drop(1)
-    .map(_.trim.toDouble).toVector.slice(0, 600000)
-
-  val col: Column[Double] = Column[Double](load)
-  val data = new OneColumnDataset[Double](header, col, true)
 
 
-  val model = new NormalModelMean(1)
-  // val lrt = new ExtendedLikelihoodRatioStatistic[Double, OneColumnDataset[Double]](model, 50)
+  val model = new NormalModel
 
-  //val stat = MeanVarWeightedLikelihoodRatioStatistic(model, 100)
 
-  val h = 50
-  val pattern = new TrianglePattern(2 * h)
-  val lrt = new LikelihoodRatioStatistic(model, h)
-  val patt_lrt = new PatternStatistic[Double, OneColumnDataset[Double]](pattern, lrt)
+  def getstats(h: Int) = {
+    val pattern = new TrianglePattern(2 * h)
+    val lrt = new LikelihoodRatioStatistic(model, h)
+    val patt_lrt = new PatternStatistic[Double, OneColumnDataset[Double]](pattern, lrt)
+    (lrt, patt_lrt)
+  }
 
-  val pl = new PlotXY("t", "conv")
-  pl.addline(patt_lrt.getValue(data), "conv")
-  //pl.addline(load.map(_ * 300).toArray, "data")
+  val prefix = "m2_trans"
 
-  //pl.addline(lrt.get_delta_xi_norm(wdata), "xi")
-  //pl.addline(lrt_1.getValue(wdata.toDataset), "stat")
-
-//  val pattern = new TrianglePattern(40)
-//  val patt_lrt = new PatternStatistic[Double, Dataset[Double]](pattern, lrt)
-//
-//  val parr_lrt_res = patt_lrt.getValueWithLocations(data ++ data1)
-//
-//  val wlrt = new MeanVarWeightedLikelihoodRatioStatistic[Double](model, 20)
-//
-//  val patt_wlrt = new PatternWeightedStatistic[Double](pattern, wlrt)
-//  //val max_patt_wlrt = new MaxStatistic[Double](patt_wlrt)
-//
-//  val bootstrap: Bootstrap[Double] = new WeightedVectorBootstrap[Double](new SmoothOnesGenerator, patt_wlrt)
-//
-//
-//  val sample: DenseVector[Double] = bootstrap.sample(data ++ data1, 200)
+  val data = PatternGenerator.genMeanTransData(400, 150, 200)
+  val (lrt_20, pat_lrt_20) = getstats(20)
+  val (lrt_50, pat_lrt_50) = getstats(50)
+  val (lrt_100, pat_lrt_100) = getstats(100)
 
 
 
-//  val pl = new PlotXY("t", "conv")
-//
-//  pl.addline(parr_lrt_res, "stat")
-//
-//  pl.addline(sample, "sample")
+  val pl = new PlotXY("t", "LRT statistics")
+  pl.addline(lrt_20.getValueWithLocations(data), "h = 20")
+  pl.addline(lrt_50.getValueWithLocations(data), "h = 50")
+  //pl.addline(lrt_100.getValueWithRightLocations(data), "h = 100")
+  pl.print(prefix + "mlscale_lrt.pdf")
 
-
-  pl.print("res50.png")
+  val pl1 = new PlotXY("t", "pattern conv statistics")
+  pl1.addline(pat_lrt_20.getValueWithLocations(data), "h = 20")
+  pl1.addline(pat_lrt_50.getValueWithLocations(data), "h = 50")
+  //val res = pat_lrt_100.getValueWithRightLocations(data)
+  //pl1.addline(pat_lrt_100.getValueWithRightLocations(data), "h = 100")
+  pl1.print(prefix + "mlscale_conv.pdf")
 
 
 

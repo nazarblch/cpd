@@ -84,12 +84,15 @@ abstract class Dataset[Row, Self](val header: DataHeader,
 
   def getColumns: Vector[Column[Double]]
 
+  def dropCol(num: Int): Self
+
 }
 
 
 class MultiColumnDataset[T >: TCellDouble](override val header: DataHeader,
                                            val data: Vector[Column[T]],
-                                           override val isNumeric: Boolean = false)
+                                           override val isNumeric: Boolean = false,
+                                           val classIndex: Option[Int] = None)
   extends Dataset[Vector[T], MultiColumnDataset[T]](header, isNumeric) {
 
   // assert(data(0).size > 0)
@@ -149,6 +152,22 @@ class MultiColumnDataset[T >: TCellDouble](override val header: DataHeader,
   override def mapV(f: (Vector[T]) => DenseVector[Double]): IndexedSeq[DenseVector[Double]] = getRowsIterator.map(f)
 
   override def getColumns: Vector[Column[Double]] = data.map(_.asInstanceOf[Column[Double]])
+
+  def concat(other: MultiColumnDataset[T]): MultiColumnDataset[T] = {
+    val newHeader: DataHeader = header ++ other.header
+    val newData: Vector[Column[T]] = data ++ other.data
+
+    assert(size == other.size)
+    assert(isNumeric == other.isNumeric)
+
+    new MultiColumnDataset[T](newHeader, newData, isNumeric)
+  }
+
+  override def dropCol(num: Int): MultiColumnDataset[T] = {
+    val newHeader: DataHeader = new DataHeader(header.data.slice(0, num) ++ header.data.slice(num+1, dim))
+    val newData: Vector[Column[T]] = data.slice(0, num) ++ data.slice(num+1, dim)
+    new MultiColumnDataset[T](newHeader, newData, isNumeric)
+  }
 }
 
 
@@ -213,6 +232,10 @@ class OneColumnDataset[T >: TCellDouble](override val header: DataHeader,
   override def mapV(f: (T) => DenseVector[Double]): Vector[DenseVector[Double]] = data.data.map(f)
 
   override def getColumns: Vector[Column[Double]] = Vector(data.asInstanceOf[Column[Double]])
+
+  def getColumnsT: Vector[Column[T]] = Vector(data.asInstanceOf[Column[T]])
+
+  override def dropCol(num: Int): OneColumnDataset[T] = this
 }
 
 
@@ -327,6 +350,8 @@ class WeightedDataset[Row, Self <: Dataset[Row, Self]](
   override def mapV(f: (Row) => DenseVector[Double]): Vector[DenseVector[Double]] = null
 
   override def getColumns: Vector[Column[Double]] = null
+
+  override def dropCol(num: Int): WeightedDataset[Row, Self] = new WeightedDataset[Row, Self](dataset.dropCol(num), weights)
 }
 
 

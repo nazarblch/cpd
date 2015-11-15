@@ -25,7 +25,10 @@ class LikelihoodRatioStatistic[Row, Self <: Dataset[Row, Self]](val model: Model
 
     val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L + 1e-5)
     if (res.isNaN) {
-      throw new Exception("NAN statistic value")
+
+      println("NAN !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      return 0
+      //throw new Exception("NAN statistic value")
     }
     res
   }
@@ -53,6 +56,16 @@ abstract class WindowStatistic[Row, Self <: Dataset[Row, Self]](val windowSize: 
     Array.range(0, wc).map(windowIndex => getWindowCoordinate(windowIndex)._2)
   }
 
+  def getWindowLefts(dataset: Dataset[Row, Self]): Array[Int] = {
+    val wc: Int = windowCount(dataset)
+    Array.range(0, wc).map(windowIndex => getWindowCoordinate(windowIndex)._1)
+  }
+
+  def getWindowRights(dataset: Dataset[Row, Self]): Array[Int] = {
+    val wc: Int = windowCount(dataset)
+    Array.range(0, wc).map(windowIndex => getWindowCoordinate(windowIndex)._3)
+  }
+
 
   def getWindowData(windowIndex: Int, dataset: Self): (Self, Self) = {
     val (left, middle, right) = getWindowCoordinate(windowIndex)
@@ -71,6 +84,14 @@ abstract class WindowStatistic[Row, Self <: Dataset[Row, Self]](val windowSize: 
 
   def getValueWithLocations(dataset: Self): Array[(Int, Double)] = {
     getWindowMiddles(dataset).zip(getValue(dataset))
+  }
+
+  def getValueWithLeftLocations(dataset: Self): Array[(Int, Double)] = {
+    getWindowLefts(dataset).zip(getValue(dataset))
+  }
+
+  def getValueWithRightLocations(dataset: Self): Array[(Int, Double)] = {
+    getWindowRights(dataset).zip(getValue(dataset))
   }
 
   def getValueSync(dataset: Self): Array[Double] = {

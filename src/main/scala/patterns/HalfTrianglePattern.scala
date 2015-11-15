@@ -3,7 +3,9 @@ package patterns
 import breeze.linalg.DenseVector
 import breeze.stats._
 
-class HalfTrianglePattern(val length: Int) extends CurvePattern {
+class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
+
+  val length: Int = double_length / 2
 
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
@@ -46,7 +48,9 @@ class HalfTrianglePattern(val length: Int) extends CurvePattern {
 }
 
 
-class StaticHalfTrianglePattern(val length: Int) extends CurvePattern {
+class StaticHalfTrianglePattern(val double_length: Int) extends CurvePattern {
+
+  val length: Int = double_length / 2
 
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
