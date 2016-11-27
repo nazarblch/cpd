@@ -5,8 +5,8 @@ import breeze.optimize._
 import datasets.CellT._
 import datasets._
 import models.standart.NormalModel
-import models.{ParametricModel, ParametricIIDModel, Model}
-import statistics.{WeightedStatistic}
+import models.{Model, ParametricIIDModel, ParametricModel}
+import statistics.{Statistic, WeightedStatistic}
 import utils.sqrt
 
 import scala.collection.parallel.immutable.ParVector
@@ -14,10 +14,12 @@ import scala.collection.parallel.mutable.ParArray
 
 
 class LikelihoodRatioStatistic[Row, Self <: Dataset[Row, Self]](val model: Model[Row, Self], override val windowSize: Int)
-   extends  WindowStatistic[Row, Self](windowSize){
+   extends  WindowStatistic[Row, Self](windowSize) with Statistic[Row, Self, Array[Double]] {
 
   def getValue(windowIndex: Int, dataset: Self): Double = {
     val  (data1, data2) = getWindowData(windowIndex, dataset)
+
+    // println(windowIndex)
 
     val L1 = model.likelihood(data1)
     val L2 = model.likelihood(data2)
@@ -25,14 +27,13 @@ class LikelihoodRatioStatistic[Row, Self <: Dataset[Row, Self]](val model: Model
 
     val res = math.sqrt(2.0) * math.sqrt(L1 + L2 - L + 1e-5)
     if (res.isNaN) {
-
-      println("NAN !!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      println("NAN statistic value")
       return 0
-      //throw new Exception("NAN statistic value")
     }
     res
   }
 
+  override def getValue(dataset: Self, offset: Int): Array[Double] = getValue(dataset)
 }
 
 

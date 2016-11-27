@@ -3,7 +3,7 @@ package datasets
 import java.io.FileWriter
 
 import breeze.linalg.DenseVector
-import datasets.CellT.{TCellDouble, CellType}
+import datasets.CellT.{CellType, TCellDouble}
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
@@ -16,6 +16,7 @@ trait ColumnT[T, C] {
   def :+ (elem: T): C
   def splitAt(index: Int): (C, C)
   def isNumeric: Boolean
+  def subset(indexes: Array[Int]): C
 }
 
 class Column[T] (val data: Vector[T]) extends ColumnT[T, Column[T]] {
@@ -32,7 +33,9 @@ class Column[T] (val data: Vector[T]) extends ColumnT[T, Column[T]] {
   def getType: String = {
     if (data(0).isInstanceOf[Double]) CellT.DOUBLE_TYPE_NAME else data(0).asInstanceOf[CellType].getType
   }
-
+  override def subset(indexes: Array[Int]): Column[T] = {
+    new Column[T](indexes.toVector.map(i => data(i)))
+  }
 }
 
 object Column {
@@ -65,6 +68,8 @@ abstract class Dataset[Row, Self](val header: DataHeader,
   def toMatrix: Array[Vector[String]]
 
   def subset(from: Int, to: Int): Self
+
+  def subset(indexes: Array[Int]): Self
 
   def splitAt(index: Int): (Self, Self)
 
@@ -164,10 +169,12 @@ class MultiColumnDataset[T >: TCellDouble](override val header: DataHeader,
   }
 
   override def dropCol(num: Int): MultiColumnDataset[T] = {
-    val newHeader: DataHeader = new DataHeader(header.data.slice(0, num) ++ header.data.slice(num+1, dim))
+    val newHeader: DataHeader = new DataHeader(header.data.slice(0, num) ++ header.data.slice(num+1, dim), header.types.slice(0, num) ++ header.types.slice(num+1, dim))
     val newData: Vector[Column[T]] = data.slice(0, num) ++ data.slice(num+1, dim)
     new MultiColumnDataset[T](newHeader, newData, isNumeric)
   }
+
+  override def subset(indexes: Array[Int]): MultiColumnDataset[T] = new MultiColumnDataset[T](header, data.map(_.subset(indexes)), isNumeric, classIndex)
 }
 
 
@@ -236,6 +243,8 @@ class OneColumnDataset[T >: TCellDouble](override val header: DataHeader,
   def getColumnsT: Vector[Column[T]] = Vector(data.asInstanceOf[Column[T]])
 
   override def dropCol(num: Int): OneColumnDataset[T] = this
+
+  override def subset(indexes: Array[Int]): OneColumnDataset[T] = new OneColumnDataset[T](header, data.subset(indexes), isNumeric)
 }
 
 
@@ -254,18 +263,10 @@ object Dataset {
     new OneColumnDataset[T](header, Column(rows.toVector), true)
   }
 
-  def applyCast[T](value: IndexedSeq[T]): MultiColumnDataset[Double] = value(0) match {
-      case data: DenseVector[Double] => applyVec(value.asInstanceOf[Vector[DenseVector[Double]]])
-      case data: Double => applyD(value.asInstanceOf[Vector[Double]])
-      case data: Int => applyD(value.asInstanceOf[Vector[Int]].map(_.toDouble))
-      case _ => applyB(value.asInstanceOf[Vector[Boolean]])
-  }
 
-  def applyVec(data: IndexedSeq[DenseVector[Double]]): MultiColumnDataset[Double] = {
+  def applyVec(data: IndexedSeq[DenseVector[Double]]): DenseVectorDataset = {
     val header = DataHeader(data(0).length)
-    val cols: Vector[Column[Double]] =
-      Vector.range(0, header.size).map(j => Column(data.map(row => row(j)).toVector))
-    new MultiColumnDataset[Double](header, cols, true)
+    new DenseVectorDataset(header, data.toArray)
   }
 
   implicit def applyD(data: IndexedSeq[Double]): MultiColumnDataset[Double] = {
@@ -286,8 +287,8 @@ object DatasetConverter {
     new Column[Double](column.data.map(_.toDouble))
   }
 
-  def toNumeric(dataset: MultiColumnDataset[CellType]): MultiColumnDataset[Double] = {
-    new MultiColumnDataset[Double](dataset.header, dataset.data.map(toDoubleColumn), true)
+  def toNumeric(dataset: MultiColumnDataset[CellType]): DenseVectorDataset = {
+     new DenseVectorDataset(dataset.header, dataset.getRowsIterator.toArray.map(r => DenseVector(r.toArray.map(_.toDouble))))
   }
 
   def toNumeric(dataset: OneColumnDataset[CellType]): OneColumnDataset[Double] = {
@@ -352,6 +353,8 @@ class WeightedDataset[Row, Self <: Dataset[Row, Self]](
   override def getColumns: Vector[Column[Double]] = null
 
   override def dropCol(num: Int): WeightedDataset[Row, Self] = new WeightedDataset[Row, Self](dataset.dropCol(num), weights)
+
+  override def subset(indexes: Array[Int]): WeightedDataset[Row, Self] = null
 }
 
 

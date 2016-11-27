@@ -22,11 +22,7 @@ import scala.collection.parallel.mutable.ParArray
 
 object DatasetLoader {
 
-  def loadFromFileData(path: String, from: Int, toOpt: Int, separator: String): (DataHeader, Vector[Column[CellType]]) = {
-
-    assert(path.split("\\.").last equals "csv")
-
-    // read header
+  def loadHeader(path: String, from: Int, toOpt: Int, separator: String): DataHeader = {
     val lineIterator = io.Source.fromFile(path).getLines()
     val topLine = lineIterator.next().trim.split(separator)
     val to = if(toOpt > from) toOpt else topLine.size
@@ -34,41 +30,60 @@ object DatasetLoader {
     val header: Array[String] = topLine.map(_.trim.split(":")(0)).slice(from, to)
     val types: Array[String] = topLine.map(_.trim.split(":")(1)).slice(from, to)
 
-    // read data
+    new DataHeader(header.toIndexedSeq, types)
+  }
+
+  def loadFromFileData(path: String, from: Int, toOpt: Int, separator: String, header: DataHeader): Vector[Column[CellType]] = {
+
+    assert(path.split("\\.").last equals "csv")
+
+    val lineIterator = io.Source.fromFile(path).getLines()
+    val to = header.data.size
+
     val data: Array[ArrayBuffer[String]] = Array.fill(header.size)(ArrayBuffer[String]())
 
     while (lineIterator.hasNext) {
       val line: String = lineIterator.next()
       val strrow = line.trim.split(separator).slice(from, to)
-      assert(strrow.length == header.length)
+      assert(strrow.length == header.data.length)
 
-      for(i <- header.indices) {
+      for(i <- header.data.indices) {
         data(i).append(strrow(i))
       }
     }
 
+
     val dataBuilder = Vector.newBuilder[Column[CellType]]
     Range(0, header.size).foreach(i => {
       val vb = Vector.newBuilder[CellType]
-      val t: String = types(i)
+      val t: String = header.types(i)
       data(i).foreach(elem => vb += CellT(t, elem))
       dataBuilder += new Column[CellType](vb.result())
     })
 
-    (new DataHeader(header.toIndexedSeq), dataBuilder.result())
+    dataBuilder.result()
 
   }
 
   def loadFromFile(path: String): OneColumnDataset[CellType] = {
-    val (header, data) = loadFromFileData(path, 0, 1, ",")
+    val header = loadHeader(path, 0, 1, ",")
+    val data = loadFromFileData(path, 0, 1, ",", header)
     assert(data.size == 1)
     new OneColumnDataset[CellType](header, data.head)
   }
 
   def loadFromFileMulticol(path: String, from: Int = 0, to: Int = -1, separator: String = ","): MultiColumnDataset[CellType] = {
-    val (header, data) = loadFromFileData(path, from, to, separator)
+    val header = loadHeader(path, from, to, separator)
+    val data = loadFromFileData(path, from, to, separator, header)
     assert(data.size > 1)
     new MultiColumnDataset[CellType](header, data)
+  }
+
+  def loadFromFileMulticolDouble(path: String, from: Int = 0, to: Int = -1, separator: String = ","): DenseVectorDataset = {
+    val header = DataHeader(io.Source.fromFile(path).getLines().next().split(separator).length)
+    val data = loadFromFileData(path, from, to, separator, header)
+    assert(data.size > 1)
+    DatasetConverter.toNumeric(new MultiColumnDataset[CellType](header, data))
   }
 
 }

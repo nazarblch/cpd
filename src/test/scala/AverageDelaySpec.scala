@@ -1,6 +1,6 @@
 import datasets.OneColumnDataset
+import detector_test_system.quality.AverageDelay
 import org.scalatest.FlatSpec
-import quality.AverageDelay
 
 class AverageDelaySpec extends FlatSpec {
 

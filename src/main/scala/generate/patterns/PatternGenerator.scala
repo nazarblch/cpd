@@ -9,7 +9,7 @@ import datasets.{Dataset, OneColumnDataset}
 object PatternGenerator {
 
   val r = new util.Random()
-  val sigma = 1.0
+  var sigma = 1.0
 
   def fromToLine(from: Double, to: Double, duration: Int): Array[Double] = {
     val x0 = from

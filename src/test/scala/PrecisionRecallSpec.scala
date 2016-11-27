@@ -1,7 +1,7 @@
 
 import datasets.OneColumnDataset
+import detector_test_system.quality.{Precision, Recall}
 import org.scalatest._
-import quality.{Recall, Precision}
 
 class PrecisionRecallSpec extends FlatSpec {
 

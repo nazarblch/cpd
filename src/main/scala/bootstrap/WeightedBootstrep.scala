@@ -1,11 +1,11 @@
 package bootstrap
 
 import breeze.linalg.DenseVector
-import datasets.{Dataset, CatCellT, IntCellT, DoubleCellT}
-import statistics.{WeightedStatistic, Statistic}
+import datasets.{CatCellT, Dataset, DoubleCellT, IntCellT}
+import statistics.{Statistic, WeightedStatistic}
 
 import scala.collection.mutable.ArrayBuffer
-import scala.util.Sorting
+import scala.util.{Random, Sorting}
 
 
 trait Bootstrap[Row, Self <: Dataset[Row, Self]] {
@@ -37,6 +37,18 @@ class WeightedBootstrap[Row, Self <: Dataset[Row, Self]](val weightsGenerator: S
 
   def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
     DenseVector.fill[Double](sampleSize)(statistic.getValue(dataset, weightsGenerator.generateVector(dataset.size)))
+  }
+
+}
+
+class EmpiricalBootstrap[Row, Self <: Dataset[Row, Self]](val statistic: Statistic[Row, Self, Double]) extends Bootstrap[Row, Self] {
+
+  val r = new Random()
+
+  private def genIndexes(size: Int): Array[Int] = Array.fill(size)(r.nextInt(size))
+
+  def sample(dataset: Self, sampleSize: Int): DenseVector[Double] = {
+    DenseVector.fill[Double](sampleSize)(statistic.getValue(dataset.subset(genIndexes(dataset.size))))
   }
 
 }

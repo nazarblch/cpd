@@ -53,6 +53,10 @@ class TrianglePattern(val length: Int) extends CurvePattern {
 
 }
 
+object TrianglePattern extends PatternFactory {
+  override def apply(windowSize: Int): TrianglePattern = new TrianglePattern(2 * windowSize)
+}
+
 
 class StaticTrianglePattern(val length: Int) extends CurvePattern {
 
@@ -60,11 +64,11 @@ class StaticTrianglePattern(val length: Int) extends CurvePattern {
   val xrange1: DenseVector[Double] = DenseVector.range(0, length/2).map(_.toDouble - x_mean)
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
-  val norm: Double = xrange1.foldLeft(0.0)((sum, x) => sum + x * x).toDouble
+  val norm: Double = xrange1.foldLeft(0.0)((sum, x) => sum + x * x)
 
-  var height: Double = 1.0
+  var height: Double = length / 2
   var alpha: Double = 2 * height / length
-  var y_min: Double = 0
+  var y_min: Double = - length / 4
 
   override def getXRange: DenseVector[Int] = xrange
 
@@ -83,4 +87,8 @@ class StaticTrianglePattern(val length: Int) extends CurvePattern {
   override def getXSize: Int = length
 
   override def convolution(yValues: DenseVector[Double]): Double = (yValues ) dot (getYRange )
+}
+
+object StaticTrianglePattern extends PatternFactory {
+  override def apply(windowSize: Int): StaticTrianglePattern = new StaticTrianglePattern(2 * windowSize)
 }

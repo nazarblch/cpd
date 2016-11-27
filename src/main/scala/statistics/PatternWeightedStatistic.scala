@@ -20,14 +20,12 @@ class PatternWeightedStatistic[Row, Self <: Dataset[Row, Self]](val pattern: Cur
     assert(!stats.exists(_.isNaN))
     val wstat = getValue(stats)
 
-    //val lrt = statistic.getValue(dataset, Vector.fill(dataset.size)(1.0))
-    //val conv = getValue(lrt)
-
-    //wstat.zip(conv).map{case(x,y) => math.abs(x-y)}
     wstat
   }
 
 }
+
+
 
 class PatternStatistic[Row, Self <: Dataset[Row, Self]](val pattern: CurvePattern, val statistic: LikelihoodRatioStatistic[Row, Self])
   extends Statistic[Row, Self, Array[Double]] {

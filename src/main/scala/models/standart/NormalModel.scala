@@ -1,46 +1,85 @@
 package models.standart
 
-import breeze.linalg.{inv, DenseMatrix, DenseVector}
-import breeze.optimize.{LBFGS, DiffFunction, FirstOrderMinimizer}
-import datasets.{OneColumnDataset, MultiColumnDataset, WeightedDataset, DataHeader}
-import edu.uci.lasso.{LassoFit, LassoFitGenerator}
-import jml.options.Options
-import jml.regression.LASSO
+import breeze.linalg.{DenseMatrix, DenseVector, det, inv}
+import breeze.optimize.{DiffFunction, FirstOrderMinimizer, LBFGS}
+import datasets._
 import models.ParametricIIDModel
-import breeze.stats.distributions.{Gaussian, Dirichlet}
+import breeze.stats.distributions.{Dirichlet, Gaussian}
+import models.glasso.{GLassoInverse, InverseCovarianceMatrix}
+import smile.regression._
 
-class NormalModelVec(override val dim: Int) extends ParametricIIDModel[Vector[Double], MultiColumnDataset[Double]] {
+class NormalModelVecMean(override val dim: Int) extends ParametricIIDModel[DenseVector[Double], DenseVectorDataset] {
 
   val V = DenseMatrix.eye[Double](dim)
   val Vinv: DenseMatrix[Double] = inv(V)
 
-  override def likelihood(dataRow: Vector[Double], parameter: DenseVector[Double]): Double = {
+  override def likelihood(dataRow: DenseVector[Double], parameter: DenseVector[Double]): Double = {
     assert(parameter.length == dim)
 
     val m = parameter
-    val x = DenseVector(dataRow.toArray)
+    val x = dataRow
 
     (x - m).t * Vinv * (x - m) * (- 0.5)
   }
 
-  override def fisherMatrix(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseMatrix[Double] = null
+  override def fisherMatrix(dataset: WeightedDataset[DenseVector[Double], DenseVectorDataset]): DenseMatrix[Double] = null
 
-  override def gradLikelihood(dataRow: Vector[Double], parameter: DenseVector[Double]): DenseVector[Double] = {
+  override def gradLikelihood(dataRow: DenseVector[Double], parameter: DenseVector[Double]): DenseVector[Double] = {
 
     assert(parameter.length == dim)
 
     val m = parameter
-    val x = DenseVector(dataRow.toArray)
+    val x = dataRow
 
     val grad_m: DenseVector[Double] =  Vinv * (m - x) * (-1.0)
 
     grad_m
   }
 
-  override def MLE(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
-    val mle_m = dataset.convolutionV(row => DenseVector(row.toArray)) / dataset.weights.sum
-
+  override def MLE(dataset: WeightedDataset[DenseVector[Double], DenseVectorDataset]): DenseVector[Double] = {
+    val mle_m = dataset.convolutionV(row => row) / dataset.weights.sum
     mle_m
+  }
+
+  override def header: DataHeader = DataHeader(dim)
+}
+
+
+class NormalModelVec(override val dim: Int) extends ParametricIIDModel[DenseVector[Double], DenseVectorDataset] {
+
+  private def getMean(parameter: DenseVector[Double]): DenseVector[Double] = {
+    parameter.slice(0, dim)
+  }
+
+  private def getVar(parameter: DenseVector[Double]): DenseMatrix[Double] = {
+    val var_vec = parameter.slice(dim, parameter.length).toArray
+    new DenseMatrix[Double](dim, dim, var_vec)
+  }
+
+  override def likelihood(dataRow: DenseVector[Double], parameter: DenseVector[Double]): Double = {
+    assert(parameter.length == dim + dim * dim)
+
+    val m = getMean(parameter)
+    val x = DenseVector(dataRow.toArray)
+    val V = getVar(parameter)
+
+    (x - m).t * V * (x - m) * (- 0.5)
+    + 0.5 * math.log(det(V))
+  }
+
+  override def fisherMatrix(dataset: WeightedDataset[DenseVector[Double], DenseVectorDataset]): DenseMatrix[Double] = null
+
+  override def gradLikelihood(dataRow: DenseVector[Double], parameter: DenseVector[Double]): DenseVector[Double] = null
+
+  override def MLE(dataset: WeightedDataset[DenseVector[Double], DenseVectorDataset]): DenseVector[Double] = {
+    val mle_m = dataset.convolutionV(row => DenseVector(row.toArray)) / dataset.weights.sum
+    val data = Array.range(0, dataset.size).map(i => dataset.getRow(i)).map(row => {
+      (DenseVector(row.toArray) - mle_m).toArray
+    })
+
+    val res: Array[Array[Double]] = GLassoInverse(data)
+
+    DenseVector(mle_m.toArray ++ res.reduce(_++_))
   }
 
   override def header: DataHeader = DataHeader(dim)
@@ -200,7 +239,7 @@ class RegressionModel(override val dim: Int, val classIndex: Int, val dataHeader
   override def header: DataHeader = if (dataHeader != null && dataHeader.isInstanceOf[DataHeader]) dataHeader else DataHeader(dim)
 }
 
-class RegressionModelWithL1(override val dim: Int, override val classIndex: Int, override val dataHeader: DataHeader = null) extends RegressionModel(dim, classIndex, dataHeader) {
+class RegressionModelWithL1(override val dim: Int, override val classIndex: Int, val lambda: Double, override val dataHeader: DataHeader = null) extends RegressionModel(dim, classIndex, dataHeader) {
 
   def getLambda(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): Double = {
     math.sqrt(dataset.size * math.log(dim + 1))
@@ -222,19 +261,9 @@ class RegressionModelWithL1(override val dim: Int, override val classIndex: Int,
 
 
   override def MLE(dataset: WeightedDataset[Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
+    DenseVector(
+    lasso(getXMatrix(dataset), getY(dataset), lambda).coefficients())
 
-    val options = new Options()
-    options.maxIter = 1500
-    options.lambda = 10
-    options.verbose = false
-    options.epsilon = 1e-5
-
-    val LASSO = new LASSO(options)
-    LASSO.feedData(getXMatrix(dataset))
-    LASSO.feedDependentVariables(getY(dataset).map(y => Array(y)))
-    LASSO.train()
-
-    DenseVector(LASSO.W.getData.flatten)
   }
 
 
