@@ -5,7 +5,7 @@ import breeze.optimize.{DiffFunction, FirstOrderMinimizer, LBFGS}
 import datasets._
 import models.ParametricIIDModel
 import breeze.stats.distributions.{Dirichlet, Gaussian}
-import models.glasso.{GLassoInverse, InverseCovarianceMatrix}
+import models.glasso.{GLassoInverse}
 import smile.regression._
 
 class NormalModelVecMean(override val dim: Int) extends ParametricIIDModel[DenseVector[Double], DenseVectorDataset] {
