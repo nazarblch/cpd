@@ -57,12 +57,11 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
     case PathList("com", "esotericsoftware", xs @ _*) => MergeStrategy.last
     case PathList("com", "codahale", xs @ _*) => MergeStrategy.last
     case PathList("com", "yammer", xs @ _*) => MergeStrategy.last
+    case PathList("org", "xmlpull", xs @ _*) => MergeStrategy.last
     case "log4j.properties" => MergeStrategy.last
     case x => old(x)
 }
 }
-
-
 
 mainClass in assembly := Some("examples.QualityTest")
 
