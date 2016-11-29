@@ -17,7 +17,7 @@ class PlotXY(xlabel: String, ylabel: String) {
   val p = f.subplot(0)
   p.xlabel = xlabel
   p.ylabel = ylabel
-  p.legend = false
+  p.legend = true
   p.setYAxisDecimalTickUnits()
 
   p.setXAxisDecimalTickUnits()
@@ -74,7 +74,7 @@ class PlotXY(xlabel: String, ylabel: String) {
 
   def print(path: String) {
 
-    addline(buffer.result().toArray.map(_._1), buffer.result().toArray.map(_._2), "")
+    // addline(buffer.result().toArray.map(_._1), buffer.result().toArray.map(_._2), "")
 
     f.saveas(path)
     val fw = new FileWriter(path + ".txt")
@@ -90,15 +90,14 @@ class PlotXY(xlabel: String, ylabel: String) {
 }
 
 object PlotApp extends App {
-  val pl = new PlotXY("log(h)", "-log(P - Pb)")
+  val pl = new PlotXY("log(2h)", "log(P - Pb)")
+
+
+  pl.addline(Array(10, 20, 30, 40, 50).map(x => math.log(2 *  x)), Array(0.071, 0.0466, 0.0345, 0.0265, 0.022).map(y => math.log(y)), "homogeneous data")
+
+  pl.addline(Array(10, 20, 30, 40, 50).map(x => math.log(2 * x)), Array(0.0732, 0.0519, 0.0414, 0.035, 0.0294).map(y => math.log(y)), "data with change point ")
 
 
 
-
-  pl.addline(Array(10, 40).map(x => math.log(x)), Array(0.039, 0.00680).map(y => -math.log(y)), "")
-
-
-  pl.p.legend = false
-
-  pl.print("jumps.pdf")
+  pl.print("img/tot_var.pdf")
 }

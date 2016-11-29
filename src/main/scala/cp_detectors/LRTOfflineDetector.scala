@@ -49,6 +49,10 @@ class LRTOfflineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricM
     new PatternStatistic[Row, Self](pattern, lrt)
   }
 
+//  def createStatistic(windowSize: Int): LikelihoodRatioStatistic[Row, Self] = {
+//    new LikelihoodRatioStatistic[Row, Self](model, windowSize)
+//  }
+
   override def findOne(dataset: Self): Option[Int] = {
 
     for (config <- configurations.filter(_.windowSize < dataset.size / 4).sortBy(_.windowSize)) {

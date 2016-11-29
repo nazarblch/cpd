@@ -3,6 +3,8 @@ package examples
 import cp_detectors._
 import datasets.OneColumnDataset
 import detector_test_system.{TestDataLoader, TestsManager}
+import models.standart.NormalModel
+import patterns.{StaticTrianglePattern, TrianglePattern}
 
 object TestOfflineDetector extends App {
 
@@ -20,13 +22,12 @@ object TestOfflineDetector extends App {
  //val detector = new BOffCPD
 
 
-//  //val model =  new NormalModelMean(2)
-//  val model =  new NormalModel
-//  val detector = new LRTOfflineDetector[Double, OneColumnDataset[Double], DenseVector[Double]](model, 0.1, MeanVarWeightedLikelihoodRatioStatistic)
+  val model =  new NormalModel()
+  val detector = new LRTOfflineDetector(model, 0.1, Array(70), StaticTrianglePattern)
 //
-//  manager.testDetector(detector, false)
+   manager.testDetector(detector, true)
 //
-//  println("NMI \t" + manager.getPlot("NMI", detector.name, "delta"))
+  println("NMI \t" + manager.getPlot("NMI", detector.name, "delta"))
 
 
 
