@@ -71,10 +71,7 @@ class GLassoModel(val oneDim: Int,
 
   override def MLE(dataset: WeightedDataset[scala.Vector[Double], MultiColumnDataset[Double]]): DenseVector[Double] = {
     val data = dataset.toDataset.getRowsIterator.map(_.toArray).toArray
-
-    val M: InverseCovarianceMatrix = new InverseCovarianceMatrix(data)
-
-    val res: Array[Array[Double]] = M.R_glassoGetInverseCovarianceMatrix
+    val res = GLassoInverse.apply(data)
 
     DenseVector(res.flatten)
   }

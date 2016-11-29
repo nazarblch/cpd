@@ -52,7 +52,7 @@ object TestBoot extends App {
 
     val ref_bootstrap = new RefDistBootstrap(data_gen, max_patt_lrt)
 
-    val ref_sample = ref_bootstrap.sample(SAMPLE_SIZE)
+    val ref_sample = ref_bootstrap.sample(null, SAMPLE_SIZE)
     val ref_maxDist = new TailStatistic(ref_sample.data)
 
     val q2 = ref_maxDist.quantile(0.1)
@@ -69,7 +69,7 @@ object TestBoot extends App {
 //  println(mean((1 to 30).map(i => test(40, 10)).toArray))
 //  println(mean((1 to 30).map(i => test(40, 15)).toArray))
 //  println(mean((1 to 30).map(i => test(40, 20)).toArray))
- // println(mean((1 to 30).map(i => test(40, 3)).toArray))
+  println(mean((1 to 30).map(i => test(40, 3)).toArray))
   println(mean((1 to 30).map(i => test(40, 7)).toArray))
 
 

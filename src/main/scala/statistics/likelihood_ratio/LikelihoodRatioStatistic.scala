@@ -95,11 +95,6 @@ abstract class WindowStatistic[Row, Self <: Dataset[Row, Self]](val windowSize: 
     getWindowRights(dataset).zip(getValue(dataset))
   }
 
-  def getValueSync(dataset: Self): Array[Double] = {
-    val wc: Int = windowCount(dataset)
-
-    Array.range(0, wc).map(windowIndex => getValue(windowIndex, dataset))
-  }
 
 }
 
