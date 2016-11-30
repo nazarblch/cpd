@@ -4,11 +4,10 @@ import breeze.linalg.DenseVector
 
 
 trait CurvePattern {
-  def getXRange: DenseVector[Int]
   def getXSize: Int
   def getY(x: Int): Double
   // def getYRange: DenseVector[Double]
-  def fitParameters(yValues: DenseVector[Double]): Double
+
   def getPlot(offset: Int, length: Int): DenseVector[Double] = {
 
     assert(offset + getXSize <= length)
@@ -25,8 +24,7 @@ trait CurvePattern {
   def convolution(yValues: DenseVector[Double]): Double
 }
 
-class MatcherResult(val offset: Int, val pattern: CurvePattern) {
-}
+class MatcherResult(val offset: Int, val pattern: CurvePattern)
 
 
 object PatternMatcher {
@@ -36,10 +34,10 @@ object PatternMatcher {
     val offset: Int =
       (0 until (data.length - pattern.getXSize)).map(i => {
         val ys = data.slice(i, pattern.getXSize + i)
-        (i, pattern.fitParameters(ys))
+        (i, pattern.convolution(ys))
       }).maxBy(_._2)._1
 
-    pattern.fitParameters(data.slice(offset, offset + pattern.getXSize))
+    pattern.convolution(data.slice(offset, offset + pattern.getXSize))
 
     new MatcherResult(offset, pattern)
 
@@ -53,7 +51,6 @@ object PatternMatcher {
 
     (0 until (data.length - pattern.getXSize)).map(i => {
       val ys = data.slice(i, pattern.getXSize + i)
-      pattern.fitParameters(ys)
       val conv = pattern.convolution(ys)
       conv
     }).toArray

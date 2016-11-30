@@ -143,15 +143,17 @@ class LRTOnlineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricMo
         throw new Exception("incorrect stat value")
       }
 
-      LRT.get(h).get += math.sqrt(2 * ( L1 + L2 - L + 0.001))
+      LRT(h) += math.sqrt(2 * ( L1 + L2 - L + 0.001))
 
-      if (LRT.get(h).get.length >=  h + 1){
-        val stat = DenseVector(LRT.get(h).get.takeRight(h).toArray)
+      if (LRT(h).length >=  h + 1){
+        val stat = DenseVector(LRT(h).takeRight(h).toArray)
 
-        val conv: Double = new HalfTrianglePattern(h).fitParameters(stat)
+        val halfTrianglePattern = new HalfTrianglePattern(h)
+
+        val conv: Double = halfTrianglePattern.convolution(stat)
 
         //println(conv)
-        convs.get(h).get += conv
+        convs(h) += conv
 
         if(conv > configurations.filter(_.windowSize == h)(0).upperBound.get){
           out.update(h, true)

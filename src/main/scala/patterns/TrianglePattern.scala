@@ -15,9 +15,7 @@ class TrianglePattern(val length: Int) extends CurvePattern {
   var alpha: Double = 0.0
   var y_min: Double = 0
 
-  override def getXRange: DenseVector[Int] = xrange
-
-  override def fitParameters(yValues: DenseVector[Double]): Double = {
+  private def fitParameters(yValues: DenseVector[Double]): Unit = {
     assert(yValues.length == length)
     val y1: DenseVector[Double] = yValues.slice(0, length/2)
     val y2: DenseVector[Double] = DenseVector[Double](yValues.slice(length/2, length).toArray.reverse)
@@ -34,9 +32,6 @@ class TrianglePattern(val length: Int) extends CurvePattern {
 
     if (alpha < 0) alpha = 0
 
-    convolution(yValues)
-
-    //alpha * length / 2.0
   }
 
   override def getY(x: Int): Double = {
@@ -49,7 +44,10 @@ class TrianglePattern(val length: Int) extends CurvePattern {
 
   override def getXSize: Int = length
 
-  override def convolution(yValues: DenseVector[Double]): Double = (yValues - y_min ) dot (getYRange - y_min )
+  override def convolution(yValues: DenseVector[Double]): Double = {
+    fitParameters(yValues)
+    (yValues - y_min ) dot (getYRange - y_min )
+  }
 
 }
 
@@ -70,12 +68,6 @@ class StaticTrianglePattern(val length: Int) extends CurvePattern {
   var alpha: Double = 2 * height / length
   var y_min: Double = - length / 4
 
-  override def getXRange: DenseVector[Int] = xrange
-
-  override def fitParameters(yValues: DenseVector[Double]): Double = {
-    yValues dot getYRange
-  }
-
   override def getY(x: Int): Double = {
     (if (x < length / 2) alpha * x else (length - x) * alpha ) + y_min
   }
@@ -86,7 +78,7 @@ class StaticTrianglePattern(val length: Int) extends CurvePattern {
 
   override def getXSize: Int = length
 
-  override def convolution(yValues: DenseVector[Double]): Double = (yValues ) dot (getYRange )
+  override def convolution(yValues: DenseVector[Double]): Double = yValues dot getYRange
 }
 
 object StaticTrianglePattern extends PatternFactory {
