@@ -108,8 +108,8 @@ class TestsManager[Row, Self <: Dataset[Row, Self], D <: ChangePointDetector[Row
   }
 
   def getPlot(measureName: String, detectorName: String, parameterName: String): Seq[(Double,Double)] = {
-    history.get(detectorName).get.filter(tr => tr.measureName == measureName).filter(_.value.isDefined).
-      map(tr => (tr.params.get(parameterName).get.toString.toDouble, tr.value.get))
+    history(detectorName).filter(tr => tr.measureName == measureName).filter(_.value.isDefined).
+      map(tr => (tr.params(parameterName).toString.toDouble, tr.value.get))
   }
 
 }
