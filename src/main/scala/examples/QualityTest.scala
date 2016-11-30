@@ -55,5 +55,5 @@ object QualityTest extends App {
     new PowerAndSD(sd, power)
   }
 
-  List(25, 50, 70, 100).map(getPowerAndSD(300))
+  List(25, 50, 70, 100).map(getPowerAndSD(300)).foreach(println)
 }
