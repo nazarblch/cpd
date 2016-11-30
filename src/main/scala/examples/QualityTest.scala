@@ -46,8 +46,8 @@ object QualityTest extends App {
   }
 
 
-  private def getPowerAndSD(iterations: Int)(windowSize: Int) = {
-    val results = (1 to iterations).map(_ => exec(windowSize, NoPattern))
+  private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = {
+    val results = (1 to iterations).map(_ => exec(windowSize, patternFactory))
 
     val power = results.count(_.isDefined).toDouble / iterations
     val sd = mean(results.flatten.map(x => math.abs(x - 250).toDouble))
@@ -55,5 +55,7 @@ object QualityTest extends App {
     new PowerAndSD(sd, power)
   }
 
-  List(25, 50, 70, 100).map(getPowerAndSD(300)).foreach(println)
+  val getPowerAndSD300 = getPowerAndSD(300)
+
+  List(25, 50, 70, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
 }
