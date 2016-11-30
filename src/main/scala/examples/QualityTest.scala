@@ -8,6 +8,12 @@ import datasets.{Dataset, DenseVectorDataset, MultiColumnDataset}
 import models.standart.NormalModelVecMean
 import patterns.{NoPattern, PatternFactory, StaticTrianglePattern, TrianglePattern}
 
+class PowerAndSD(val sd : Double, val power : Double) {
+  override def toString: String = {
+    "POWER " + power + "\n" +  "SD    " + sd
+  }
+}
+
 /**
   * Created by buzun on 22/11/16.
   */
@@ -18,6 +24,9 @@ object QualityTest extends App {
       r.sample(n / 2).toIndexedSeq ++
         r.sample(n / 2).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm)))
   }
+
+
+
 
   def exec(windowSize : Int, patternFactory: PatternFactory) = {
     val dim = 30
@@ -36,12 +45,15 @@ object QualityTest extends App {
     detector.findOne(data)
   }
 
-  private val iterations = 20
-  val results = (1 to iterations).map(_ => exec(70, NoPattern))
 
-  val power = results.count(_.isDefined).toDouble / iterations
-  val sd = results.flatten.map(x => math.abs(x - 250))
+  private def getPowerAndSD(iterations: Int)(windowSize: Int) = {
+    val results = (1 to iterations).map(_ => exec(windowSize, NoPattern))
 
-  println("POWER " + power)
-  println("SD    " + sd)
+    val power = results.count(_.isDefined).toDouble / iterations
+    val sd = mean(results.flatten.map(x => math.abs(x - 250).toDouble))
+
+    new PowerAndSD(sd, power)
+  }
+
+  List(25, 50, 70, 100).map(getPowerAndSD(300))
 }
