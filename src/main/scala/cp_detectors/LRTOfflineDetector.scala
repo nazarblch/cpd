@@ -13,11 +13,11 @@ import viz.utils.PlotXY
 import scala.collection.mutable.ArrayBuffer
 
 
-class LRTOfflineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricModel[Row, Self, DenseVector[Double]],
+class LRTOfflineDetector[Row, DatasetType <: Dataset[Row, DatasetType]](val model: ParametricModel[Row, DatasetType, DenseVector[Double]],
                                                              val CONFIDENCE: Double,
                                                              val windowSizes: Array[Int],
                                                           val patternFactory: PatternFactory)
-  extends RecurrentOfflineChangePointDetector[Row, Self] {
+  extends RecurrentOfflineChangePointDetector[Row, DatasetType] {
 
 
   class Config (val windowSize: Int,
@@ -26,38 +26,34 @@ class LRTOfflineDetector[Row, Self <: Dataset[Row, Self]](val model: ParametricM
   val SAMPLE_SIZE = 1000
   var configurations: Array[Config] = _
 
-  private def getConfig(dataset: Self, windowSize: Int): Config = {
+  private def getConfig(dataset: DatasetType, windowSize: Int): Config = {
 
     val stat = createStatistic(windowSize)
-    val max_patt = new MaxStatistic[Row, Self](stat)
+    val max_patt = new MaxStatistic[Row, DatasetType](stat)
 
-    println("calibrate h = " + windowSize)
-
-    val bootstrap: Bootstrap[Row, Self] = new EmpiricalBootstrap[Row, Self](max_patt)
+    val bootstrap: Bootstrap[Row, DatasetType] = new EmpiricalBootstrap[Row, DatasetType](max_patt)
     val bound = bootstrap.quantile(1 - CONFIDENCE, dataset, SAMPLE_SIZE)
 
     new Config(windowSize, bound)
   }
 
-  def init(dataset: Self): Unit = {
+  def init(dataset: DatasetType): Unit = {
     configurations = windowSizes.sorted.par.map(h => getConfig(dataset, h)).toArray
   }
 
-  def createStatistic(windowSize: Int): PatternStatistic[Row, Self] = {
-    val lrt = new LikelihoodRatioStatistic[Row, Self](model, windowSize)
+  def createStatistic(windowSize: Int): PatternStatistic[Row, DatasetType] = {
+    val lrt = new LikelihoodRatioStatistic[Row, DatasetType](model, windowSize)
     val pattern = patternFactory(windowSize)
-    new PatternStatistic[Row, Self](pattern, lrt)
+    new PatternStatistic[Row, DatasetType](pattern, lrt)
   }
 
-//  def createStatistic(windowSize: Int): LikelihoodRatioStatistic[Row, Self] = {
-//    new LikelihoodRatioStatistic[Row, Self](model, windowSize)
+//  def createStatistic(windowSize: Int): LikelihoodRatioStatistic[Row, DatasetType] = {
+//    new LikelihoodRatioStatistic[Row, DatasetType](model, windowSize)
 //  }
 
-  override def findOne(dataset: Self): Option[Int] = {
+  override def findOne(dataset: DatasetType): Option[Int] = {
 
     for (config <- configurations.filter(_.windowSize < dataset.size / 4).sortBy(_.windowSize)) {
-
-      println("test h = " + config.windowSize)
       val stat = createStatistic(config.windowSize)
       val (pos, score) = stat.getValueWithLocations(dataset).maxBy(_._2)
       if (score > config.upperBound) return Some(pos)
