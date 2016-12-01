@@ -58,8 +58,7 @@ object QualityTest extends App {
 
   private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD((1 to iterations).map(_ => exec(windowSize, patternFactory)))
 
-
-  val getPowerAndSD300 = getPowerAndSD(300)
+  val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
 
   println("NoPattern")
   List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
