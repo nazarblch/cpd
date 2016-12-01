@@ -152,7 +152,7 @@ class TestModel  extends FlatSpec {
   }
 
   it should "be consistent in Wilks equation" in {
-    val r = new Random()
+    val r = new Random(13)
     val col: Column[Double] = Column[Double](Array.fill(10000)(2.0 * r.nextGaussian() + 2.0))
     val data = new OneColumnDataset[Double](DataHeader(1), col, true)
     val model = new NormalModel
