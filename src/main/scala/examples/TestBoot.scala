@@ -25,9 +25,8 @@ object TestBoot extends App {
     val n = 500
 
     def data_gen(dm: Double): DenseVectorDataset = {
-      Dataset.applyVec(
         r.sample(h * 3).toIndexedSeq ++
-          r.sample(h * 3).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm)))
+          r.sample(h * 3).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm))
     }
 
     val data = data_gen(dm)

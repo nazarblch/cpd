@@ -249,33 +249,15 @@ class OneColumnDataset[T >: TCellDouble](override val header: DataHeader,
 
 
 object Dataset {
-
-
-  def apply[T >: TCellDouble](rows: IndexedSeq[IndexedSeq[T]]): MultiColumnDataset[T] = {
-    val header = DataHeader(rows(0).length)
-    val cols: Vector[Column[T]] =
-      Vector.range(0, header.size).map(j => Column(rows.map(row => row(j)).toVector))
-    new MultiColumnDataset[T](header, cols, true)
-  }
-
   def apply[T >: TCellDouble](rows: IndexedSeq[T]): OneColumnDataset[T] = {
     val header = DataHeader(1)
     new OneColumnDataset[T](header, Column(rows.toVector), true)
   }
 
 
-  def applyVec(data: IndexedSeq[DenseVector[Double]]): DenseVectorDataset = {
+  implicit def denseVectorSeq2Dataset(data: IndexedSeq[DenseVector[Double]]): DenseVectorDataset = {
     val header = DataHeader(data(0).length)
     new DenseVectorDataset(header, data.toArray)
-  }
-
-  implicit def applyD(data: IndexedSeq[Double]): MultiColumnDataset[Double] = {
-    val header = DataHeader(1)
-    new MultiColumnDataset[Double](header, Vector(Column[Double](data.toVector)), true)
-  }
-
-  implicit def applyB(data: IndexedSeq[Boolean]): MultiColumnDataset[Double] = {
-    applyD(data.map(x => if (x) 1.0 else 0.0))
   }
 
 }

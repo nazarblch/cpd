@@ -1,5 +1,6 @@
 package examples
 
+import datasets.Dataset._
 import breeze.stats._
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.stats.distributions.MultivariateGaussian
@@ -32,10 +33,9 @@ object PowerAndSD {
   */
 object QualityTest extends App {
 
-  private def data_gen(r : MultivariateGaussian, dim : Int, n : Int, dm: Double): DenseVectorDataset = {
-    Dataset.applyVec(
+  private def generateDataWithCP(r : MultivariateGaussian, dim : Int, n : Int, dm: Double): DenseVectorDataset = {
       r.sample(n / 2).toIndexedSeq ++
-        r.sample(n / 2).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm)))
+        r.sample(n / 2).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm))
   }
 
   def exec(windowSize : Int, patternFactory: PatternFactory) = {
@@ -47,7 +47,7 @@ object QualityTest extends App {
     val dm = 0.2
     val n = 500
 
-    val data = data_gen(r, dim, n, dm)
+    val data = generateDataWithCP(r, dim, n, dm)
 
     val detector = new LRTOfflineDetector(model, 0.05, Array(windowSize), patternFactory)
     detector.init(data)
