@@ -9,7 +9,7 @@ class TrianglePattern(val length: Int) extends CurvePattern {
   val xrange1: DenseVector[Double] = DenseVector.range(0, length/2).map(_.toDouble - x_mean)
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
-  val norm: Double = xrange1.foldLeft(0.0)((sum, x) => sum + x * x).toDouble
+  val norm: Double = xrange1.foldLeft(0.0)((sum, x) => sum + x * x)
 
   var height: Double = 0.0
   var alpha: Double = 0.0
@@ -32,6 +32,7 @@ class TrianglePattern(val length: Int) extends CurvePattern {
 
     if (alpha < 0) alpha = 0
 
+    y_min -= mean(getYRange)
   }
 
   override def getY(x: Int): Double = {
@@ -46,7 +47,7 @@ class TrianglePattern(val length: Int) extends CurvePattern {
 
   override def convolution(yValues: DenseVector[Double]): Double = {
     fitParameters(yValues)
-    (yValues - y_min ) dot (getYRange - y_min )
+    yValues  dot getYRange
   }
 
 }
@@ -72,9 +73,7 @@ class StaticTrianglePattern(val length: Int) extends CurvePattern {
     (if (x < length / 2) alpha * x else (length - x) * alpha ) + y_min
   }
 
-  def getYRange: DenseVector[Double] = xrange.map(x => {
-    getY(x)
-  })
+  def getYRange: DenseVector[Double] = xrange.map(getY)
 
   override def getXSize: Int = length
 

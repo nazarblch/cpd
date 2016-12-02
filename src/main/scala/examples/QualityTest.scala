@@ -1,5 +1,6 @@
 package examples
 
+import breeze.linalg._
 import datasets.Dataset._
 import breeze.stats._
 import breeze.linalg.{DenseMatrix, DenseVector}
@@ -22,7 +23,7 @@ object PowerAndSD {
     val power = res.count(_.isDefined).toDouble / res.length
     val detectedPositions = res.flatten.map(x => math.abs(x - 250).toDouble)
     val sd = mean(detectedPositions)
-    val sdsd = math.sqrt(variance(detectedPositions))
+    val sdsd = math.sqrt(variance(detectedPositions) / res.length)
 
     new PowerAndSD(sd, power, sdsd)
   }
@@ -60,8 +61,8 @@ object QualityTest extends App {
 
   val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
 
-  println("NoPattern")
-  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
-  println("Pattern")
-  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
+//  println("NoPattern")
+//  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
+  println("Adaptive Pattern")
+  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
 }
