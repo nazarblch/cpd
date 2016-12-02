@@ -29,26 +29,18 @@ object PowerAndSD {
   }
 }
 
+
 /**
   * Created by buzun on 22/11/16.
   */
 object QualityTest extends App {
+  def exec(windowSize : Int, patternFactory: PatternFactory, datasetGenerator : DatasetGenerator) = {
 
-  private def generateDataWithCP(r : MultivariateGaussian, dim : Int, n : Int, dm: Double): DenseVectorDataset = {
-      r.sample(n / 2).toIndexedSeq ++
-        r.sample(n / 2).toIndexedSeq.map(x => x + DenseVector.fill(dim)(dm))
-  }
-
-  def exec(windowSize : Int, patternFactory: PatternFactory) = {
-    val dim = 30
     val model = new NormalModelVecMean(dim)
 
-    val r = MultivariateGaussian(DenseVector.zeros[Double](dim), DenseMatrix.eye[Double](dim))
-
-    val dm = 0.2
     val n = 500
 
-    val data = generateDataWithCP(r, dim, n, dm)
+    val data = datasetGenerator(n)
 
     val detector = new LRTOfflineDetector(model, 0.05, Array(windowSize), patternFactory)
     detector.init(data)
@@ -56,8 +48,11 @@ object QualityTest extends App {
     detector.findOne(data)
   }
 
+  val dim = 30
+  val dm = 0.2
+  val cpGenerator = DatasetWithCPGenerator(dim, dm)
 
-  private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD((1 to iterations).map(_ => exec(windowSize, patternFactory)))
+  private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD((1 to iterations).map(_ => exec(windowSize, patternFactory, cpGenerator)))
 
   val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
 
