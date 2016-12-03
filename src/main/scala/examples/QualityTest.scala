@@ -50,14 +50,18 @@ object QualityTest extends App {
 
   val dim = 30
   val dm = 0.2
-  val cpGenerator = DatasetWithCPGenerator(dim, dm)
+  val cpGenerator = NormalDatasetGenerator(dim)//DatasetWithCPGenerator(dim, dm)
 
   private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD((1 to iterations).map(_ => exec(windowSize, patternFactory, cpGenerator)))
 
   val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
 
-//  println("NoPattern")
-//  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
-  println("Adaptive Pattern")
-  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
+  println("FIRST TYPE ERROR RATE")
+  println("NoPattern")
+  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(NoPattern)).foreach(println)
+
+  println("Pattern")
+  List(25, 35, 50, 70, 85, 100).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
+//  println("Adaptive Pattern")
+//  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
 }
