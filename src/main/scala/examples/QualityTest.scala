@@ -58,10 +58,10 @@ object QualityTest extends App {
 
   println("POWER")
   println("NoPattern")
-  List(5, 10, 15).map(getPowerAndSD300(NoPattern)).foreach(println)
+  List(7, 15, 30, 60, 120).map(getPowerAndSD300(NoPattern)).foreach(println)
 
   println("Pattern")
-  List(5, 10, 15).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
+  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
 //  println("Adaptive Pattern")
 //  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
 }
