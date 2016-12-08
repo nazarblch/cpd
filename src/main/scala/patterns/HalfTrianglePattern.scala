@@ -49,7 +49,7 @@ class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
 }
 
 
-class StaticHalfTrianglePattern(val double_length: Int) extends CurvePattern {
+class StaticHalfTrianglePattern(double_length: Int) extends CurvePattern {
 
   val length: Int = double_length / 2
 
@@ -62,12 +62,13 @@ class StaticHalfTrianglePattern(val double_length: Int) extends CurvePattern {
     (x + 1).toDouble / length
   }
 
-  def getYRange: DenseVector[Double] = xrange.map(x => {
-    getY(x)
-  })
+  def getYRange: DenseVector[Double] = xrange map getY
 
   override def getXSize: Int = length
 
   override def convolution(yValues: DenseVector[Double]): Double = yValues dot getYRange
 }
 
+object StaticHalfTrianglePattern extends PatternFactory {
+  override def apply(windowSize: Int): CurvePattern = new StaticHalfTrianglePattern(2 * windowSize)
+}

@@ -5,10 +5,11 @@ import datasets.Dataset._
 import breeze.stats._
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.stats.distributions.MultivariateGaussian
+import com.jhlabs.image.HalftoneFilter
 import cp_detectors.LRTOfflineDetector
 import datasets.{Dataset, DenseVectorDataset, MultiColumnDataset}
 import models.standart.NormalModelVecMean
-import patterns.{NoPattern, PatternFactory, StaticTrianglePattern, TrianglePattern}
+import patterns._
 
 class PowerAndSD(private val sd : Double,
                  private val power : Double,
@@ -56,12 +57,15 @@ object QualityTest extends App {
 
   val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
 
-  println("POWER")
-  println("NoPattern")
-  List(7, 15, 30, 60, 120).map(getPowerAndSD300(NoPattern)).foreach(println)
+//  println("POWER")
+//  println("NoPattern")
+//  List(7, 15, 30, 60, 120).map(getPowerAndSD300(NoPattern)).foreach(println)
+//
+//  println("Pattern")
+//  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
 
-  println("Pattern")
-  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
+  println("HALFPattern")
+  List(80,120, 160,200,240).map(getPowerAndSD300(StaticHalfTrianglePattern)).foreach(println)
 //  println("Adaptive Pattern")
 //  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
 }
