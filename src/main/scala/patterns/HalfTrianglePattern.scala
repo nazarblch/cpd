@@ -1,6 +1,6 @@
 package patterns
 
-import breeze.linalg.DenseVector
+import breeze.linalg._
 import breeze.stats._
 
 class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
@@ -49,17 +49,14 @@ class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
 }
 
 
-class StaticHalfTrianglePattern(double_length: Int) extends CurvePattern {
-
-  val length: Int = double_length / 2
-
+class StaticHalfTrianglePattern private(val length: Int) extends CurvePattern {
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
-  val x_mean = length.toDouble / 2
+  private val xMean = mean(0 until length)
 
   override def getY(x: Int): Double = {
     assert(x < length && x >= 0)
-    (x + 1).toDouble / length
+    x - xMean
   }
 
   def getYRange: DenseVector[Double] = xrange map getY
@@ -70,5 +67,5 @@ class StaticHalfTrianglePattern(double_length: Int) extends CurvePattern {
 }
 
 object StaticHalfTrianglePattern extends PatternFactory {
-  override def apply(windowSize: Int): CurvePattern = new StaticHalfTrianglePattern(2 * windowSize)
+  override def apply(windowSize: Int): CurvePattern = new StaticHalfTrianglePattern(windowSize)
 }
