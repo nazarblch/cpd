@@ -52,7 +52,7 @@ class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
 class StaticHalfTrianglePattern private(val length: Int) extends CurvePattern {
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
-  private val xMean = mean(0 until length)
+  private val xMean = mean(0 until length map(_.toDouble))
 
   override def getY(x: Int): Double = {
     assert(x < length && x >= 0)

@@ -39,7 +39,7 @@ object QualityTest extends App {
 
     val model = new NormalModelVecMean(dim)
 
-    val data = datasetGenerator(n)
+    val data = datasetGenerator.apply()
 
     val detector = new LRTOfflineDetector(model, 0.05, Array(windowSize), patternFactory)
     detector.init(data)
@@ -49,21 +49,20 @@ object QualityTest extends App {
 
   val n = 500
   val dim = 5
-  val dm = 0.2
-  val dataGenerator = DatasetWithCPGenerator(dim, dm)
+  val dm = 0.3
+  private val windowSizes = 40 to 100 by 20
 
-  private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD(n/2)((1 to iterations).map(_ => exec(windowSize, patternFactory, dataGenerator)))
+  private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD(n - 1 - windowSize)((1 to iterations).map(_ => exec(windowSize, patternFactory, DatasetWithCPGenerator.apply(dim, windowSize + 1, n, dm))))
 
-  val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
+  val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(1)
+  println("POWER")
+  println("NoPattern")
+  windowSizes map getPowerAndSD300(NoPattern) foreach println
 
-//  println("POWER")
-//  println("NoPattern")
-//  List(7, 15, 30, 60, 120).map(getPowerAndSD300(NoPattern)).foreach(println)
-//
-//  println("Pattern")
-//  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
-//  println("HALFPattern")
-//  List(80,120, 160,200,240).map(getPowerAndSD300(StaticHalfTrianglePattern)).foreach(println)
+  println("HALFPattern")
+  windowSizes map getPowerAndSD300(StaticHalfTrianglePattern) foreach println
+  //  println("Pattern")
+  //  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
 //  println("Adaptive Pattern")
 //  List(50, 70, 85).map(getPowerAndSD300(TrianglePattern)).foreach(println)
 }
