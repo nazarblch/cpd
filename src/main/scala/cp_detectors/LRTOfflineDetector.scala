@@ -49,22 +49,14 @@ class LRTOfflineDetector[Row, DatasetType <: Dataset[Row, DatasetType]](val mode
       val pl = new PlotXY("t", "stat value ")
       pl.addline(stat, "stat window="  + windowSize)
     }
-
   }
 
-//  def createStatistic(windowSize: Int): LikelihoodRatioStatistic[Row, DatasetType] = {
-//    new LikelihoodRatioStatistic[Row, DatasetType](model, windowSize)
-//  }
-
   override def findOne(dataset: DatasetType): Option[Int] = {
-
-    for (config <- configurations.filter(_.windowSize < dataset.size / 4).sortBy(_.windowSize)) {
+    configurations.filter(_.windowSize < dataset.size / 4).sortBy(_.windowSize).toStream.flatMap {config =>
       val stat = createStatistic(config.windowSize)
       val (pos, score) = stat.getValueWithLocations(dataset).maxBy(_._2)
-      if (score > config.upperBound) return Some(pos)
-    }
-
-    None
+      if (score > config.upperBound) Some(pos) else None
+    } headOption
   }
 
   override def name: String = "LRTOffline"
