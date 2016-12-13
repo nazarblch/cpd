@@ -48,11 +48,18 @@ class HalfTrianglePattern(val double_length: Int) extends CurvePattern {
 
 }
 
+class TrickyHalfTrianglePattern private(length : Int) extends StaticTrianglePattern(length) {
+  override def getY(x: Int): Double = if (x < length/2) super.getY(x) else 0
+}
+
+object TrickyHalfTrianglePattern extends PatternFactory {
+  def apply(windowSize : Int) = new TrickyHalfTrianglePattern(windowSize * 2)
+}
 
 class StaticHalfTrianglePattern private(val length: Int) extends CurvePattern {
   val xrange: DenseVector[Int] = DenseVector.range(0, length)
 
-  private val xMean = mean(0 until length map(_.toDouble))
+  private val xMean = mean(1 to length map(_.toDouble))
 
   override def getY(x: Int): Double = {
     assert(x < length && x >= 0)

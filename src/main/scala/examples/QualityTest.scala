@@ -1,13 +1,7 @@
 package examples
 
-import breeze.linalg._
-import datasets.Dataset._
 import breeze.stats._
-import breeze.linalg.{DenseMatrix, DenseVector}
-import breeze.stats.distributions.MultivariateGaussian
-import com.jhlabs.image.HalftoneFilter
 import cp_detectors.LRTOfflineDetector
-import datasets.{Dataset, DenseVectorDataset, MultiColumnDataset}
 import models.standart.NormalModelVecMean
 import patterns._
 
@@ -60,7 +54,7 @@ object QualityTest extends App {
   windowSizes map getPowerAndSD300(NoPattern) foreach println
 
   println("HALFPattern")
-  windowSizes map getPowerAndSD300(StaticHalfTrianglePattern) foreach println
+  windowSizes map getPowerAndSD300(TrickyHalfTrianglePattern) foreach println
   //  println("Pattern")
   //  List(7, 15, 30, 60, 120).map(getPowerAndSD300(StaticTrianglePattern)).foreach(println)
 //  println("Adaptive Pattern")

@@ -2,15 +2,12 @@ package cp_detectors
 
 import bootstrap._
 import breeze.linalg.DenseVector
-import datasets.CellT._
 import datasets.Dataset
 import models.ParametricModel
-import patterns.{PatternFactory, StaticTrianglePattern, TrianglePattern}
+import patterns.PatternFactory
 import statistics._
 import statistics.likelihood_ratio._
 import viz.utils.PlotXY
-
-import scala.collection.mutable.ArrayBuffer
 
 
 class LRTOfflineDetector[Row, DatasetType <: Dataset[Row, DatasetType]](val model: ParametricModel[Row, DatasetType, DenseVector[Double]],
@@ -45,6 +42,14 @@ class LRTOfflineDetector[Row, DatasetType <: Dataset[Row, DatasetType]](val mode
     val lrt = new LikelihoodRatioStatistic[Row, DatasetType](model, windowSize)
     val pattern = patternFactory(windowSize)
     new PatternStatistic[Row, DatasetType](pattern, lrt)
+  }
+
+  def plot(dataset: DatasetType) : Unit = {
+    for ((windowSize, stat) <- windowSizes zip windowSizes.map(createStatistic).map(_.getValueWithLocations(dataset))) {
+      val pl = new PlotXY("t", "stat value ")
+      pl.addline(stat, "stat window="  + windowSize)
+    }
+
   }
 
 //  def createStatistic(windowSize: Int): LikelihoodRatioStatistic[Row, DatasetType] = {
