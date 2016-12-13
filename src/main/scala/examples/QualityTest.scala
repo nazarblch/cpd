@@ -48,7 +48,7 @@ object QualityTest extends App {
 
   private def getPowerAndSD(iterations: Int)(patternFactory: PatternFactory)(windowSize: Int) = PowerAndSD(n - 1 - windowSize)((1 to iterations).map(_ => exec(windowSize, patternFactory, DatasetWithCPGenerator.apply(dim, windowSize + 1, n, dm))))
 
-  val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(1)
+  val getPowerAndSD300 :  (PatternFactory) => (Int) => PowerAndSD = getPowerAndSD(300)
   println("POWER")
   println("NoPattern")
   windowSizes map getPowerAndSD300(NoPattern) foreach println
