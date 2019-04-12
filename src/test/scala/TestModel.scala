@@ -1,7 +1,7 @@
 import java.util.Random
 
 import bootstrap.SmoothOnesGenerator
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseVector, norm}
 import breeze.optimize.{ApproximateGradientFunction, DiffFunction, GradientTester}
 import breeze.stats.distributions.Gaussian
 import datasets._
@@ -24,7 +24,7 @@ class TestModel  extends FlatSpec {
 
     val dg: DenseVector[Double] = grad - diffg.gradientAt(x0)
 
-    assert(dg.norm(1) / grad.norm(1)  < 0.001)
+    assert(norm(dg,1) / norm(grad,1)  < 0.001)
   }
 
 
@@ -70,12 +70,12 @@ class TestModel  extends FlatSpec {
     val diff1 = mle - mle1
     val diff2 = mle - mle2
 
-    assert(diff1.norm(1) < 0.001)
-    assert(diff2.norm(1) < 0.001)
+    assert(norm(diff1, 1) < 0.001)
+    assert(norm(diff2, 1) < 0.001)
 
     val grad = model.gradLikelihood(wdata, mle)
 
-    assert(grad.norm(1) < 0.001)
+    assert(norm(grad, 1) < 0.001)
 
   }
 
